@@ -506,6 +506,8 @@ const Product = ({ product }) => {
         </a>
         <Card.Text as='div'>
           <div className='my-3'>
+            // this line will be replace by component later, for now just make
+            sure it works
             <strong>
               {product.rating} from {product.numReviews} reviews
             </strong>
@@ -518,4 +520,285 @@ const Product = ({ product }) => {
 };
 
 export default Product;
+```
+
+# step 8 : rating component
+
+1. we will be re-using this component later
+2. refactor the product component
+
+```jsx
+import { Card } from "react-bootstrap";
+import Rating from "./Rating";
+const Product = ({ product }) => {
+  return (
+    <Card className='my-3 p-3 rounded'>
+      <a href={`/product/${product._id}`}>
+        <Card.Img src={product.image} />
+      </a>
+      <Card.Body>
+        <a href={`/product/${product._id}`}>
+          <Card.Title as='div'>
+            <strong>{product.name}</strong>
+          </Card.Title>
+        </a>
+        <Card.Text as='div'>
+          <div className='my-3'>
+            <Rating
+              value={product.rating}
+              text={`${product.numReviews} reviews`}
+              color='#f8e825'
+            />
+          </div>
+        </Card.Text>
+        <Card.Title as='h3'>${product.price}</Card.Title>
+      </Card.Body>
+    </Card>
+  );
+};
+
+export default Product;
+```
+
+3. create Rating.jsx inside components folder
+
+```jsx
+const Rating = ({ value, text, color }) => {
+  return (
+    <div className='rating'>
+      <span>
+        <i
+          style={{ color }}
+          className={
+            value >= 1
+              ? "fas fa-star"
+              : value >= 0.5
+                ? "fas fa-star-half-alt"
+                : "far fa-star"
+          }
+        ></i>
+      </span>
+
+      <span>
+        <i
+          style={{ color }}
+          className={
+            value >= 2
+              ? "fas fa-star"
+              : value >= 1.5
+                ? "fas fa-star-half-alt"
+                : "far fa-star"
+          }
+        ></i>
+      </span>
+
+      <span>
+        <i
+          style={{ color }}
+          className={
+            value >= 3
+              ? "fas fa-star"
+              : value >= 2.5
+                ? "fas fa-star-half-alt"
+                : "far fa-star"
+          }
+        ></i>
+      </span>
+
+      <span>
+        <i
+          style={{ color }}
+          className={
+            value >= 4
+              ? "fas fa-star"
+              : value >= 3.5
+                ? "fas fa-star-half-alt"
+                : "far fa-star"
+          }
+        ></i>
+      </span>
+
+      <span>
+        <i
+          style={{ color }}
+          className={
+            value >= 5
+              ? "fas fa-star"
+              : value >= 4.5
+                ? "fas fa-star-half-alt"
+                : "far fa-star"
+          }
+        ></i>
+      </span>
+
+      <span>{text && text}</span>
+    </div>
+  );
+};
+
+export default Rating;
+```
+
+4. update the index.css for the rating component
+
+```css index.css
+main {
+  min-height: 100vh;
+}
+
+h3 {
+  padding: 1rem 0;
+}
+.rating span {
+  margin: 0.1rem;
+}
+```
+
+# step 9 : react router
+
+1. demo is based on react router 6
+   `npm install react-router-dom@6.23.0`
+2. react router bootstrap
+   `npm install react-router-bootstrap@0.26.2`
+3. refector App.js for react router
+
+```jsx
+import { Container } from "react-bootstrap";
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import Footer from "./components/Footer";
+import Header from "./components/Header";
+import HomeScreen from "./screens/HomeScreen";
+function App() {
+  return (
+    <Router>
+      <Header />
+      <main className='py-3'>
+        <Container>
+          <Routes>
+            <Route path='/' element={<HomeScreen />} />
+          </Routes>
+        </Container>
+      </main>
+      <Footer />
+    </Router>
+  );
+}
+
+export default App;
+```
+
+4. add src/screens/ProductScreen.jsx for product pages
+
+```jsx
+import React from "react";
+
+const ProductScreen = () => {
+  return <div>ProductScreen</div>;
+};
+
+export default ProductScreen;
+```
+
+5. refactor App.js for product page
+
+```jsx
+import { Container } from "react-bootstrap";
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import Footer from "./components/Footer";
+import Header from "./components/Header";
+import HomeScreen from "./screens/HomeScreen";
+import ProductScreen from "./screens/ProductScreen";
+function App() {
+  return (
+    <Router>
+      <Header />
+      <main className='py-3'>
+        <Container>
+          <Routes>
+            <Route path='/' element={<HomeScreen />} />
+            <Route path='/product/:id' element={<ProductScreen />} />
+          </Routes>
+        </Container>
+      </main>
+      <Footer />
+    </Router>
+  );
+}
+
+export default App;
+```
+
+6. click any product will route to `/product/1` which is working
+7. we don't want to render the product page for every click, so we need to change all the <a> to <Link> for quick rendering, refactor Product.jsx
+   `href` to `to`
+
+```jsx
+import { Card } from "react-bootstrap";
+import Rating from "./Rating";
+import { Link } from "react-router-dom";
+const Product = ({ product }) => {
+  return (
+    <Card className='my-3 p-3 rounded'>
+      <Link to={`/product/${product._id}`}>
+        <Card.Img src={product.image} />
+      </Link>
+      <Card.Body>
+        <Link to={`/product/${product._id}`}>
+          <Card.Title as='div'>
+            <strong>{product.name}</strong>
+          </Card.Title>
+        </Link>
+        <Card.Text as='div'>
+          <div className='my-3'>
+            <Rating
+              value={product.rating}
+              text={`${product.numReviews} reviews`}
+              color='#f8e825'
+            />
+          </div>
+        </Card.Text>
+        <Card.Title as='h3'>${product.price}</Card.Title>
+      </Card.Body>
+    </Card>
+  );
+};
+
+export default Product;
+```
+
+8. refacor Header.jsx for the navbar links for cart and login
+
+```jsx
+import { Container, Navbar, Nav } from "react-bootstrap";
+import { LinkContainer } from "react-router-bootstrap";
+const Header = () => {
+  return (
+    <header>
+      <Navbar bg='dark' variant='dark' expand='lg' collapseOnSelect>
+        <Container>
+          <LinkContainer to='/'>
+            <Navbar.Brand>ProShop</Navbar.Brand>
+          </LinkContainer>
+          <Navbar.Toggle aria-controls='basic-navbar-nav' />
+          <Navbar.Collapse id='basic-navbar-nav'>
+            <Nav className='mr-auto'>
+              <LinkContainer to='/cart'>
+                <Nav.Link>
+                  <i className='fas fa-shopping-cart'></i> Cart
+                </Nav.Link>
+              </LinkContainer>
+              <LinkContainer to='/login'>
+                <Nav.Link>
+                  <i className='fas fa-user'></i> Login
+                </Nav.Link>
+              </LinkContainer>
+            </Nav>
+          </Navbar.Collapse>
+        </Container>
+      </Navbar>
+    </header>
+  );
+};
+
+export default Header;
 ```
