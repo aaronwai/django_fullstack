@@ -802,3 +802,24 @@ const Header = () => {
 
 export default Header;
 ```
+
+# step 10 : product page
+
+1. update the productscreen file, for react router 6, we need to use `useParams` to get the parms part of the value, testing by clicking the image and should return the product name the we can refactor to add the jsx code
+
+```jsx
+import { Link, useParams } from "react-router-dom";
+import { Row, Col, Image, ListGroup, Card, Button } from "react-bootstrap";
+import Rating from "../components/Rating";
+import products from "../products";
+import { use } from "react";
+const ProductScreen = () => {
+  const { id } = useParams();
+  const product = products.find((p) => p._id === id);
+  return <div>{product.name}</div>;
+};
+
+export default ProductScreen;
+```
+
+2.
