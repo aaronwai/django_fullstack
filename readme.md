@@ -1200,3 +1200,75 @@ urlpatterns = [
 ]
 
 ```
+
+# Step 12 : setup rest framework
+
+1. `pip install djangorestframework`
+2. include the rest framework in settings.py
+
+```py
+
+INSTALLED_APPS = [
+    'django.contrib.admin',
+    'django.contrib.auth',
+    'django.contrib.contenttypes',
+    'django.contrib.sessions',
+    'django.contrib.messages',
+    'django.contrib.staticfiles',
+    'base.apps.BaseConfig',
+    'rest_framework',
+]
+
+```
+
+3. https://www.django-rest-framework.org/api-guide/views/#check_throttlesself-request , we are using functional api views
+4. update base/urls.py for single product
+
+```py
+from django.urls import path
+from . import views
+
+urlpatterns = [
+    path('', views.getRoutes, name="routes"),
+    path("products/", views.getProducts, name="products"),
+    path("products/<str:pk>/", views.getProduct, name="product"),
+]
+```
+
+5. update base/views.py
+
+```py
+from . products import products
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+# Create your views here.
+@api_view(['GET'])
+def getRoutes(request):
+    routes = [
+        'api/products',
+        'api/products/create',
+        'api/products/upload',
+        'api/products/<id>/reviews',
+        'api/products/top',
+        'api/products/<id>',
+        'api/products/delete/<id>',
+        'api/products/<update>/<id>',
+    ]
+    return Response(routes)
+
+@api_view(['GET'])
+def getProducts(request):
+    return Response(products)
+
+@api_view(['GET'])
+def getProduct(request,pk):
+    product = None
+    for i in products:
+        if i['_id'] == pk:
+            product = i
+            break
+    return Response(product)
+```
+
+6. testing the api by `localhost:8000/api/products/`
+7. testing the api by `localhost:8000/api/products/1/`
