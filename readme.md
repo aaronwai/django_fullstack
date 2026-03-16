@@ -1272,3 +1272,242 @@ def getProduct(request,pk):
 
 6. testing the api by `localhost:8000/api/products/`
 7. testing the api by `localhost:8000/api/products/1/`
+
+# step 13 : frontend axios setup
+
+1. open second terminal for frontend and turn on nvm
+2. install axios `npm install axios`
+3. refactor /src/screens/HomeScreen.jsx, replace the hard coded products data, add axios fetch inside useEffect
+
+```jsx
+import { Row, Col } from "react-bootstrap";
+import Product from "../components/Product";
+import axios from "axios";
+import { useEffect, useState } from "react";
+const HomeScreen = () => {
+  const [products, setProducts] = useState([]);
+  useEffect(() => {
+    async function fetchProducts() {
+      const { data } = await axios.get("http://127.0.0.1:8000/api/products");
+      setProducts(data);
+    }
+    fetchProducts();
+  }, []);
+  return (
+    <div>
+      <h1>Latest Products</h1>
+      <Row>
+        {products.map((product) => (
+          <Col key={product._id} sm={12} md={6} lg={4} xl={3}>
+            <Product product={product} />
+          </Col>
+        ))}
+      </Row>
+    </div>
+  );
+};
+
+export default HomeScreen;
+```
+
+4. ### Does Django 5.2 Block CORS?
+   **Short answer**: Django 5.2 (like all Django versions) **does not block CORS by default** – but it also does **not include built-in support for handling CORS requests**. This means:
+
+- By default, Django will reject cross-origin requests (e.g., your React frontend at `http://localhost:3000` calling a Django API at `http://localhost:8000`) because browsers enforce the **Same-Origin Policy**.
+- This is not "blocking" per se – it’s Django not sending the required CORS headers, so the browser rejects the response.
+
+### How to Fix CORS in Django 5.2
+
+To allow cross-origin requests from your React app, you need to use the `django-cors-headers` package (the official/recommended solution for Django CORS):
+
+#### Step 1: Install the Package
+
+```bash
+# Install django-cors-headers (compatible with Django 5.2)
+pip install django-cors-headers
+```
+
+#### Step 2: Configure Django Settings
+
+Update your `settings.py` to enable CORS:
+
+```python
+# settings.py
+
+# Add corsheaders to INSTALLED_APPS (before your app)
+INSTALLED_APPS = [
+    'django.contrib.admin',
+    'django.contrib.auth',
+    'django.contrib.contenttypes',
+    'django.contrib.sessions',
+    'django.contrib.messages',
+    'django.contrib.staticfiles',
+    'corsheaders',  # Add this line
+    'your_app_name',  # Your app (e.g., 'api')
+]
+
+# Add corsheaders middleware (MUST come before CommonMiddleware)
+MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',  # Add this line (first in middleware!)
+    'django.middleware.common.CommonMiddleware',  # Keep this
+    # ... rest of your middleware (e.g., CsrfViewMiddleware, AuthenticationMiddleware)
+]
+
+# Configure CORS allowed origins (critical!)
+# Option 1: Allow only your React frontend (RECOMMENDED for production)
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:3000",  # Your React dev server
+    "http://127.0.0.1:3000",
+    # Add your production frontend URL later (e.g., "https://yourfrontend.com")
+]
+
+# Option 2: Allow all origins (ONLY for development – NEVER use in production!)
+# CORS_ALLOW_ALL_ORIGINS = True
+```
+
+#### Step 3: Test the Setup
+
+1. Restart your Django server:
+   ```bash
+   python manage.py runserver
+   ```
+2. Make a request from your React app (using Axios) to your Django API – the CORS error should disappear.
+
+### Key Details About Django 5.2 and CORS
+
+1. **No Built-in CORS**: Django core has no `CorsMiddleware` – `django-cors-headers` is the de facto standard (maintained by the Django community).
+2. **Middleware Order Matters**: `CorsMiddleware` must be placed **before** `CommonMiddleware` in the `MIDDLEWARE` list (it needs to process the request before other middleware).
+3. **Security Best Practices**:
+   - Never use `CORS_ALLOW_ALL_ORIGINS = True` in production (exposes your API to any website).
+   - Restrict `CORS_ALLOWED_ORIGINS` to only your frontend domain(s).
+   - For production, add HTTPS URLs (e.g., `https://your-frontend.com`) to `CORS_ALLOWED_ORIGINS`.
+4. **Additional Config (Optional)**:
+   If you need to allow credentials (e.g., cookies for authentication), add:
+   ```python
+   # settings.py
+   CORS_ALLOW_CREDENTIALS = True
+   ```
+
+### What If You Still See CORS Errors?
+
+1. Double-check the `MIDDLEWARE` order (CorsMiddleware first).
+2. Verify `CORS_ALLOWED_ORIGINS` includes the exact URL of your React app (e.g., `http://localhost:3000` – no trailing slash!).
+3. Clear your browser cache (old CORS headers may be cached).
+4. Ensure Django is running on the correct port (default: 8000) and your React app is pointing to it.
+
+### Summary
+
+1. **Django 5.2 does not block CORS intentionally** – it simply lacks built-in CORS headers, so browsers reject cross-origin requests by default.
+2. **Fix CORS with `django-cors-headers`**: Install the package, add it to `INSTALLED_APPS` and `MIDDLEWARE`, and whitelist your React origin(s).
+3. **Security**: Always restrict `CORS_ALLOWED_ORIGINS` to your frontend domain(s) (never allow all origins in production).
+
+This setup will let your React app communicate with your Django 5.2 API without CORS errors.
+
+5. back to django side, `pip install django-cors-headers=4.0.0`
+   https://pypi.org/project/django-cors-headers/
+
+6. follow the doc, add the app and middleware inside the settings.py
+   make sure the coreheaders middleware is before the common middleware
+
+```py
+
+INSTALLED_APPS = [
+    'django.contrib.admin',
+    'django.contrib.auth',
+    'django.contrib.contenttypes',
+    'django.contrib.sessions',
+    'django.contrib.messages',
+    'django.contrib.staticfiles',
+    'rest_framework',
+    "corsheaders",
+    'base.apps.BaseConfig',
+]
+
+MIDDLEWARE = [
+    "corsheaders.middleware.CorsMiddleware",
+    'django.middleware.security.SecurityMiddleware',
+    'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.middleware.common.CommonMiddleware',
+    'django.middleware.csrf.CsrfViewMiddleware',
+    'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'django.contrib.messages.middleware.MessageMiddleware',
+    'django.middleware.clickjacking.XFrameOptionsMiddleware',
+]
+
+CORS_ALLOW_ALL_ORIGINS = True
+```
+
+7. frontend side can load the data from backend api
+8. refactor the frontend to remove the https://127.0.0.1:8000/ and place it inside the package.json file as proxy, stop and restart the npm server
+
+```json
+{
+  "name": "frontend",
+  "version": "0.1.0",
+  "proxy": "http://127.0.0.1:8000",
+  "private": true,
+  "dependencies": {
+    "@testing-library/dom": "^10.4.1",
+    "@testing-library/jest-dom": "^6.9.1",
+    "@testing-library/react": "^16.3.2",
+    "@testing-library/user-event": "^13.5.0",
+    "axios": "^1.13.6",
+    "bootstrap": "^5.3.8",
+    "react": "^19.2.4",
+    "react-bootstrap": "^2.10.10",
+    "react-dom": "^19.2.4",
+    "react-router-bootstrap": "^0.26.2",
+    "react-router-dom": "^6.23.0",
+    "react-scripts": "^5.0.1",
+    "web-vitals": "^2.1.4"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject"
+  },
+  "eslintConfig": {
+    "extends": ["react-app", "react-app/jest"]
+  },
+  "browserslist": {
+    "production": [">0.2%", "not dead", "not op_mini all"],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  }
+}
+```
+
+```jsx
+import { Row, Col } from "react-bootstrap";
+import Product from "../components/Product";
+import axios from "axios";
+import { useEffect, useState } from "react";
+const HomeScreen = () => {
+  const [products, setProducts] = useState([]);
+  useEffect(() => {
+    async function fetchProducts() {
+      const { data } = await axios.get("/api/products");
+      setProducts(data);
+    }
+    fetchProducts();
+  }, []);
+  return (
+    <div>
+      <h1>Latest Products</h1>
+      <Row>
+        {products.map((product) => (
+          <Col key={product._id} sm={12} md={6} lg={4} xl={3}>
+            <Product product={product} />
+          </Col>
+        ))}
+      </Row>
+    </div>
+  );
+};
+
+export default HomeScreen;
+```
