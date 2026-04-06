@@ -3155,3 +3155,753 @@ const ProductScreen = () => {
 export default ProductScreen;
 
 ```
+
+# step 18c : add qty
+
+1. update productScreen.jsx, addding qty as dropdown menu and then add event handler to add to cart
+```jsx
+import {  useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { Link, useParams } from "react-router-dom";
+import { Row, Col, Image, ListGroup, Card, Button, Form } from "react-bootstrap";
+import Rating from "../components/Rating";
+import { listProductDetails } from "../actions/productActions";
+import Loader from "../components/Loader";
+import Message from "../components/Message";
+// import products from "../products";
+const ProductScreen = () => {
+  const { id } = useParams();
+  const [qty,setQty] = useState(1);
+  const dispatch = useDispatch();
+  const productDetails = useSelector((state) => state.productDetails);
+  const { loading, error, product } = productDetails;
+
+  useEffect(() => {
+    dispatch(listProductDetails(id));
+  }, [dispatch, id]);
+  const addToCartHandler = () => {
+    console.log("Add to cart", id, qty);
+  }
+  return (
+    <div>
+      <Link to="/" className="btn btn-light my-3"> Go Back
+      </Link>
+      {
+        loading ? (
+          <Loader />
+        ) : error ? (
+          <Message variant="danger">{error}</Message>
+        ) : (
+      <Row>
+        <Col md={6}>
+          <Image src={product.image} alt={product.name} fluid />
+        </Col>
+
+        <Col md={3}>
+          <ListGroup variant="flush">
+            <ListGroup.Item>
+              <h3>{product.name}</h3>
+            </ListGroup.Item>
+
+            <ListGroup.Item>
+              <Rating
+                value={product.rating}
+                text={`${product.numReviews} reviews`}
+                color={"#f8e825"}
+              />
+            </ListGroup.Item>
+
+            <ListGroup.Item>Price: ${product.price}</ListGroup.Item>
+
+            <ListGroup.Item>Description: {product.description} </ListGroup.Item>
+          </ListGroup>
+        </Col>
+
+        <Col md={3}>
+          <Card>
+            <ListGroup variant="flush">
+              <ListGroup.Item>
+                <Row>
+                  <Col>Price:</Col>
+                  <Col>
+                    <strong>${product.price}</strong>
+                  </Col>
+                </Row>
+              </ListGroup.Item>
+              <ListGroup.Item>
+                <Row>
+                  <Col>Status:</Col>
+                  <Col>
+                    ${product.countInStock > 0 ? "In Stock" : "Out of Stock"}
+                  </Col>
+                </Row>
+              </ListGroup.Item>
+              {product.countInStock > 0 && (
+                <ListGroup.Item>
+                  <Row>
+                    <Col>Qty</Col>
+                    <Col xs="auto" className="my-1">
+                      <Form.Control
+                        as="select"
+                        value={qty}
+                        onChange={(e) => setQty(e.target.value)}
+                      >
+                        {[...Array(product.countInStock).keys()].map((x) => (
+                          <option key={x + 1} value={x + 1}>
+                            {x + 1}
+                          </option>
+                        ))}
+                      </Form.Control>
+                    </Col>
+                  </Row>
+                </ListGroup.Item>
+              )}
+              <ListGroup.Item>
+                <Button onClick={addToCartHandler}
+                  className="w-100 py-2"
+                  type="button"
+                  disabled={product.countInStock === 0}
+                >
+                  Add to Cart
+                </Button>
+              </ListGroup.Item>
+            </ListGroup>
+          </Card>
+        </Col>
+      </Row>
+         
+        )
+      }
+       
+    </div>
+  );
+};
+
+export default ProductScreen;
+
+```
+
+2. after testing the event handler is getting back to console, refacotor for add to cart
+```js
+import {  useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { Link, useParams, useNavigate } from "react-router-dom";
+import { Row, Col, Image, ListGroup, Card, Button, Form } from "react-bootstrap";
+import Rating from "../components/Rating";
+import { listProductDetails } from "../actions/productActions";
+import Loader from "../components/Loader";
+import Message from "../components/Message";
+// import products from "../products";
+const ProductScreen = () => {
+  const { id } = useParams();
+  const navigate = useNavigate(); 
+  const [qty,setQty] = useState(1);
+  const dispatch = useDispatch();
+  const productDetails = useSelector((state) => state.productDetails);
+  const { loading, error, product } = productDetails;
+
+  useEffect(() => {
+    dispatch(listProductDetails(id));
+  }, [dispatch, id]);
+  const addToCartHandler = () => {
+    // console.log("Add to cart", id, qty);
+    navigate(`/cart/${id}?qty=${qty}`); // re-route to cart with id and qty
+  }
+  return (
+    <div>
+      <Link to="/" className="btn btn-light my-3"> Go Back
+      </Link>
+      {
+        loading ? (
+          <Loader />
+        ) : error ? (
+          <Message variant="danger">{error}</Message>
+        ) : (
+      <Row>
+        <Col md={6}>
+          <Image src={product.image} alt={product.name} fluid />
+        </Col>
+
+        <Col md={3}>
+          <ListGroup variant="flush">
+            <ListGroup.Item>
+              <h3>{product.name}</h3>
+            </ListGroup.Item>
+
+            <ListGroup.Item>
+              <Rating
+                value={product.rating}
+                text={`${product.numReviews} reviews`}
+                color={"#f8e825"}
+              />
+            </ListGroup.Item>
+
+            <ListGroup.Item>Price: ${product.price}</ListGroup.Item>
+
+            <ListGroup.Item>Description: {product.description} </ListGroup.Item>
+          </ListGroup>
+        </Col>
+
+        <Col md={3}>
+          <Card>
+            <ListGroup variant="flush">
+              <ListGroup.Item>
+                <Row>
+                  <Col>Price:</Col>
+                  <Col>
+                    <strong>${product.price}</strong>
+                  </Col>
+                </Row>
+              </ListGroup.Item>
+              <ListGroup.Item>
+                <Row>
+                  <Col>Status:</Col>
+                  <Col>
+                    ${product.countInStock > 0 ? "In Stock" : "Out of Stock"}
+                  </Col>
+                </Row>
+              </ListGroup.Item>
+              {product.countInStock > 0 && (
+                <ListGroup.Item>
+                  <Row>
+                    <Col>Qty</Col>
+                    <Col xs="auto" className="my-1">
+                      <Form.Control
+                        as="select"
+                        value={qty}
+                        onChange={(e) => setQty(e.target.value)}
+                      >
+                        {[...Array(product.countInStock).keys()].map((x) => (
+                          <option key={x + 1} value={x + 1}>
+                            {x + 1}
+                          </option>
+                        ))}
+                      </Form.Control>
+                    </Col>
+                  </Row>
+                </ListGroup.Item>
+              )}
+              <ListGroup.Item>
+                <Button onClick={addToCartHandler}
+                  className="w-100 py-2"
+                  type="button"
+                  disabled={product.countInStock === 0}
+                >
+                  Add to Cart
+                </Button>
+              </ListGroup.Item>
+            </ListGroup>
+          </Card>
+        </Col>
+      </Row>
+         
+        )
+      }
+       
+    </div>
+  );
+};
+
+export default ProductScreen;
+
+```
+
+3. add screens/cartScreen.jsx as template for the time being
+```jsx
+
+const CartScreen = () => {
+  return (
+    <div>CartScreen</div>
+  )
+}
+
+export default CartScreen
+```
+4. update App.js for cartScreen
+```jsx
+import { Container } from "react-bootstrap";
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import Footer from "./components/Footer";
+import Header from "./components/Header";
+import HomeScreen from "./screens/HomeScreen";
+import ProductScreen from "./screens/ProductScreen";
+import CartScreen from "./screens/CartScreen";
+function App() {
+  return (
+    <Router>
+      <Header />
+      <main className="py-3">
+        <Container>
+          <Routes>
+            <Route path="/" element={<HomeScreen />} />
+            <Route path="/product/:id" element={<ProductScreen />} />
+            <Route path="/cart/:id?" element={<CartScreen />} />  // set the id as optional
+          </Routes>
+        </Container>
+      </main>
+      <Footer />
+    </Router>
+  );
+}
+
+export default App;
+
+```
+5. workon cart reducer cycle, add constants/cartConstants.js
+```js
+export const CART_ADD_ITEM = "CART_ADD_ITEM";
+export const CART_REMOVE_ITEM = "CART_REMOVE_ITEM";
+```
+6. add reducers/cartReducer.js
+```js
+import { CART_ADD_ITEM, CART_REMOVE_ITEM } from "../constants/cartConstants";
+
+export const cartReducer = (state = { cartItems: [] }, action) => {
+  switch (action.type) {
+    case CART_ADD_ITEM:
+      const item = action.payload;
+      const existItem = state.cartItems.find((x) => x.product === item.product);
+      if (existItem) {
+        return {
+          ...state,
+          cartItems: state.cartItems.map((x) =>
+            x.product === existItem.product ? item : x
+          ),
+        };
+      } else {
+        return {
+          ...state,
+          cartItems: [...state.cartItems, item],
+        };
+      }
+    case CART_REMOVE_ITEM:
+      return {
+        ...state,
+        cartItems: state.cartItems.filter((x) => x.product !== action.payload),
+      };
+    default:
+      return state;
+  }
+}
+```
+
+## **这个 Reducer 负责管理购物车：添加商品、更新数量、删除商品。**
+
+---
+```javascript
+// 导入动作类型
+import { CART_ADD_ITEM, CART_REMOVE_ITEM } from "../constants/cartConstants";
+
+// 定义 Reducer
+// state = { cartItems: [] } → 默认状态：购物车是空数组
+export const cartReducer = (state = { cartItems: [] }, action) => {
+  switch (action.type) {
+
+    // ==========================================
+    // 【1】添加商品到购物车（核心逻辑）
+    // ==========================================
+    case CART_ADD_ITEM:
+      // 1. 拿到要添加的商品（来自 Action 的 payload）
+      const item = action.payload;
+
+      // 2. 检查购物车里**是否已经存在这个商品**
+      // 判断依据：x.product === item.product（product 是商品 ID）
+      const existItem = state.cartItems.find((x) => x.product === item.product);
+
+      // 如果商品已存在 → 更新数量
+      if (existItem) {
+        return {
+          ...state,           // 保留原来的 state 不变
+          cartItems: state.cartItems.map((x) =>
+            // 如果找到相同商品 → 替换成新的 item（数量更新）
+            // 其他商品保持不变
+            x.product === existItem.product ? item : x
+          ),
+        };
+      } 
+
+      // 如果商品不存在 → 直接追加到数组末尾
+      else {
+        return {
+          ...state,
+          cartItems: [...state.cartItems, item], // 旧数组 + 新商品
+        };
+      }
+
+    // ==========================================
+    // 【2】从购物车删除商品
+    // ==========================================
+    case CART_REMOVE_ITEM:
+      return {
+        ...state,
+        // filter = 过滤掉要删除的商品
+        // 保留：x.product 不等于 action.payload（要删除的商品ID）
+        cartItems: state.cartItems.filter((x) => x.product !== action.payload),
+      };
+
+    // 默认：不改动状态
+    default:
+      return state;
+  }
+};
+```
+
+7. register reducer inside store.js
+```js
+import { configureStore } from '@reduxjs/toolkit';
+import { productReducer, productDetailsReducer} from "./reducers/productReducers"; // import
+import {cartReducer} from "./reducers/cartReducers";
+export const store = configureStore({
+  reducer: {
+      productList: productReducer,
+      productDetails: productDetailsReducer,
+      cart: cartReducer,
+  },
+  // ✅ Thunk + DevTools ARE AUTO INCLUDED — NO SETUP NEEDED!
+});
+
+export default store;
+
+```
+
+8. add actions/cartActions.js, save the cart data into localStorage
+```js
+import axios from "axios";
+import { CART_ADD_ITEM ,CART_REMOVE_ITEM} from "../constants/cartConstants";
+
+export const addToCart = (id, qty) => async (dispatch, getState) => {
+  const { data } = await axios.get(`/api/products/${id}/`);
+  dispatch({
+    type: CART_ADD_ITEM,
+    payload: {
+      product: data._id,
+      name: data.name,
+      image: data.image,
+      price: data.price,
+      countInStock: data.countInStock,
+      qty,
+    },
+  });
+  localStorage.setItem("cartItems", JSON.stringify(getState().cart.cartItems));
+};
+
+export const removeFromCart = (id) => (dispatch, getState) => {
+  dispatch({
+    type: CART_REMOVE_ITEM,                   
+    payload: id,                        
+  });                                       
+  localStorage.setItem("cartItems", JSON.stringify(getState().cart.cartItems));                     
+};      
+```
+
+# **Super Clear Answer: Where does `getState` come from?**  
+I’ll explain this **100% clearly, simply, and visually** — you’ll know forever.
+
+---
+
+# **Shortest Answer**
+## **`getState` is automatically given to you by Redux Thunk**  
+It is **built into the Redux async action function**  
+You **did NOT create it** — Redux Thunk **passes it to you automatically**.
+
+---
+
+# Let’s look at your action:
+```javascript
+export const addToCart = (id, qty) => async (dispatch, getState) => {
+```
+
+This is a **Redux Thunk async action**.
+
+When you write a thunk action (a function that returns a function),  
+**Redux Thunk will automatically pass 2 parameters to you**:
+
+1. **`dispatch`** → to send actions to reducer  
+2. **`getState`** → to **read the current Redux store state**
+
+---
+
+# So:
+### `dispatch` = send data to reducer  
+### `getState` = read current data from store  
+
+---
+
+# What does `getState()` return?
+It returns the **full Redux store state object**:
+```javascript
+{
+  productList: { ... },
+  cart: {
+    cartItems: [ ... ]   // ← this is what you want
+  }
+}
+```
+
+So when you write:
+```javascript
+getState().cart.cartItems
+```
+You are saying:
+> **“Give me the current cart items from the Redux store.”**
+
+---
+
+# Why you need it:
+You use it to **save cart to localStorage**:
+```javascript
+localStorage.setItem(
+  "cartItems",
+  JSON.stringify(getState().cart.cartItems)
+);
+```
+
+This makes the cart **persist even after refreshing the page**.
+
+# Visual Flow
+```
+You dispatch addToCart()
+        ↓
+Redux Thunk sees it's an async function
+        ↓
+Thunk gives you:
+  - dispatch
+  - getState  ← HERE IT IS!
+        ↓
+You use getState() to read store
+        ↓
+Save to localStorage
+```
+
+9. back to the store.js
+```js
+import { configureStore } from '@reduxjs/toolkit';
+import { productReducer, productDetailsReducer} from "./reducers/productReducers"; // import
+import {cartReducer} from "./reducers/cartReducers";
+
+const cartItemsFromStorage = localStorage.getItem('cartItems')
+  ? JSON.parse(localStorage.getItem('cartItems'))
+  : [];
+
+// 👇 初始化 Redux 状态
+const preloadedState = {
+  cart: {
+    cartItems: cartItemsFromStorage, // 给 cart reducer 赋值
+  },
+};
+
+export const store = configureStore({
+  reducer: {
+      productList: productReducer,
+      productDetails: productDetailsReducer,
+      cart: cartReducer,
+  },
+  // ✅ Thunk + DevTools ARE AUTO INCLUDED — NO SETUP NEEDED!
+  preloadedState : preloadedState
+});
+
+export default store;
+
+```
+10. update cartscreen.js, functional part
+```jsx
+import {Row, Col, Form, Button, ListGroup, Card, Image} from "react-bootstrap";
+import {Message} from "../components/Message";
+import { useEffect } from "react";
+import {addToCart} from "../actions/cartActions";
+import { useDispatch, useSelector } from "react-redux";
+import { Link, useParams, useNavigate, useLocation } from "react-router-dom";
+const CartScreen = ( ) => {
+    const {id} = useParams();
+    const navigate = useNavigate();
+    const dispatch = useDispatch();
+    const location = useLocation();
+    const qty = loaction.search ? Number(loaction.search.split("=")[1]) : 1;
+    const cart = useSelector((state) => state.cart);
+    const {cartItems} = cart;
+    useEffect(() => {
+        if(id){
+            dispatch(addToCart(id, qty));
+        }
+    }, [dispatch, id, qty]);
+  return (
+    <div>CartScreen</div>
+  )
+}
+
+export default CartScreen
+```
+
+### **useLocation = 拿 URL 地址栏的数据**
+
+# 1. 什么是 `useLocation()`？
+**它只和 URL 有关！**
+
+例子：
+你跳转到：
+```
+/cart/66123?qty=2
+```
+
+`useLocation()` 会给你：
+- **pathname**: `/cart/66123`
+- **search**: `?qty=2`
+- **hash**: ...
+
+# 3. 你的购物车真正的流程（超级清晰）
+```
+1. 商品页点击 ADD TO CART
+   ↓
+2. 跳转到 /cart/:id?qty=2
+   ↓
+3. CartScreen 使用 useLocation() 拿到 ?qty=2
+   ↓
+4. dispatch(addToCart(id, qty))
+   ↓
+5. Redux 更新购物车
+   ↓
+6. 保存到 localStorage
+   ↓
+7. store.js 从 localStorage 读取初始状态
+```
+11. add the UI part + event handlers
+```jsx
+import {Row, Col, Form, Button, ListGroup, Card, Image} from "react-bootstrap";
+import Message from "../components/Message";
+import { useEffect } from "react";
+import {addToCart, removeFromCart} from "../actions/cartActions";
+import { useDispatch, useSelector } from "react-redux";
+import { Link, useParams, useNavigate, useLocation } from "react-router-dom";
+const CartScreen = () => {
+    const {id} = useParams();
+    const navigate = useNavigate();
+    const dispatch = useDispatch();
+    const location = useLocation();
+    const qty = location.search ? Number(location.search.split("=")[1]) : 1;
+    const cart = useSelector((state) => state.cart);
+    const {cartItems} = cart;
+    useEffect(() => {
+        if(id){
+            dispatch(addToCart(id, qty));
+        }
+    }, [dispatch, id, qty]);
+    const removeFromCartHandler = (id) => {
+        dispatch(removeFromCart(id))
+    }
+
+    const checkoutHandler = () => {
+        navigate('/login?redirect=shipping')
+    }
+
+  return (
+  <Row>
+            <Col md={8}>
+                <h1>Shopping Cart</h1>
+                {cartItems.length === 0 ? (
+                    <Message variant='info'>
+                        Your cart is empty <Link to='/'>Go Back</Link>
+                    </Message>
+                ) : (
+                        <ListGroup variant='flush'>
+                            {cartItems.map(item => (
+                                <ListGroup.Item key={item.product}>
+                                    <Row>
+                                        <Col md={2}>
+                                            <Image src={item.image} alt={item.name} fluid rounded />
+                                        </Col>
+                                        <Col md={3}>
+                                            <Link to={`/product/${item.product}`}>{item.name}</Link>
+                                        </Col>
+
+                                        <Col md={2}>
+                                            ${item.price}
+                                        </Col>
+
+                                        <Col md={3}>
+                                            <Form.Control
+                                                as="select"
+                                                value={item.qty}
+                                                onChange={(e) => dispatch(addToCart(item.product, Number(e.target.value)))}
+                                            >
+                                                {
+
+                                                    [...Array(item.countInStock).keys()].map((x) => (
+                                                        <option key={x + 1} value={x + 1}>
+                                                            {x + 1}
+                                                        </option>
+                                                    ))
+                                                }
+
+                                            </Form.Control>
+                                        </Col>
+
+                                        <Col md={1}>
+                                            <Button
+                                                type='button'
+                                                variant='light'
+                                                onClick={() => removeFromCartHandler(item.product)}
+                                            >
+                                                <i className='fas fa-trash'></i>
+                                            </Button>
+                                        </Col>
+                                    </Row>
+                                </ListGroup.Item>
+                            ))}
+                        </ListGroup>
+                    )}
+            </Col>
+
+            <Col md={4}>
+                <Card>
+                    <ListGroup variant='flush'>
+                        <ListGroup.Item>
+                            <h2>Subtotal ({cartItems.reduce((acc, item) => acc + item.qty, 0)}) items</h2>
+                            ${cartItems.reduce((acc, item) => acc + item.qty * item.price, 0).toFixed(2)}
+                        </ListGroup.Item>
+                    </ListGroup>
+
+                    <ListGroup.Item>
+                        <Button
+                            type='button'
+                            className='w-100 py-2'
+                            disabled={cartItems.length === 0}
+                            onClick={checkoutHandler}
+                        >
+                            Proceed To Checkout
+                        </Button>
+                    </ListGroup.Item>
+
+
+                </Card>
+            </Col>
+        </Row>
+  )
+}
+
+export default CartScreen
+```
+variant="flush" = 让 ListGroup 去掉默认边框、圆角、内边距，变成 “贴边、无边框” 的纯线条列表。
+
+12. minor update of index.css
+```css
+main {
+  min-height: 100vh;
+}
+h1 {
+  font-size: 1.8rem;
+  padding: 1rem 0;
+}
+h2 {
+  font-size: 1.4rem;
+  padding: 0.5rem 0;
+}
+h3 {
+  
+  padding: 1rem 0;
+}
+.rating span {
+  margin: 0.1rem;
+}
+
+```
+
