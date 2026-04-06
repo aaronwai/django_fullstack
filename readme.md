@@ -2894,3 +2894,264 @@ const { loading, products, error } = useSelector(state => state.productList)
 dispatch(动作)
 ```
 
+
+7. refactor the loading and error message to bootstrap components
+components/Loader.jsx
+```jsx
+import {Spinner} from "react-bootstrap";
+
+const Loader = () => {
+  return (
+    <Spinner
+      animation="border"
+      role="status"
+      style={{
+        width: "100px",
+        height: "100px",
+        margin: "auto",
+        display: "block",
+      }}
+    >
+      <span className="sr-only">Loading...</span>
+    </Spinner>
+  );
+};
+
+export default Loader;
+
+```
+components/Message.jsx
+```jsx
+import {Alert} from 'react-bootstrap';
+const Message = ({ variant = "info", children }) => {
+  return (
+    <Alert variant={variant}>
+      {children}
+    </Alert>
+  );
+};
+
+export default Message;
+```
+8. refactor th homescreen
+```jsx
+import { Row, Col } from "react-bootstrap";
+import Product from "../components/Product";
+import { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { listProducts } from "../actions/productActions";
+import Loader from "../components/Loader";
+import Message from "../components/Message";
+const HomeScreen = () => {
+  const dispatch = useDispatch();
+  const { error, loading, products } = useSelector((state) => state.productList);
+  useEffect(() => {
+    dispatch(listProducts());
+  }, [dispatch]);
+  return (
+    <div>
+      <h1>Latest Products</h1>
+      {loading ? <Loader /> : error ? <Message variant="danger">{error}</Message> : 
+      <Row>
+        {products.map((product) => (
+          <Col key={product._id} sm={12} md={6} lg={4} xl={3}>
+            <Product product={product} />
+          </Col>
+        ))}
+      </Row>}
+    </div>
+  );
+};
+
+export default HomeScreen;
+
+
+```
+
+# Step 18b : add in data
+
+1. update constants/productConstants.js
+```js
+export const PRODUCT_LIST_REQUEST = "PRODUCT_LIST_REQUEST";
+export const PRODUCT_LIST_SUCCESS = "PRODUCT_LIST_SUCCESS";
+export const PRODUCT_LIST_FAIL = "PRODUCT_LIST_FAIL";
+
+export const PRODUCT_DETAILS_REQUEST = "PRODUCT_DETAILS_REQUEST";
+export const PRODUCT_DETAILS_SUCCESS = "PRODUCT_DETAILS_SUCCESS";
+export const PRODUCT_DETAILS_FAIL = "PRODUCT_DETAILS_FAIL";
+
+```
+
+2. update reducers/productReducers.js
+```js
+import {PRODUCT_LIST_REQUEST, PRODUCT_LIST_SUCCESS, PRODUCT_LIST_FAIL, PRODUCT_DETAILS_REQUEST, PRODUCT_DETAILS_SUCCESS, PRODUCT_DETAILS_FAIL} from "../constants/productConstants";
+export const productReducer = (state ={ products:[]}, action) => {
+    switch (action.type) {
+        case PRODUCT_LIST_REQUEST:
+            return {loading: true, products: []};
+        case PRODUCT_LIST_SUCCESS:
+            return {loading: false, products: action.payload};
+        case PRODUCT_LIST_FAIL:
+            return {loading: false, error: action.payload};
+        default:
+            return state;
+    }
+};
+
+export const productDetailsReducer = (state ={ product: {reviews: []}}, action) => {
+    switch (action.type) {
+        case PRODUCT_DETAILS_REQUEST:
+            return {loading: true, ...state};
+        case PRODUCT_DETAILS_SUCCESS:
+            return {loading: false, product: action.payload};
+        case PRODUCT_DETAILS_FAIL:
+            return {loading: false, error: action.payload};
+        default:
+            return state;
+    }
+};
+
+```
+
+3. update the store.js for the new reducers
+```js
+import { configureStore } from '@reduxjs/toolkit';
+import { productReducer, productDetailsReducer} from "./reducers/productReducers"; // import
+export const store = configureStore({
+  reducer: {
+      productList: productReducer,
+      productDetails: productDetailsReducer,
+  },
+  // ✅ Thunk + DevTools ARE AUTO INCLUDED — NO SETUP NEEDED!
+});
+
+export default store;
+
+```
+
+4. update actions/productActions.js
+```js
+import {PRODUCT_LIST_REQUEST, PRODUCT_LIST_SUCCESS, PRODUCT_LIST_FAIL, PRODUCT_DETAILS_REQUEST, PRODUCT_DETAILS_SUCCESS, PRODUCT_DETAILS_FAIL} from "../constants/productConstants";
+import axios from "axios";
+export const listProducts = () => async (dispatch) => {
+    try {
+            dispatch({ type: PRODUCT_LIST_REQUEST }); 
+            const { data } = await axios.get("/api/products");
+            dispatch({ type: PRODUCT_LIST_SUCCESS, payload: data });
+    } catch (error) {
+            dispatch({ type: PRODUCT_LIST_FAIL, 
+            payload: error.response && error.response.data.message ? error.response.data.message : error.message });
+    }
+}
+
+export const listProductDetails = (id) => async (dispatch) => {
+    try {
+            dispatch({ type: PRODUCT_DETAILS_REQUEST }); 
+            const { data } = await axios.get(`/api/products/${id}`);
+            dispatch({ type: PRODUCT_DETAILS_SUCCESS, payload: data });
+    } catch (error) {
+            dispatch({ type: PRODUCT_DETAILS_FAIL, 
+            payload: error.response && error.response.data.message ? error.response.data.message : error.message });
+    }
+}
+
+```
+
+5. update Productscreens.jsx
+```jsx
+import {  useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { Link, useParams } from "react-router-dom";
+import { Row, Col, Image, ListGroup, Card, Button } from "react-bootstrap";
+import Rating from "../components/Rating";
+import { listProductDetails } from "../actions/productActions";
+import Loader from "../components/Loader";
+import Message from "../components/Message";
+// import products from "../products";
+const ProductScreen = () => {
+  const { id } = useParams();
+  const dispatch = useDispatch();
+  const productDetails = useSelector((state) => state.productDetails);
+  const { loading, error, product } = productDetails;
+
+  useEffect(() => {
+    dispatch(listProductDetails(id));
+  }, [dispatch, id]);
+  return (
+    <div>
+      <Link to="/" className="btn btn-light my-3"> Go Back
+      </Link>
+      {
+        loading ? (
+          <Loader />
+        ) : error ? (
+          <Message variant="danger">{error}</Message>
+        ) : (
+      <Row>
+        <Col md={6}>
+          <Image src={product.image} alt={product.name} fluid />
+        </Col>
+
+        <Col md={3}>
+          <ListGroup variant="flush">
+            <ListGroup.Item>
+              <h3>{product.name}</h3>
+            </ListGroup.Item>
+
+            <ListGroup.Item>
+              <Rating
+                value={product.rating}
+                text={`${product.numReviews} reviews`}
+                color={"#f8e825"}
+              />
+            </ListGroup.Item>
+
+            <ListGroup.Item>Price: ${product.price}</ListGroup.Item>
+
+            <ListGroup.Item>Description: {product.description} </ListGroup.Item>
+          </ListGroup>
+        </Col>
+
+        <Col md={3}>
+          <Card>
+            <ListGroup variant="flush">
+              <ListGroup.Item>
+                <Row>
+                  <Col>Price:</Col>
+                  <Col>
+                    <strong>${product.price}</strong>
+                  </Col>
+                </Row>
+              </ListGroup.Item>
+              <ListGroup.Item>
+                <Row>
+                  <Col>Status:</Col>
+                  <Col>
+                    ${product.countInStock > 0 ? "In Stock" : "Out of Stock"}
+                  </Col>
+                </Row>
+              </ListGroup.Item>
+              <ListGroup.Item>
+                <Button
+                  className="w-100 py-2"
+                  type="button"
+                  disabled={product.countInStock === 0}
+                >
+                  Add to Cart
+                </Button>
+              </ListGroup.Item>
+            </ListGroup>
+          </Card>
+        </Col>
+      </Row>
+         
+        )
+      }
+       
+    </div>
+  );
+};
+
+export default ProductScreen;
+
+```

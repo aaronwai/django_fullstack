@@ -2,7 +2,7 @@
 # React/Frontend Ignore Rules
 # ------------------------------
 # Dependencies
-/node_modules
+/frontend/node_modules
 /.pnp
 .pnp.js
 
@@ -10,7 +10,7 @@
 /coverage
 
 # Production build (React)
-/build
+/frontend/build
 
 # Environment files (React/Django)
 .env
