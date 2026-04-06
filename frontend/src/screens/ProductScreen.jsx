@@ -13,10 +13,10 @@ const ProductScreen = () => {
       setProduct(data);
     }
     fetchProduct();
-  }, []);
+  }, [id]); // put the id to keep eslint happy, otherwise it will complain about missing dependency
   return (
     <div>
-      <Link to='/' className='btn btn-light my-3'>
+      <Link to="/" className="btn btn-light my-3">
         Go Back
       </Link>
 
@@ -26,7 +26,7 @@ const ProductScreen = () => {
         </Col>
 
         <Col md={3}>
-          <ListGroup variant='flush'>
+          <ListGroup variant="flush">
             <ListGroup.Item>
               <h3>{product.name}</h3>
             </ListGroup.Item>
@@ -47,7 +47,7 @@ const ProductScreen = () => {
 
         <Col md={3}>
           <Card>
-            <ListGroup variant='flush'>
+            <ListGroup variant="flush">
               <ListGroup.Item>
                 <Row>
                   <Col>Price:</Col>
@@ -66,8 +66,8 @@ const ProductScreen = () => {
               </ListGroup.Item>
               <ListGroup.Item>
                 <Button
-                  className='w-100 py-2'
-                  type='button'
+                  className="w-100 py-2"
+                  type="button"
                   disabled={product.countInStock === 0}
                 >
                   Add to Cart
