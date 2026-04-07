@@ -5151,9 +5151,355 @@ def getProduct(request,pk):
 ```
 
 
-## Step 22
-## step 23
-## step 24
+## Step 22 regidter user
+1. refactor view.py
+```py
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import IsAuthenticated, IsAdminUser
+from rest_framework.response import Response
+from .models import Product
+from django.contrib.auth.models import User
+from .serializer import ProductSerializer, UserSerializer, UserSerializerWithToken
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
+from rest_framework_simplejwt.views import TokenObtainPairView
+from django.contrib.auth.hashers import make_password
+from rest_framework import status
+# Create your views here.
+class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
+    def validate(self, attrs):
+        data = super().validate(attrs)
+        seializer = UserSerializerWithToken(self.user).data
+        for k, v in seializer.items():
+            data[k] = v
+        return data
+class MyTokenObtainPairView(TokenObtainPairView):
+    serializer_class = MyTokenObtainPairSerializer
+
+@api_view(['POST'])
+def registerUser(request):
+    data = request.data
+    try:
+        user = User.objects.create(
+            first_name=data['name'],
+            username=data['email'],
+            email=data['email'],
+            password=make_password(data['password'])
+        )
+        serializer = UserSerializerWithToken(user, many=False)
+        return Response(serializer.data)
+    except:
+        message = {'detail': 'User with this email already exists'}
+        return Response(message, status=status.HTTP_400_BAD_REQUEST)    
+
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def getUserProfile(request):
+    user = request.user
+    serializer = UserSerializer(user, many=False)
+    return Response(serializer.data)
+
+@api_view(['GET'])
+@permission_classes([IsAdminUser])
+def getUsers(request):
+    users = User.objects.all()
+    serializer = UserSerializer(users, many=True)
+    return Response(serializer.data)
+@api_view(['GET'])
+def getProducts(request):
+    products = Product.objects.all()
+    serializer = ProductSerializer(products, many=True)
+    return Response(serializer.data)
+
+@api_view(['GET'])
+def getProduct(request,pk):
+    product = Product.objects.get(_id=pk)
+    serializer = ProductSerializer(product, many=False)
+    return Response(serializer.data)
+
+```
+2. update urls.py
+```py
+from django.urls import path
+from . import views
+
+urlpatterns = [
+    path('users/login/', views.MyTokenObtainPairView.as_view(), name='token_obtain_pair'),
+    path('users/register/', views.registerUser, name='register'),
+    path("products/", views.getProducts, name="products"),
+    path("users/profile/", views.getUserProfile, name="user-profile"),
+    path("users/", views.getUsers, name="users"),
+    path("products/<str:pk>/", views.getProduct, name="product"),
+]
+
+```
+## step 23 django signals
+1. a demo of how to link 2 data fields together. Now, username is using email, if email is changed, username is also changed, so we use django signals to handle this
+
+
+## **Django Signals = 触发器 / 事件监听**
+### **当某个事情发生时 → 自动执行一段代码**
+在 Django 里：
+- **用户保存（save）时**
+- **用户删除（delete）时**
+- **订单创建时**
+→ **自动跑你写的函数**
+
+这就是 **Signals（信号）**。
+
+# **Django 有哪些自带信号？**
+最常用的 4 个：
+
+1. **post_save** → 对象**保存后**触发
+2. **pre_save** → 对象**保存前**触发
+3. **post_delete** → 对象**删除后**触发
+4. **pre_delete** → 对象**删除前**触发
+
+---
+
+# **实际例子：用户注册 → 自动创建用户资料**
+你一定用得上！
+
+## 场景：
+当 **User 表创建新用户**
+→ **自动创建 Profile 资料表**
+
+不用手动写代码，信号自动执行！
+
+## 代码长这样：
+```python
+from django.db.models.signals import post_save
+from django.contrib.auth.models import User
+from django.dispatch import receiver
+from .models import Profile
+
+# 当 User 被保存后 → 执行下面函数
+@receiver(post_save, sender=User)
+def create_profile(sender, instance, created, **kwargs):
+    # created = True 代表是“新创建”
+    if created:
+        # 自动创建 Profile
+        Profile.objects.create(user=instance)
+```
+
+## 解释每个参数：
+- **sender** → 谁发送的信号（这里是 User）
+- **instance** → 刚刚被保存的那个用户对象
+- **created** → 是否是新创建的（True/False）
+
+---
+
+# **信号到底怎么工作？（流程）**
+
+## 1. 发生动作
+```
+user = User.objects.create_user(...)
+user.save()
+```
+
+## 2. Django 自动发出信号
+```
+post_save 信号发出！
+```
+
+## 3. 你的 @receiver 收到信号
+```
+@receiver(post_save, sender=User)
+```
+
+## 4. 自动执行函数
+```
+Profile.objects.create(user=instance)
+```
+
+## 5. 完成！
+你**完全没有手动调用**这个函数，它**自动跑了**。
+
+---
+
+# **你什么时候会用到信号？**
+这些场景 **100% 用信号**：
+- 用户注册 → 创建用户资料
+- 用户下单 → 减库存
+- 用户评论 → 发通知
+- 日志记录
+- 数据自动更新
+
+---
+
+# **优点 vs 缺点**
+
+## 优点
+✅ 代码解耦
+✅ 自动执行，不用手动调用
+✅ 逻辑清晰
+
+## 缺点
+⚠️ 太多信号会让流程变复杂
+⚠️ 不容易调试
+
+
+
+2. create signals.py
+```py
+from django.db.models.signals import pre_save
+from django.contrib.auth.models import User
+
+def updateUser(sender,instance, **kwargs):
+    user = instance
+    if user.email != '':
+        user.username = user.email  
+pre_save.connect(updateUser, sender=User)
+
+
+```
+
+3. update the base/app.py
+```py
+from django.apps import AppConfig
+
+class BaseConfig(AppConfig):
+    name = 'base'
+    def ready(self):
+        import base.signals
+        return super().ready()
+```
+
+## step 24 refactor base into sub-folders
+1. refactor config/urls.py
+```py
+
+from django.contrib import admin
+from django.urls import path, include
+from django.conf import settings
+from django.conf.urls.static import static
+
+urlpatterns = [
+    path('api/products', include('base.urls.product_urls')),
+    path('api/users', include('base.urls.user_urls')),
+    path('api/orders', include('base.urls.order_urls')),
+    path('admin/', admin.site.urls),
+    
+]
+
+urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+```
+2. create views folder under base and create 3 files, products.py, users.py, orders.py, copy users part into users.py update the . to base.
+```py users.py
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import IsAuthenticated, IsAdminUser
+from rest_framework.response import Response
+
+from django.contrib.auth.models import User
+from base.serializer import UserSerializer, UserSerializerWithToken
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
+from rest_framework_simplejwt.views import TokenObtainPairView
+
+from django.contrib.auth.hashers import make_password
+from rest_framework import status
+
+
+class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
+    def validate(self, attrs):
+        data = super().validate(attrs)
+
+        serializer = UserSerializerWithToken(self.user).data
+        for k, v in serializer.items():
+            data[k] = v
+
+        return data
+
+
+class MyTokenObtainPairView(TokenObtainPairView):
+    serializer_class = MyTokenObtainPairSerializer
+
+@api_view(['POST'])
+def registerUser(request):
+    data = request.data
+    try:
+        user = User.objects.create(
+            first_name=data['name'],
+            username=data['email'],
+            email=data['email'],
+            password=make_password(data['password'])
+        )
+        serializer = UserSerializerWithToken(user, many=False)
+        return Response(serializer.data)
+    except:
+        message = {'detail': 'User with this email already exists'}
+        return Response(message, status=status.HTTP_400_BAD_REQUEST)    
+
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def getUserProfile(request):
+    user = request.user
+    serializer = UserSerializer(user, many=False)
+    return Response(serializer.data)
+
+@api_view(['GET'])
+@permission_classes([IsAdminUser])
+def getUsers(request):
+    users = User.objects.all()
+    serializer = UserSerializer(users, many=True)
+    return Response(serializer.data)
+
+```
+
+3. update products.py
+```py products.py
+
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+from base.models import Product
+from base.serializer import ProductSerializer
+
+
+@api_view(['GET'])
+def getProducts(request):
+    products = Product.objects.all()
+    serializer = ProductSerializer(products, many=True)
+    return Response(serializer.data)
+
+@api_view(['GET'])
+def getProduct(request,pk):
+    product = Product.objects.get(_id=pk)
+    serializer = ProductSerializer(product, many=False)
+    return Response(serializer.data)
+
+```
+4. delete the base/views.py
+5. create a urls.py folder under base, create 3 files, product_urls.py, user_urls.py, order_urls.py, copy users part into users.py update the . to base.
+```py user_urls.py
+from django.urls import path
+from base.views import user_views as views
+
+
+urlpatterns = [
+    path('login/', views.MyTokenObtainPairView.as_view(),
+         name='token_obtain_pair'),
+
+    path('register/', views.registerUser, name='register'),
+
+    path('profile/', views.getUserProfile, name="users-profile"),
+    path('', views.getUsers, name="users"),
+]
+
+```
+6. product_urls.py
+```py
+from django.urls import path
+from base.views import product_views as views
+
+urlpatterns = [
+
+    path('', views.getProducts, name="products"),
+    path('<str:pk>/', views.getProduct, name="product"),
+   
+]
+
+```
+7. delete base/urls.py
 ## step 25
 ## step 26
 ## step 27
