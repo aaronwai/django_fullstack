@@ -3905,3 +3905,689 @@ h3 {
 
 ```
 
+# Step 19 postman for authentication
+
+1. postman create workplace
+
+# Step 20 django rest framework for authentication simplyjwt
+
+# **Django REST Framework 认证方式：最全、最直白、最实用对比（电商/React 项目专用）**
+
+# **1. TokenAuthentication（最简单的 Token）**
+你最常见的：`Authorization: Token 93as93ksd32...`
+
+### ✅ 优点
+- 超级简单，5 分钟集成
+- 适合小型项目、练习项目
+- 前后端分离支持
+
+### ❌ 缺点
+- **Token 永久有效，除非手动删除**（不安全）
+- 无自动过期
+- 无刷新机制
+- 不适合大型、正式电商项目
+
+### 🎯 适合谁？
+**初学、小项目、课程作业**
+
+---
+
+# **2. JWT Authentication（最流行！Json Web Token）**
+分两种：`Simple JWT` / `JWT`
+
+### ✅ 优点
+- **有过期时间（安全）**
+- **有 Refresh Token（刷新机制）**
+- 无状态，不占服务器存储
+- **前后端分离首选**
+- **你的 React + Django 电商项目 最适合这个！**
+
+### ❌ 缺点
+- 不能手动作废（除非用黑名单）
+- 比 Token 复杂一点点
+
+### 🎯 适合谁？
+**90% 的正式前后端项目 → 包括你！**
+
+---
+
+# **3. SessionAuthentication（浏览器 Cookie 认证）**
+Django 传统登录，用 cookie + session
+
+### ✅ 优点
+- 安全
+- Django 自带
+- 适合模板项目（不前后端分离）
+
+### ❌ 缺点
+- **前后端分离跨域问题巨多**
+- 不适合纯前端 React 项目
+- 移动端不友好
+
+### 🎯 适合谁？
+**不适合你！** 只适合 Django 模板渲染。
+
+---
+
+# **4. BasicAuthentication（基础认证）**
+直接把用户名密码 base64 编码放请求头
+
+### ✅ 优点
+- 测试用很方便
+
+### ❌ 缺点
+- **超级不安全**
+- 不能用于生产
+- 几乎不用
+
+### 🎯 适合谁？
+**只用于本地测试**
+
+---
+
+# **5. OAuth2 认证（第三方登录：Google / GitHub / 微信）**
+
+### ✅ 优点
+- 用户登录方便
+- 大厂标准
+
+### ❌ 缺点
+- 复杂
+- 需要第三方平台
+- 小型项目没必要
+
+### 🎯 适合谁？
+**需要第三方登录的大型应用**
+
+---
+
+# **6. Knox / DRF Token 增强版**
+比默认 Token 更安全，支持过期
+
+### ✅ 优点
+- 比默认 Token 安全
+- 服务器存储 Token
+
+### ❌ 缺点
+- 不如 JWT 流行
+
+---
+
+---
+
+# **🔥 终极结论：你的项目应该用哪个？**
+## **你的项目：React + Django 电商 → 必须用 JWT（Simple JWT）**
+
+### 为什么？
+1. **前后端分离最佳方案**
+2. **有过期时间，安全**
+3. **有刷新机制**
+4. **移动端、网页端通用**
+5. **电商项目必须用这个**
+
+---
+
+# **最直白总结表（你存这张表就够）**
+| 认证方式 | 安全性 | 难度 | 前后端分离 | 适合你的项目？ |
+|---------|--------|------|------------|----------------|
+| Token | ⭐⭐ | 简单 | ✅ | ❌ 不推荐 |
+| **JWT** | ⭐⭐⭐⭐⭐ | 中等 | ✅ ✅ ✅ | **✅ 最佳选择** |
+| Session | ⭐⭐⭐⭐ | 简单 | ❌ | ❌ 不适合 |
+| Basic | ⭐ | 最简单 | ✅ | ❌ 测试用 |
+| OAuth2 | ⭐⭐⭐⭐⭐ | 难 | ✅ | ❌ 复杂 |
+
+1. `pip install djangorestframework-simplejwt`
+2. https://django-rest-framework-simplejwt.readthedocs.io/en/latest/getting_started.html
+3. follow the doc, add a section into settings.py
+```py
+from pathlib import Path
+
+BASE_DIR = Path(__file__).resolve().parent.parent
+
+SECRET_KEY = 'django-insecure-b5jpidk)f%w%gmy$pb^2)+-dvvnmo_*s-97l=n8dvw130lajl-'
+
+DEBUG = True
+
+ALLOWED_HOSTS = []
+
+# Application definition
+
+INSTALLED_APPS = [
+    'django.contrib.admin',
+    'django.contrib.auth',
+    'django.contrib.contenttypes',
+    'django.contrib.sessions',
+    'django.contrib.messages',
+    'django.contrib.staticfiles',
+    'rest_framework',
+    "corsheaders",
+    'base.apps.BaseConfig',
+]
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    )
+}
+
+MIDDLEWARE = [
+    "corsheaders.middleware.CorsMiddleware",
+    'django.middleware.security.SecurityMiddleware',
+    'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.middleware.common.CommonMiddleware',
+    'django.middleware.csrf.CsrfViewMiddleware',
+    'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'django.contrib.messages.middleware.MessageMiddleware',
+    'django.middleware.clickjacking.XFrameOptionsMiddleware',
+]
+
+ROOT_URLCONF = 'config.urls'
+
+TEMPLATES = [
+    {
+        'BACKEND': 'django.template.backends.django.DjangoTemplates',
+        'DIRS': [],
+        'APP_DIRS': True,
+        'OPTIONS': {
+            'context_processors': [
+                'django.template.context_processors.request',
+                'django.contrib.auth.context_processors.auth',
+                'django.contrib.messages.context_processors.messages',
+            ],
+        },
+    },
+]
+
+WSGI_APPLICATION = 'config.wsgi.application'
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
+    }
+}
+
+AUTH_PASSWORD_VALIDATORS = [
+    {
+        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
+    },
+    {
+        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
+    },
+    {
+        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
+    },
+    {
+        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
+    },
+]
+
+LANGUAGE_CODE = 'en-us'
+
+TIME_ZONE = 'UTC'
+
+USE_I18N = True
+
+USE_TZ = True
+
+STATIC_URL = 'static/'
+MEDIA_URL = 'images/'
+
+STATICFILES_DIRS = [
+    BASE_DIR / "static",
+]
+
+MEDIA_ROOT = 'static/images'
+CORS_ALLOW_ALL_ORIGINS=True
+```
+
+4. base/urls.py
+```py
+from django.urls import path
+from . import views
+from rest_framework_simplejwt.views import TokenObtainPairView
+urlpatterns = [
+    path('users/login/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
+    path('', views.getRoutes, name="routes"),
+    path("products/", views.getProducts, name="products"),
+    path("products/<str:pk>/", views.getProduct, name="product"),
+]
+```
+5. testing the urls
+6. want to change the token time by addition all the parameters into settings.py
+7. https://django-rest-framework-simplejwt.readthedocs.io/en/latest/settings.html
+```py settings.py
+from pathlib import Path
+from datetime import timedelta
+BASE_DIR = Path(__file__).resolve().parent.parent
+
+SECRET_KEY = 'django-insecure-b5jpidk)f%w%gmy$pb^2)+-dvvnmo_*s-97l=n8dvw130lajl-'
+
+DEBUG = True
+
+ALLOWED_HOSTS = []
+
+# Application definition
+
+INSTALLED_APPS = [
+    'django.contrib.admin',
+    'django.contrib.auth',
+    'django.contrib.contenttypes',
+    'django.contrib.sessions',
+    'django.contrib.messages',
+    'django.contrib.staticfiles',
+    'rest_framework',
+    "corsheaders",
+    'base.apps.BaseConfig',
+]
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    )
+}
+
+
+SIMPLE_JWT = {
+    "ACCESS_TOKEN_LIFETIME": timedelta(days=5),
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=1),
+    "ROTATE_REFRESH_TOKENS": False,
+    "BLACKLIST_AFTER_ROTATION": False,
+    "UPDATE_LAST_LOGIN": False,
+    "ALGORITHM": "HS256",
+    "VERIFYING_KEY": "",
+    "AUDIENCE": None,
+    "ISSUER": None,
+    "JSON_ENCODER": None,
+    "JWK_URL": None,
+    "LEEWAY": 0,
+
+    "AUTH_HEADER_TYPES": ("Bearer",),
+    "AUTH_HEADER_NAME": "HTTP_AUTHORIZATION",
+    "USER_ID_FIELD": "id",
+    "USER_ID_CLAIM": "user_id",
+    "USER_AUTHENTICATION_RULE": "rest_framework_simplejwt.authentication.default_user_authentication_rule",
+    "ON_LOGIN_SUCCESS": "rest_framework_simplejwt.serializers.default_on_login_success",
+    "ON_LOGIN_FAILED": "rest_framework_simplejwt.serializers.default_on_login_failed",
+
+    "AUTH_TOKEN_CLASSES": ("rest_framework_simplejwt.tokens.AccessToken",),
+    "TOKEN_TYPE_CLAIM": "token_type",
+    "TOKEN_USER_CLASS": "rest_framework_simplejwt.models.TokenUser",
+
+    "JTI_CLAIM": "jti",
+
+    "SLIDING_TOKEN_REFRESH_EXP_CLAIM": "refresh_exp",
+    "SLIDING_TOKEN_LIFETIME": timedelta(minutes=5),
+    "SLIDING_TOKEN_REFRESH_LIFETIME": timedelta(days=1),
+
+    "TOKEN_OBTAIN_SERIALIZER": "rest_framework_simplejwt.serializers.TokenObtainPairSerializer",
+    "TOKEN_REFRESH_SERIALIZER": "rest_framework_simplejwt.serializers.TokenRefreshSerializer",
+    "TOKEN_VERIFY_SERIALIZER": "rest_framework_simplejwt.serializers.TokenVerifySerializer",
+    "TOKEN_BLACKLIST_SERIALIZER": "rest_framework_simplejwt.serializers.TokenBlacklistSerializer",
+    "SLIDING_TOKEN_OBTAIN_SERIALIZER": "rest_framework_simplejwt.serializers.TokenObtainSlidingSerializer",
+    "SLIDING_TOKEN_REFRESH_SERIALIZER": "rest_framework_simplejwt.serializers.TokenRefreshSlidingSerializer",
+
+    "CHECK_REVOKE_TOKEN": False,
+    "REVOKE_TOKEN_CLAIM": "hash_password",
+    "CHECK_USER_IS_ACTIVE": True,
+}
+
+
+MIDDLEWARE = [
+    "corsheaders.middleware.CorsMiddleware",
+    'django.middleware.security.SecurityMiddleware',
+    'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.middleware.common.CommonMiddleware',
+    'django.middleware.csrf.CsrfViewMiddleware',
+    'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'django.contrib.messages.middleware.MessageMiddleware',
+    'django.middleware.clickjacking.XFrameOptionsMiddleware',
+]
+
+ROOT_URLCONF = 'config.urls'
+
+TEMPLATES = [
+    {
+        'BACKEND': 'django.template.backends.django.DjangoTemplates',
+        'DIRS': [],
+        'APP_DIRS': True,
+        'OPTIONS': {
+            'context_processors': [
+                'django.template.context_processors.request',
+                'django.contrib.auth.context_processors.auth',
+                'django.contrib.messages.context_processors.messages',
+            ],
+        },
+    },
+]
+
+WSGI_APPLICATION = 'config.wsgi.application'
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
+    }
+}
+
+AUTH_PASSWORD_VALIDATORS = [
+    {
+        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
+    },
+    {
+        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
+    },
+    {
+        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
+    },
+    {
+        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
+    },
+]
+
+LANGUAGE_CODE = 'en-us'
+
+TIME_ZONE = 'UTC'
+
+USE_I18N = True
+
+USE_TZ = True
+
+STATIC_URL = 'static/'
+MEDIA_URL = 'images/'
+
+STATICFILES_DIRS = [
+    BASE_DIR / "static",
+]
+
+MEDIA_ROOT = 'static/images'
+CORS_ALLOW_ALL_ORIGINS=True
+```
+
+8. add more user info inside the token https://django-rest-framework-simplejwt.readthedocs.io/en/latest/customizing_token_claims.html
+9. base/views.py, copy 2 classes into views.py
+```py views.py
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+from .models import Product
+from .serializer import ProductSerializer
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
+from rest_framework_simplejwt.views import TokenObtainPairView
+# Create your views here.
+class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
+    @classmethod
+    def get_token(cls, user):
+        token = super().get_token(user)
+
+        # Add custom claims
+        token['username'] = user.username
+        token['message'] = "hello world"
+        # ...
+
+        return token
+
+class MyTokenObtainPairView(TokenObtainPairView):
+    serializer_class = MyTokenObtainPairSerializer
+
+@api_view(['GET'])
+def getRoutes(request):
+    routes = [
+        'api/products',
+        'api/products/create',
+        'api/products/upload',
+        'api/products/<id>/reviews',
+        'api/products/top',
+        'api/products/<id>',
+        'api/products/delete/<id>',
+        'api/products/<update>/<id>',
+    ]
+    return Response(routes)
+
+@api_view(['GET'])
+def getProducts(request):
+    products = Product.objects.all()
+    serializer = ProductSerializer(products, many=True)
+    return Response(serializer.data)
+
+@api_view(['GET'])
+def getProduct(request,pk):
+    product = Product.objects.get(_id=pk)
+    serializer = ProductSerializer(product, many=False)
+    return Response(serializer.data)
+```
+10. update the urls.py, using the new views
+```py
+from django.urls import path
+from . import views
+
+urlpatterns = [
+    path('users/login/', views.MyTokenObtainPairView.as_view(), name='token_obtain_pair'),
+    path('', views.getRoutes, name="routes"),
+    path("products/", views.getProducts, name="products"),
+    path("products/<str:pk>/", views.getProduct, name="product"),
+]
+```
+11. copy the access token and paste into jwt.io to decode the token
+12. refactor the validation of the token
+```py
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+from .models import Product
+from .serializer import ProductSerializer
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
+from rest_framework_simplejwt.views import TokenObtainPairView
+# Create your views here.
+class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
+    def validate(self, attrs):
+        data = super().validate(attrs)
+        data['username'] = self.user.username
+        data['email'] = self.user.email
+        return data
+
+class MyTokenObtainPairView(TokenObtainPairView):
+    serializer_class = MyTokenObtainPairSerializer
+
+@api_view(['GET'])
+def getRoutes(request):
+    routes = [
+        'api/products',
+        'api/products/create',
+        'api/products/upload',
+        'api/products/<id>/reviews',
+        'api/products/top',
+        'api/products/<id>',
+        'api/products/delete/<id>',
+        'api/products/<update>/<id>',
+    ]
+    return Response(routes)
+
+@api_view(['GET'])
+def getProducts(request):
+    products = Product.objects.all()
+    serializer = ProductSerializer(products, many=True)
+    return Response(serializer.data)
+
+@api_view(['GET'])
+def getProduct(request,pk):
+    product = Product.objects.get(_id=pk)
+    serializer = ProductSerializer(product, many=False)
+    return Response(serializer.data)
+```
+
+
+This is **customizing SimpleJWT login** to **return more user info** (like `username` + `email`) **when you log in**.
+
+## **1. Default SimpleJWT Login Response (NORMAL)**
+By default, when you log in, SimpleJWT only returns:
+```json
+{
+  "access": "eyJblabla...",
+  "refresh": "eyJblabla..."
+}
+```
+❌ **No username, no email — only tokens.**
+
+---
+
+## **2. Your Code: CUSTOMIZE the Response**
+You are **extending the default JWT response** to add **user data**.
+
+### Step 1: Custom Serializer
+```python
+class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
+    def validate(self, attrs):
+        # 1. Run the original validation (check username/password)
+        data = super().validate(attrs)
+
+        # 2. ADD YOUR OWN DATA to the response
+        data['username'] = self.user.username
+        data['email'] = self.user.email
+
+        # 3. Return the new data
+        return data
+```
+
+### Step 2: Custom View
+```python
+class MyTokenObtainPairView(TokenObtainPairView):
+    serializer_class = MyTokenObtainPairSerializer
+```
+
+---
+
+## **3. What happens NOW when you log in?**
+You get **tokens + user info**:
+```json
+{
+  "access": "eyJblabla...",
+  "refresh": "eyJblabla...",
+  "username": "john_doe",
+  "email": "john@example.com"
+}
+```
+✅ **Perfect for your React frontend!**
+
+---
+
+# **What does each part mean?**
+
+### **1. `super().validate(attrs)`**
+- Runs the **original SimpleJWT validation**
+- Checks if username + password are correct
+- Returns the default token response: `{access: ..., refresh: ...}`
+
+### **2. `self.user`**
+- After successful validation, SimpleJWT sets `self.user`
+- This is the **actual logged-in User object**
+- So you can grab:
+  - `self.user.username`
+  - `self.user.email`
+  - `self.user.id`
+  - `self.user.first_name`
+  - etc.
+
+### **3. Add fields to `data`**
+You just **add new keys** to the response.
+
+### **4. `MyTokenObtainPairView`**
+- This is the login API endpoint
+- It uses **your custom serializer** instead of the default one
+- So your API now returns extra user fields
+
+---
+
+# **Why you need this (for React)**
+When a user logs in:
+1. You get the **token** (for authentication)
+2. You get **user info** (to show in Navbar: Welcome, john_doe!)
+3. No need for a SECOND API call to fetch user profile
+
+**This is clean and efficient!**
+
+```python
+class MyTokenObtainPairView(TokenObtainPairView):
+    serializer_class = MyTokenObtainPairSerializer
+```
+
+## **Shortest Answer:**
+### **This line tells Django:**
+> *“Use MY CUSTOM serializer instead of the default one for the login/token endpoint.”*
+
+It **does NOT create tokens** — it just **swaps the serializer**.
+
+---
+
+# Let’s go step by step
+
+## 1. What is `TokenObtainPairView`?
+It’s the **built-in SimpleJWT view** that does 2 things:
+1. Accept username + password
+2. Return `access` and `refresh` tokens
+
+It’s the **login API view**.
+
+---
+
+## 2. What does `MyTokenObtainPairView(TokenObtainPairView)` mean?
+It means:
+### **“Make a NEW view that is IDENTICAL to TokenObtainPairView — but I will change one thing.”**
+
+This is called **inheriting / extending** the original view.
+
+---
+
+## 3. What is `serializer_class = ...`?
+Every DRF view uses a **serializer** to:
+- Validate input (username/password)
+- Format output (the JSON response)
+
+By default:
+```python
+serializer_class = TokenObtainPairSerializer
+```
+
+**You override it:**
+```python
+serializer_class = MyTokenObtainPairSerializer
+```
+
+### So now:
+The login view will use **your custom serializer** instead of the original.
+
+---
+
+# What does your serializer do again?
+```python
+class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
+    def validate(self, attrs):
+        data = super().validate(attrs)  # RUNS DEFAULT LOGIN + GET TOKENS
+        data['username'] = self.user.username  # ADD EXTRA DATA
+        data['email'] = self.user.email        # ADD EXTRA DATA
+        return data
+```
+
+### This serializer:
+1. **Validates login** (username & password)
+2. **Generates tokens** (the default behavior)
+3. **Adds extra fields** to the response
+4. **Returns the final JSON**
+
+---
+
+# #1 Full Flow (Exact Behavior)
+1. User sends username + password → `MyTokenObtainPairView`
+2. View uses **your serializer**
+3. Serializer:
+   - Checks credentials
+   - Generates token pair
+   - Adds `username` and `email`
+4. View returns the JSON to React
+
+---
+
+# #2 Does it “get token value pair and serialize”?
+### **YES — exactly!**
+But more precisely:
+
+1. It **generates the token pair** (via `super().validate()`)
+2. It **serializes** (formats) the final JSON response
+3. You added extra fields to that serialized output
+
