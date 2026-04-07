@@ -4591,3 +4591,572 @@ But more precisely:
 2. It **serializes** (formats) the final JSON response
 3. You added extra fields to that serialized output
 
+# step 21 user serializer
+
+1. update base/serializers.py
+```py
+from rest_framework import serializers
+from django.contrib.auth.models import User
+from .models import Product, Order, OrderItem, ShippingAddress, Review
+
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['id', 'username', 'email']
+class ProductSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Product
+        fields = '__all__'
+
+```
+2. update view.py
+
+```py
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+from .models import Product
+from .serializer import ProductSerializer, UserSerializer
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
+from rest_framework_simplejwt.views import TokenObtainPairView
+# Create your views here.
+class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
+    def validate(self, attrs):
+        data = super().validate(attrs)
+        data['username'] = self.user.username
+        data['email'] = self.user.email
+        return data
+
+class MyTokenObtainPairView(TokenObtainPairView):
+    serializer_class = MyTokenObtainPairSerializer
+
+@api_view(['GET'])
+def getRoutes(request):
+    routes = [
+        'api/products',
+        'api/products/create',
+        'api/products/upload',
+        'api/products/<id>/reviews',
+        'api/products/top',
+        'api/products/<id>',
+        'api/products/delete/<id>',
+        'api/products/<update>/<id>',
+    ]
+    return Response(routes)
+
+@api_view(['GET'])
+def getUserProfile(request):
+    user = request.user
+    serializer = UserSerializer(user, many=False)
+    return Response(serializer.data)
+
+@api_view(['GET'])
+def getProducts(request):
+    products = Product.objects.all()
+    serializer = ProductSerializer(products, many=True)
+    return Response(serializer.data)
+
+@api_view(['GET'])
+def getProduct(request,pk):
+    product = Product.objects.get(_id=pk)
+    serializer = ProductSerializer(product, many=False)
+    return Response(serializer.data)
+
+```
+
+3. update urls.py
+```py
+from django.urls import path
+from . import views
+
+urlpatterns = [
+    path('users/login/', views.MyTokenObtainPairView.as_view(), name='token_obtain_pair'),
+    path('', views.getRoutes, name="routes"),
+    path("products/", views.getProducts, name="products"),
+    path("user/profile/", views.getUserProfile, name="user-profile"),
+    path("products/<str:pk>/", views.getProduct, name="product"),
+]
+
+```
+
+# **最短结论：**
+### **`request.user` = 当前**已经登录的用户对象**（Django User 模型）**
+### 它**不是 ID，不是字符串，不是 token**
+### 它是**完整的用户数据 + 方法**
+
+---
+
+# **里面到底有什么？（全部字段）**
+当你用 **JWT 认证** 访问这个 API 时：
+```python
+user = request.user
+```
+
+`user` 里面包含 **Django User 模型的所有内容**：
+```python
+user.id
+user.username  # 用户名
+user.email     # 邮箱
+user.first_name
+user.last_name
+user.password  # 哈希后的密码
+user.is_active # 是否激活
+user.is_staff  # 是否管理员
+user.is_superuser # 是否超级管理员
+user.date_joined # 注册时间
+user.last_login # 最后登录
+```
+
+✅ **这就是你能序列化返回给 React 的全部信息！**
+
+---
+
+# **它是怎么来的？（关键！）**
+你不需要传用户 ID  
+你不需要传用户名  
+**只需要传 JWT token**
+
+流程：
+1. React 发送请求 → Header 带 `Bearer <token>`
+2. SimpleJWT 认证类 **自动验证 token**
+3. 验证成功 → **把对应的用户放进 `request.user`**
+4. 你直接用 `request.user` 就能拿到当前登录用户
+
+---
+
+# **你的代码做了什么？**
+```python
+@api_view(['GET'])
+def getUserProfile(request):
+    user = request.user  # 拿到当前登录用户
+    serializer = UserSerializer(user)  # 序列化成 JSON
+    return Response(serializer.data)  # 返回给前端
+```
+
+### 返回结果示例：
+```json
+{
+  "id": 5,
+  "username": "john_doe",
+  "email": "john@example.com",
+  "first_name": "John",
+  "last_name": "Doe"
+}
+```
+
+---
+
+# **最重要的 3 个事实（你必须记住）**
+## 1. **`request.user` 永远是当前登录的用户**
+## 2. **只有认证通过后才存在**（否则是匿名用户）
+## 3. **它是 ORM 对象，你可以直接存、改、查**
+
+例如：
+```python
+# 改邮箱
+request.user.email = "new@example.com"
+request.user.save()
+
+# 改密码
+request.user.set_password("newpassword")
+request.user.save()
+```
+
+---
+
+# **超级白话总结**
+### **`request.user` = 你登录后的“用户本人”**
+### 谁发了有效的 Token，谁就是 `request.user`
+
+This is the **most important insight** for DRF + JWT authentication.
+
+### 1. Normal Django (HTML/templates):
+**`request.user` = Session/Cookie Login User**
+*(Comes from browser cookie)*
+
+### 2. DRF with `@api_view` + JWT:
+**`request.user` = Token User**
+*(Comes from the `Authorization: Bearer <token>` header)*
+
+---
+
+# **What This Really Means (The Magic)**
+When you use **SimpleJWT** with your API:
+
+1. The front-end (React) sends a request with a **Token**
+2. The **JWT Authentication Class** (in your settings) intercepts the request
+3. It **decodes & validates the Token**
+4. It **finds the matching User** in the database
+5. It **attaches that User object to `request.user`**
+6. **Your View/Function runs**
+
+### So:
+**You don’t need to send `user_id` or `username`**
+**The Token itself tells the backend WHO IS MAKING THE REQUEST.**
+
+---
+
+# **Proof in Your Code**
+```python
+# This works BECAUSE JWT set request.user for you
+@api_view(['GET'])
+def getUserProfile(request):
+    # 👇 This user is EXTRACTED FROM THE TOKEN, NOT from a form/URL
+    user = request.user 
+    serializer = UserSerializer(user)
+    return Response(serializer.data)
+```
+
+---
+
+# **Final, Super-Clear Rule**
+## **In your API (@api_view):**
+### **`request.user` = The user identified by the JWT Token**
+### **Whoever owns the Token is the `request.user`**
+
+## **Once you set up DRF + JWT:
+Django **NO LONGER checks sessions/cookies** for your API views.
+It **ONLY checks the Token** in the request header.**
+
+---
+
+# Here’s the proof (from your `settings.py`)
+```python
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ]
+}
+```
+
+### This setting tells Django REST Framework:
+### **“For ALL API requests — ONLY use JWT auth.
+### DO NOT use Session Auth. DO NOT look for cookies.”**
+
+---
+
+# So the flow is now **exclusively token-based**:
+1. React sends:
+   ```
+   Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+   ```
+2. DRF reads **only the token**
+3. Validates token
+4. Finds user
+5. Assigns user to `request.user`
+
+### **Session ID? Cookie? Django ignores them completely for APIs.**
+
+---
+
+# **What if you still have login via Django Admin?**
+The Django Admin (`/admin/`) still uses sessions.
+### **BUT YOUR API (@api_view) DOES NOT. It’s fully separated.**
+
+---
+
+# **Your Final Understanding Is Perfect:**
+### Normal Django → checks session/cookie
+### DRF API + JWT → **only checks token**
+### `request.user` → comes **from token, not session**
+
+4. in order to test the login, we need postman, not browser
+testing is good under postman
+
+5. refactor the serilaizer for custom user name
+```py
+from rest_framework import serializers
+from django.contrib.auth.models import User
+from .models import Product
+// how the user related fields send back to front end
+class UserSerializer(serializers.ModelSerializer):
+    name = serializers.SerializerMethodField(read_only=True)
+    _id = serializers.SerializerMethodField(read_only=True)
+    isAdmin = serializers.SerializerMethodField(read_only=True)
+    class Meta:
+        model = User
+        fields = ['id', 'username', 'email', 'name', 'isAdmin', '_id']
+    def get__id(self, obj):
+        return obj.id
+    def get_isAdmin(self, obj):
+        return obj.is_staff
+    def get_name(self, obj):
+        name = obj.first_name
+        if name == '':
+            name = obj.email
+        return name
+
+class ProductSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Product
+        fields = '__all__'
+
+```
+6. refactor the serilaizer add refresh token
+```py
+from rest_framework import serializers
+from django.contrib.auth.models import User
+from rest_framework_simplejwt.tokens import RefreshToken
+from .models import Product
+
+class UserSerializer(serializers.ModelSerializer):
+    name = serializers.SerializerMethodField(read_only=True)
+    _id = serializers.SerializerMethodField(read_only=True)
+    isAdmin = serializers.SerializerMethodField(read_only=True)
+    class Meta:
+        model = User
+        fields = ['id', 'username', 'email', 'name', 'isAdmin', '_id']
+    def get__id(self, obj):
+        return obj.id
+    def get_isAdmin(self, obj):
+        return obj.is_staff
+    def get_name(self, obj):
+        name = obj.first_name
+        if name == '':
+            name = obj.email
+        return name
+
+class UserSerializerWithToken(UserSerializer):
+    token = serializers.SerializerMethodField(read_only=True)
+    class Meta:
+        model = User
+        fields = ['id', 'username', 'email', 'name', 'isAdmin', '_id', 'token']
+    def get_token(self, obj):
+        token = RefreshToken.for_user(obj)
+        return str(token.access_token)
+class ProductSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Product
+        fields = '__all__'
+
+```
+
+## **Access Token = Short‑lived → For accessing APIs**
+## **Refresh Token = Long‑lived → For getting NEW Access Tokens**
+
+## **Why two?**
+### **FOR SECURITY.**  
+If you only had **one token**, and it got stolen – hackers can use it **forever**.  
+With two tokens:  
+- **Access Token expires fast** (30 mins) → stolen token is useless quickly.  
+- **Refresh Token stays safe** (only used to get new access tokens).
+
+---
+
+# **2. Analogy: Hotel Key Card (You’ll Remember Forever)**
+Think of your app like a **hotel**:
+
+- **Access Token** = 🚪 **Room Key**  
+  - Opens your room, buys food, uses facilities  
+  - **Expires in 1-2 hours**  
+  - If lost → only usable for a short time
+
+- **Refresh Token** = 📝 **Hotel Reception Card**  
+  - **Only used to get a NEW room key**  
+  - Valid for **1 day or more**  
+  - Never used to open rooms directly  
+  - If lost → can’t enter rooms, only get new keys (easily revoked)
+
+---
+
+# **3. Real Technical Explanation**
+## **Access Token**
+- **Lifetime**: 30 minutes (short)
+- **Sent with EVERY API request**
+- Used to authenticate you for:
+  - `/api/products`
+  - `/api/users/profile`
+  - `/api/orders`
+- **If stolen**: Only usable for 30 mins → very secure
+
+## **Refresh Token**
+- **Lifetime**: 1 day or 7 days (long)
+- **ONLY sent to ONE endpoint**:
+  - `/api/token/refresh/`
+- **Job**: ONLY to get a NEW Access Token
+- **Never sent to normal APIs** → low risk
+- **If stolen**: Can’t access data – only get new tokens (easily blacklisted)
+
+---
+
+# **4. Why We CANNOT Use Only One Token**
+If you use **one long-lived token**:
+- If a hacker steals it → they can **use your account forever**
+- **No way to automatically expire it**
+- **HIGH RISK** (especially for e-commerce with payments)
+
+With **two tokens**:
+- Access token expires fast → limited damage
+- Refresh token is rarely used → safer
+- You can **rotate & blacklist** refresh tokens
+
+---
+
+# **5. How They Work Together (Your React + Django Flow)**
+### Step 1: User logs in  
+→ Get **Access + Refresh Token**
+
+### Step 2: Use Access Token for requests
+```
+GET /api/profile
+Authorization: Bearer ACCESS_TOKEN
+```
+
+### Step 3: After 30 mins → Access Token EXPIRES
+→ API returns `401 Unauthorized`
+
+### Step 4: Auto login with Refresh Token
+```
+POST /api/token/refresh/
+refresh: REFRESH_TOKEN
+```
+→ Get **NEW Access Token**
+
+### Step 5: Continue using app – **user never logs out**
+
+---
+
+# **6. SimpleJWT Default Settings (Your Settings)**
+```python
+SIMPLE_JWT = {
+    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=30),  # SHORT
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=1),     # LONG
+}
+```
+
+---
+
+# **7. Final Summary (Must Memorize)**
+| Token | Purpose | Lives | Sent where | Risk |
+|---|---|---|---|---|
+| **Access Token** | Access APIs | 30 mins | Every request | Low (expires fast) |
+| **Refresh Token** | Get new Access Token | 1 day | Only 1 endpoint | Very low |
+
+## **Why two tokens?**
+### **MAXIMUM SECURITY for your e-commerce app.**
+
+7. because we add som many fields, we refactor the views.py to loop the serializer with token
+```py
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+from .models import Product
+from .serializer import ProductSerializer, UserSerializer, UserSerializerWithToken
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
+from rest_framework_simplejwt.views import TokenObtainPairView
+# Create your views here.
+class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
+    def validate(self, attrs):
+        data = super().validate(attrs)
+        seializer = UserSerializerWithToken(self.user).data
+        for k, v in seializer.items():
+            data[k] = v
+        return data
+class MyTokenObtainPairView(TokenObtainPairView):
+    serializer_class = MyTokenObtainPairSerializer
+
+@api_view(['GET'])
+def getRoutes(request):
+    routes = [
+        'api/products',
+        'api/products/create',
+        'api/products/upload',
+        'api/products/<id>/reviews',
+        'api/products/top',
+        'api/products/<id>',
+        'api/products/delete/<id>',
+        'api/products/<update>/<id>',
+    ]
+    return Response(routes)
+
+@api_view(['GET'])
+def getUserProfile(request):
+    user = request.user
+    serializer = UserSerializer(user, many=False)
+    return Response(serializer.data)
+
+@api_view(['GET'])
+def getProducts(request):
+    products = Product.objects.all()
+    serializer = ProductSerializer(products, many=True)
+    return Response(serializer.data)
+
+@api_view(['GET'])
+def getProduct(request,pk):
+    product = Product.objects.get(_id=pk)
+    serializer = ProductSerializer(product, many=False)
+    return Response(serializer.data)
+
+```
+
+8. add access permission to routes
+
+```py
+
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import IsAuthenticated, IsAdminUser
+from rest_framework.response import Response
+from .models import Product
+from django.contrib.auth.models import User
+from .serializer import ProductSerializer, UserSerializer, UserSerializerWithToken
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
+from rest_framework_simplejwt.views import TokenObtainPairView
+# Create your views here.
+class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
+    def validate(self, attrs):
+        data = super().validate(attrs)
+        seializer = UserSerializerWithToken(self.user).data
+        for k, v in seializer.items():
+            data[k] = v
+        return data
+class MyTokenObtainPairView(TokenObtainPairView):
+    serializer_class = MyTokenObtainPairSerializer
+
+@api_view(['GET'])
+def getRoutes(request):
+    routes = [
+        'api/products',
+        'api/products/create',
+        'api/products/upload',
+        'api/products/<id>/reviews',
+        'api/products/top',
+        'api/products/<id>',
+        'api/products/delete/<id>',
+        'api/products/<update>/<id>',
+    ]
+    return Response(routes)
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def getUserProfile(request):
+    user = request.user
+    serializer = UserSerializer(user, many=False)
+    return Response(serializer.data)
+
+@api_view(['GET'])
+@permission_classes([IsAdminUser])
+def getUsers(request):
+    users = User.objects.all()
+    serializer = UserSerializer(users, many=True)
+    return Response(serializer.data)
+@api_view(['GET'])
+def getProducts(request):
+    products = Product.objects.all()
+    serializer = ProductSerializer(products, many=True)
+    return Response(serializer.data)
+
+@api_view(['GET'])
+def getProduct(request,pk):
+    product = Product.objects.get(_id=pk)
+    serializer = ProductSerializer(product, many=False)
+    return Response(serializer.data)
+```
+
+
+## Step 22
+## step 23
+## step 24
+## step 25
+## step 26
+## step 27
+## step 28
+## step 29
+## step 30
