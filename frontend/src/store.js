@@ -1,7 +1,7 @@
 import { configureStore } from '@reduxjs/toolkit';
 import { productReducer, productDetailsReducer} from "./reducers/productReducers"; // import
 import {cartReducer} from "./reducers/cartReducers";
-import { userLoginReducer } from './reducers/userReducers';
+import { userLoginReducer, userRegisterReducer } from './reducers/userReducers';
 
 const cartItemsFromStorage = localStorage.getItem('cartItems')
   ? JSON.parse(localStorage.getItem('cartItems'))
@@ -16,7 +16,8 @@ const preloadedState = {
   },
   userLogin: {
     userInfo: userInfoFromStorage, // 给 userLogin reducer 赋值
-  }
+  },
+  
 };
 
 export const store = configureStore({
@@ -25,6 +26,7 @@ export const store = configureStore({
       productDetails: productDetailsReducer,
       cart: cartReducer,
       userLogin: userLoginReducer,
+      userRegister: userRegisterReducer,
 
   },
   // ✅ Thunk + DevTools ARE AUTO INCLUDED — NO SETUP NEEDED!

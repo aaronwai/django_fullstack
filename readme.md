@@ -5933,8 +5933,528 @@ export default App;
 ```
 
 
-## step 26
-## step 27
+## step 26 user in navbar and logout
+1. add dispatch inside the header.jsx
+```jsx
+import { Container, Navbar, Nav, NavDropdown } from "react-bootstrap";
+import { LinkContainer } from "react-router-bootstrap";
+import { useDispatch, useSelector } from 'react-redux';
+const Header = () => {
+   const userLogin = useSelector(state => state.userLogin)
+    const { userInfo } = userLogin
+    const dispatch = useDispatch()
+   const logoutHandler = () => {
+        console.log('logout')
+    }
+
+  return (
+    <header>
+      <Navbar bg="dark" variant="dark" expand="lg" collapseOnSelect>
+        <Container>
+          <LinkContainer to="/">
+            <Navbar.Brand>ProShop</Navbar.Brand>
+          </LinkContainer>
+          <Navbar.Toggle aria-controls="basic-navbar-nav" />
+          <Navbar.Collapse id="basic-navbar-nav">
+            <Nav className="mr-auto">
+              <LinkContainer to="/cart">
+                <Nav.Link>
+                  <i className="fas fa-shopping-cart"></i> Cart
+                </Nav.Link>
+              </LinkContainer>
+              {userInfo ? (
+                <NavDropdown title={userInfo.name} id='username'>
+                    <LinkContainer to='/profile'>
+                        <NavDropdown.Item>Profile</NavDropdown.Item>
+                    </LinkContainer>
+                    <NavDropdown.Item onClick={logoutHandler} >Logout</NavDropdown.Item>
+                </NavDropdown>
+              ) : (
+                    <LinkContainer to='/login'>
+                        <Nav.Link><i className="fas fa-user"></i>Login</Nav.Link>
+                    </LinkContainer>
+                )}
+            </Nav>
+          </Navbar.Collapse>
+        </Container>
+      </Navbar>
+    </header>
+  );
+};
+
+export default Header;
+
+```
+2. for the logout, add the logout inside userAction.js
+```js
+import axios from 'axios'
+import {
+    USER_LOGIN_REQUEST,
+    USER_LOGIN_SUCCESS,
+    USER_LOGIN_FAIL,
+
+    USER_LOGOUT,
+
+} from '../constants/userConstants'
+
+
+export const login = (email, password) => async (dispatch) => {
+    try {
+        dispatch({
+            type: USER_LOGIN_REQUEST
+        })
+
+        const config = {
+            headers: {
+                'Content-type': 'application/json'
+            }
+        }
+
+        const { data } = await axios.post(
+            '/api/users/login/',
+            { 'username': email, 'password': password },
+            config
+        )
+
+        dispatch({
+            type: USER_LOGIN_SUCCESS,
+            payload: data
+        })
+
+        localStorage.setItem('userInfo', JSON.stringify(data))
+
+    } catch (error) {
+        dispatch({
+            type: USER_LOGIN_FAIL,
+            payload: error.response && error.response.data.detail
+                ? error.response.data.detail
+                : error.message,
+        })
+    }
+}
+
+export const logout = () => (dispatch) => {
+    localStorage.removeItem('userInfo')
+    dispatch({ type: USER_LOGOUT })
+   
+}
+
+```
+3. back to Header.jsx
+```jsx
+import { Container, Navbar, Nav, NavDropdown } from "react-bootstrap";
+import { LinkContainer } from "react-router-bootstrap";
+import { useDispatch, useSelector } from 'react-redux';
+import { logout } from '../actions/userActions'
+const Header = () => {
+   const userLogin = useSelector(state => state.userLogin)
+    const { userInfo } = userLogin
+    const dispatch = useDispatch()
+   const logoutHandler = () => {
+        dispatch(logout())
+    }
+
+  return (
+    <header>
+      <Navbar bg="dark" variant="dark" expand="lg" collapseOnSelect>
+        <Container>
+          <LinkContainer to="/">
+            <Navbar.Brand>ProShop</Navbar.Brand>
+          </LinkContainer>
+          <Navbar.Toggle aria-controls="basic-navbar-nav" />
+          <Navbar.Collapse id="basic-navbar-nav">
+            <Nav className="mr-auto">
+              <LinkContainer to="/cart">
+                <Nav.Link>
+                  <i className="fas fa-shopping-cart"></i> Cart
+                </Nav.Link>
+              </LinkContainer>
+              {userInfo ? (
+                <NavDropdown title={userInfo.name} id='username'>
+                    <LinkContainer to='/profile'>
+                        <NavDropdown.Item>Profile</NavDropdown.Item>
+                    </LinkContainer>
+                    <NavDropdown.Item onClick={logoutHandler} >Logout</NavDropdown.Item>
+                </NavDropdown>
+              ) : (
+                    <LinkContainer to='/login'>
+                        <Nav.Link><i className="fas fa-user"></i>Login</Nav.Link>
+                    </LinkContainer>
+                )}
+            </Nav>
+          </Navbar.Collapse>
+        </Container>
+      </Navbar>
+    </header>
+  );
+};
+
+export default Header;
+
+```
+
+## step 27 register page
+1. add constants inside userConstants for register
+```js
+export const USER_LOGIN_REQUEST = 'USER_LOGIN_REQUEST'
+export const USER_LOGIN_SUCCESS = 'USER_LOGIN_SUCCESS'
+export const USER_LOGIN_FAIL = 'USER_LOGIN_FAIL'
+
+export const USER_LOGOUT = 'USER_LOGOUT'
+
+export const USER_REGISTER_REQUEST = 'USER_REGISTER_REQUEST'
+export const USER_REGISTER_SUCCESS = 'USER_REGISTER_SUCCESS'
+export const USER_REGISTER_FAIL = 'USER_REGISTER_FAIL'
+
+```
+2. update reducers/userReducers.js
+```js
+import {
+    USER_LOGIN_REQUEST,
+    USER_LOGIN_SUCCESS,
+    USER_LOGIN_FAIL,
+
+    USER_LOGOUT,
+    USER_REGISTER_REQUEST,
+    USER_REGISTER_SUCCESS,
+    USER_REGISTER_FAIL,
+
+} from '../constants/userConstants'
+
+
+export const userLoginReducer = (state = {}, action) => {
+    switch (action.type) {
+        case USER_LOGIN_REQUEST:
+            return { loading: true }
+
+        case USER_LOGIN_SUCCESS:
+            return { loading: false, userInfo: action.payload }
+
+        case USER_LOGIN_FAIL:
+            return { loading: false, error: action.payload }
+
+        case USER_LOGOUT:
+            return {}
+
+        default:
+            return state
+    }
+}
+export const userRegisterReducer = (state = {}, action) => {
+    switch (action.type) {
+        case USER_REGISTER_REQUEST:
+            return { loading: true }
+
+        case USER_REGISTER_SUCCESS:
+            return { loading: false, userInfo: action.payload }
+
+        case USER_REGISTER_FAIL:
+            return { loading: false, error: action.payload }
+
+        case USER_LOGOUT:
+            return {}
+
+        default:
+            return state
+    }
+}
+
+
+```
+3. update store.js
+```js
+import { configureStore } from '@reduxjs/toolkit';
+import { productReducer, productDetailsReducer} from "./reducers/productReducers"; // import
+import {cartReducer} from "./reducers/cartReducers";
+import { userLoginReducer, userRegisterReducer } from './reducers/userReducers';
+
+const cartItemsFromStorage = localStorage.getItem('cartItems')
+  ? JSON.parse(localStorage.getItem('cartItems'))
+  : [];
+const userInfoFromStorage = localStorage.getItem('userInfo')
+  ? JSON.parse(localStorage.getItem('userInfo'))
+  : null;
+// 👇 初始化 Redux 状态
+const preloadedState = {
+  cart: {
+    cartItems: cartItemsFromStorage, // 给 cart reducer 赋值
+  },
+  userLogin: {
+    userInfo: userInfoFromStorage, // 给 userLogin reducer 赋值
+  },
+  
+};
+
+export const store = configureStore({
+  reducer: {
+      productList: productReducer,
+      productDetails: productDetailsReducer,
+      cart: cartReducer,
+      userLogin: userLoginReducer,
+      userRegister: userRegisterReducer,
+
+  },
+  // ✅ Thunk + DevTools ARE AUTO INCLUDED — NO SETUP NEEDED!
+  preloadedState : preloadedState
+});
+
+export default store;
+
+```
+4. update actions/userActions.js
+```js
+import axios from 'axios'
+import {
+    USER_LOGIN_REQUEST,
+    USER_LOGIN_SUCCESS,
+    USER_LOGIN_FAIL,
+
+    USER_LOGOUT,
+    USER_REGISTER_REQUEST,
+    USER_REGISTER_SUCCESS,
+    USER_REGISTER_FAIL,
+} from '../constants/userConstants'
+
+
+export const login = (email, password) => async (dispatch) => {
+    try {
+        dispatch({
+            type: USER_LOGIN_REQUEST
+        })
+
+        const config = {
+            headers: {
+                'Content-type': 'application/json'
+            }
+        }
+
+        const { data } = await axios.post(
+            '/api/users/login/',
+            { 'username': email, 'password': password },
+            config
+        )
+
+        dispatch({
+            type: USER_LOGIN_SUCCESS,
+            payload: data
+        })
+
+        localStorage.setItem('userInfo', JSON.stringify(data))
+
+    } catch (error) {
+        dispatch({
+            type: USER_LOGIN_FAIL,
+            payload: error.response && error.response.data.detail
+                ? error.response.data.detail
+                : error.message,
+        })
+    }
+}
+
+export const logout = () => (dispatch) => {
+    localStorage.removeItem('userInfo')
+    dispatch({ type: USER_LOGOUT })
+   
+}
+
+export const register = (name, email, password) => async (dispatch) => {
+    try {
+        dispatch({
+            type: USER_REGISTER_REQUEST
+        })
+
+        const config = {
+            headers: {
+                'Content-type': 'application/json'
+            }
+        }
+
+        const { data } = await axios.post(
+            '/api/users/register/',
+            { 'name': name, 'email': email, 'password': password },
+            config
+        )
+
+        dispatch({
+            type: USER_REGISTER_SUCCESS,
+            payload: data
+        })
+// after register, then go to login
+        dispatch({
+            type: USER_LOGIN_SUCCESS,
+            payload: data
+        })
+
+        localStorage.setItem('userInfo', JSON.stringify(data))
+
+    } catch (error) {
+        dispatch({
+            type: USER_REGISTER_FAIL,
+            payload: error.response && error.response.data.detail
+                ? error.response.data.detail
+                : error.message,
+        })
+    }
+}
+```
+5. create registerscreens.jsx
+```jsx
+import React, { useState, useEffect } from 'react'
+import { Link, useNavigate, useLocation } from 'react-router-dom'
+import { Form, Button, Row, Col } from 'react-bootstrap'
+import { useDispatch, useSelector } from 'react-redux'
+import Loader from '../components/Loader'
+import Message from '../components/Message'
+import FormContainer from '../components/FormContainer'
+import { register } from '../actions/userActions'
+
+function RegisterScreen() {
+    const location = useLocation()
+    const navigate = useNavigate()
+    const [name, setName] = useState('')
+    const [email, setEmail] = useState('')
+    const [password, setPassword] = useState('')
+    const [confirmPassword, setConfirmPassword] = useState('')
+    const [message, setMessage] = useState('')
+
+    const dispatch = useDispatch()
+
+    const redirect = location.search ? location.search.split('=')[1] : '/'
+
+    const userRegister = useSelector(state => state.userRegister)
+    const { error, loading, userInfo } = userRegister
+
+    useEffect(() => {
+        if (userInfo) {
+            navigate(redirect)
+        }
+    }, [navigate, userInfo, redirect])
+
+    const submitHandler = (e) => {
+        e.preventDefault()
+
+        if (password != confirmPassword) {
+            setMessage('Passwords do not match')
+        } else {
+            dispatch(register(name, email, password))
+        }
+
+    }
+
+    return (
+        <FormContainer>
+            <h1>Sign In</h1>
+            {message && <Message variant='danger'>{message}</Message>}
+            {error && <Message variant='danger'>{error}</Message>}
+            {loading && <Loader />}
+            <Form onSubmit={submitHandler}>
+
+                <Form.Group controlId='name'>
+                    <Form.Label>Name</Form.Label>
+                    <Form.Control
+                        required
+                        type='name'
+                        placeholder='Enter name'
+                        value={name}
+                        onChange={(e) => setName(e.target.value)}
+                    >
+                    </Form.Control>
+                </Form.Group>
+
+                <Form.Group controlId='email'>
+                    <Form.Label>Email Address</Form.Label>
+                    <Form.Control
+                        required
+                        type='email'
+                        placeholder='Enter Email'
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                    >
+                    </Form.Control>
+                </Form.Group>
+
+                <Form.Group controlId='password'>
+                    <Form.Label>Password</Form.Label>
+                    <Form.Control
+                        required
+                        type='password'
+                        placeholder='Enter Password'
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                    >
+                    </Form.Control>
+                </Form.Group>
+
+                <Form.Group controlId='passwordConfirm'>
+                    <Form.Label>Confirm Password</Form.Label>
+                    <Form.Control
+                        required
+                        type='password'
+                        placeholder='Confirm Password'
+                        value={confirmPassword}
+                        onChange={(e) => setConfirmPassword(e.target.value)}
+                    >
+                    </Form.Control>
+                </Form.Group>
+
+                <Button type='submit' variant='primary'>
+                    Register
+                </Button>
+
+            </Form>
+
+            <Row className='py-3'>
+                <Col>
+                    Have an Account? <Link
+                        to={redirect ? `/login?redirect=${redirect}` : '/login'}>
+                        Sign In
+                        </Link>
+                </Col>
+            </Row>
+        </FormContainer >
+    )
+}
+
+export default RegisterScreen
+```
+6. update app.js
+```js
+import { Container } from "react-bootstrap";
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import Footer from "./components/Footer";
+import Header from "./components/Header";
+import HomeScreen from "./screens/HomeScreen";
+import LoginScreen from "./screens/LoginScreen";
+import RegisterScreen from "./screens/RegisterScreen";
+import ProductScreen from "./screens/ProductScreen";
+import CartScreen from "./screens/CartScreen";
+function App() {
+  return (
+    <Router>
+      <Header />
+      <main className="py-3">
+        <Container>
+          <Routes>
+            <Route path="/" element={<HomeScreen />} />
+            <Route path="/login" element={<LoginScreen />} />
+             <Route path="/register" element={<RegisterScreen />} />
+            <Route path="/product/:id" element={<ProductScreen />} />
+            <Route path="/cart/:id?" element={<CartScreen />} />
+          </Routes>
+        </Container>
+      </main>
+      <Footer />
+    </Router>
+  );
+}
+
+export default App;
+
+```
+7.
+8.
+9.
+
 ## step 28
 ## step 29
 ## step 30
