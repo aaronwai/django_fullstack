@@ -6551,4 +6551,935 @@ urlpatterns = [
 3. goto postman for testing the put, by edit the name
 
 ## step 29 user profile frontend
+1. update constants/userConstants  
+```js
+export const USER_LOGIN_REQUEST = 'USER_LOGIN_REQUEST'
+export const USER_LOGIN_SUCCESS = 'USER_LOGIN_SUCCESS'
+export const USER_LOGIN_FAIL = 'USER_LOGIN_FAIL'
+
+export const USER_LOGOUT = 'USER_LOGOUT'
+
+export const USER_REGISTER_REQUEST = 'USER_REGISTER_REQUEST'
+export const USER_REGISTER_SUCCESS = 'USER_REGISTER_SUCCESS'
+export const USER_REGISTER_FAIL = 'USER_REGISTER_FAIL'
+
+export const USER_DETAILS_REQUEST = 'USER_DETAILS_REQUEST'
+export const USER_DETAILS_SUCCESS = 'USER_DETAILS_SUCCESS'
+export const USER_DETAILS_FAIL = 'USER_DETAILS_FAIL'
+export const USER_DETAILS_RESET = 'USER_DETAILS_RESET'
+```
+2. update userReducer.js
+```js
+import {
+    USER_LOGIN_REQUEST,
+    USER_LOGIN_SUCCESS,
+    USER_LOGIN_FAIL,
+
+    USER_LOGOUT,
+    USER_REGISTER_REQUEST,
+    USER_REGISTER_SUCCESS,
+    USER_REGISTER_FAIL,
+    USER_DETAILS_REQUEST,
+    USER_DETAILS_SUCCESS,
+    USER_DETAILS_FAIL,
+    USER_DETAILS_RESET,
+
+} from '../constants/userConstants'
+
+
+export const userLoginReducer = (state = {}, action) => {
+    switch (action.type) {
+        case USER_LOGIN_REQUEST:
+            return { loading: true }
+
+        case USER_LOGIN_SUCCESS:
+            return { loading: false, userInfo: action.payload }
+
+        case USER_LOGIN_FAIL:
+            return { loading: false, error: action.payload }
+
+        case USER_LOGOUT:
+            return {}
+
+        default:
+            return state
+    }
+}
+export const userRegisterReducer = (state = {}, action) => {
+    switch (action.type) {
+        case USER_REGISTER_REQUEST:
+            return { loading: true }
+
+        case USER_REGISTER_SUCCESS:
+            return { loading: false, userInfo: action.payload }
+
+        case USER_REGISTER_FAIL:
+            return { loading: false, error: action.payload }
+
+        case USER_LOGOUT:
+            return {}
+
+        default:
+            return state
+    }
+}
+
+export const userDetailsReducer = (state = { user: {} }, action) => {
+    switch (action.type) {
+        case USER_DETAILS_REQUEST:
+            return { ...state, loading: true }
+
+        case USER_DETAILS_SUCCESS:
+            return { loading: false, user: action.payload }
+
+        case USER_DETAILS_FAIL:
+            return { loading: false, error: action.payload }
+
+        case USER_DETAILS_RESET:
+            return { user: {} }
+
+
+        default:
+            return state
+    }
+}
+
+```
+3. update store.js
+```js
+import { configureStore } from '@reduxjs/toolkit';
+import { productReducer, productDetailsReducer} from "./reducers/productReducers"; // import
+import {cartReducer} from "./reducers/cartReducers";
+import { userLoginReducer, userRegisterReducer, userDetailsReducer } from './reducers/userReducers';
+
+const cartItemsFromStorage = localStorage.getItem('cartItems')
+  ? JSON.parse(localStorage.getItem('cartItems'))
+  : [];
+const userInfoFromStorage = localStorage.getItem('userInfo')
+  ? JSON.parse(localStorage.getItem('userInfo'))
+  : null;
+// 👇 初始化 Redux 状态
+const preloadedState = {
+  cart: {
+    cartItems: cartItemsFromStorage, // 给 cart reducer 赋值
+  },
+  userLogin: {
+    userInfo: userInfoFromStorage, // 给 userLogin reducer 赋值
+  },
+  
+};
+
+export const store = configureStore({
+  reducer: {
+      productList: productReducer,
+      productDetails: productDetailsReducer,
+      cart: cartReducer,
+      userLogin: userLoginReducer,
+      userRegister: userRegisterReducer,
+      userDetails: userDetailsReducer,
+
+  },
+  // ✅ Thunk + DevTools ARE AUTO INCLUDED — NO SETUP NEEDED!
+  preloadedState : preloadedState
+});
+
+export default store;
+
+```
+4. update userActions.js
+```js
+import axios from 'axios'
+import {
+    USER_LOGIN_REQUEST,
+    USER_LOGIN_SUCCESS,
+    USER_LOGIN_FAIL,
+
+    USER_LOGOUT,
+    USER_REGISTER_REQUEST,
+    USER_REGISTER_SUCCESS,
+    USER_REGISTER_FAIL,
+
+    USER_DETAILS_REQUEST,
+    USER_DETAILS_SUCCESS,
+    USER_DETAILS_FAIL,
+    USER_DETAILS_RESET,
+
+} from '../constants/userConstants'
+
+
+export const login = (email, password) => async (dispatch) => {
+    try {
+        dispatch({
+            type: USER_LOGIN_REQUEST
+        })
+
+        const config = {
+            headers: {
+                'Content-type': 'application/json'
+            }
+        }
+
+        const { data } = await axios.post(
+            '/api/users/login/',
+            { 'username': email, 'password': password },
+            config
+        )
+
+        dispatch({
+            type: USER_LOGIN_SUCCESS,
+            payload: data
+        })
+
+        localStorage.setItem('userInfo', JSON.stringify(data))
+
+    } catch (error) {
+        dispatch({
+            type: USER_LOGIN_FAIL,
+            payload: error.response && error.response.data.detail
+                ? error.response.data.detail
+                : error.message,
+        })
+    }
+}
+
+export const logout = () => (dispatch) => {
+    localStorage.removeItem('userInfo')
+    dispatch({ type: USER_LOGOUT })
+   
+}
+
+export const register = (name, email, password) => async (dispatch) => {
+    try {
+        dispatch({
+            type: USER_REGISTER_REQUEST
+        })
+
+        const config = {
+            headers: {
+                'Content-type': 'application/json'
+            }
+        }
+
+        const { data } = await axios.post(
+            '/api/users/register/',
+            { 'name': name, 'email': email, 'password': password },
+            config
+        )
+
+        dispatch({
+            type: USER_REGISTER_SUCCESS,
+            payload: data
+        })
+
+        dispatch({
+            type: USER_LOGIN_SUCCESS,
+            payload: data
+        })
+
+        localStorage.setItem('userInfo', JSON.stringify(data))
+
+    } catch (error) {
+        dispatch({
+            type: USER_REGISTER_FAIL,
+            payload: error.response && error.response.data.detail
+                ? error.response.data.detail
+                : error.message,
+        })
+    }
+}
+
+export const getUserDetails = (id) => async (dispatch, getState) => {
+    try {
+        dispatch({
+            type: USER_DETAILS_REQUEST
+        })
+
+        const {
+            userLogin: { userInfo },
+        } = getState()
+
+        const config = {
+            headers: {
+                'Content-type': 'application/json',
+                Authorization: `Bearer ${userInfo.token}`  // need to add access token
+            }
+        }
+
+        const { data } = await axios.get(
+            `/api/users/${id}/`,
+            config
+        )
+
+        dispatch({
+            type: USER_DETAILS_SUCCESS,
+            payload: data
+        })
+
+
+    } catch (error) {
+        dispatch({
+            type: USER_DETAILS_FAIL,
+            payload: error.response && error.response.data.detail
+                ? error.response.data.detail
+                : error.message,
+        })
+    }
+}
+```
+5. create screens/profilescreen.js
+```js
+import React, { useState, useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
+import { Form, Button, Row, Col } from 'react-bootstrap'
+import { useDispatch, useSelector } from 'react-redux'
+import Loader from '../components/Loader'
+import Message from '../components/Message'
+import { getUserDetails} from '../actions/userActions'
+
+function ProfileScreen() {
+    const navigate = useNavigate()
+    const [name, setName] = useState('')
+    const [email, setEmail] = useState('')
+    const [password, setPassword] = useState('')
+    const [confirmPassword, setConfirmPassword] = useState('')
+    const [message, setMessage] = useState('')
+
+    const dispatch = useDispatch()
+
+    const userDetails = useSelector(state => state.userDetails)
+    const { error, loading, user } = userDetails
+
+    const userLogin = useSelector(state => state.userLogin)
+    const { userInfo } = userLogin
+
+  
+
+
+    useEffect(() => {
+        if (!userInfo) {
+            navigate('/login')
+        } else {
+            if (!user || !user.name ) {
+               
+                dispatch(getUserDetails('profile'))
+            } else {
+                setName(user.name)
+                setEmail(user.email)
+            }
+        }
+    }, [dispatch, navigate, userInfo, user])
+
+    const submitHandler = (e) => {
+        e.preventDefault()
+
+        if (password !== confirmPassword) {
+            setMessage('Passwords do not match')
+        } else {
+            console.log("updating...")
+        }
+
+    }
+    return (
+        <Row>
+            <Col md={3}>
+                <h2>User Profile</h2>
+
+                {message && <Message variant='danger'>{message}</Message>}
+                {error && <Message variant='danger'>{error}</Message>}
+                {loading && <Loader />}
+                <Form onSubmit={submitHandler}>
+
+                    <Form.Group controlId='name'>
+                        <Form.Label>Name</Form.Label>
+                        <Form.Control
+                            required
+                            type='name'
+                            placeholder='Enter name'
+                            value={name}
+                            onChange={(e) => setName(e.target.value)}
+                        >
+                        </Form.Control>
+                    </Form.Group>
+
+                    <Form.Group controlId='email'>
+                        <Form.Label>Email Address</Form.Label>
+                        <Form.Control
+                            required
+                            type='email'
+                            placeholder='Enter Email'
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
+                        >
+                        </Form.Control>
+                    </Form.Group>
+
+                    <Form.Group controlId='password'>
+                        <Form.Label>Password</Form.Label>
+                        <Form.Control
+
+                            type='password'
+                            placeholder='Enter Password'
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
+                        >
+                        </Form.Control>
+                    </Form.Group>
+
+                    <Form.Group controlId='passwordConfirm'>
+                        <Form.Label>Confirm Password</Form.Label>
+                        <Form.Control
+
+                            type='password'
+                            placeholder='Confirm Password'
+                            value={confirmPassword}
+                            onChange={(e) => setConfirmPassword(e.target.value)}
+                        >
+                        </Form.Control>
+                    </Form.Group>
+
+                    <Button type='submit' variant='primary'>
+                        Update
+                </Button>
+
+                </Form>
+            </Col>
+
+            <Col md={9}>
+                <h2>My Orders</h2>
+           
+            </Col>
+        </Row>
+    )
+}
+
+export default ProfileScreen
+```
+6. update the app.js for the profilescreen
+```js
+import { Container } from "react-bootstrap";
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import Footer from "./components/Footer";
+import Header from "./components/Header";
+import HomeScreen from "./screens/HomeScreen";
+import LoginScreen from "./screens/LoginScreen";
+import RegisterScreen from "./screens/RegisterScreen";
+import ProductScreen from "./screens/ProductScreen";
+import CartScreen from "./screens/CartScreen";
+import ProfileScreen from "./screens/ProfileScreen";
+function App() {
+  return (
+    <Router>
+      <Header />
+      <main className="py-3">
+        <Container>
+          <Routes>
+            <Route path="/" element={<HomeScreen />} />
+            <Route path="/login" element={<LoginScreen />} />
+             <Route path="/register" element={<RegisterScreen />} />
+              <Route path='/profile' element={<ProfileScreen />} />
+            <Route path="/product/:id" element={<ProductScreen />} />
+            <Route path="/cart/:id?" element={<CartScreen />} />
+          </Routes>
+        </Container>
+      </main>
+      <Footer />
+    </Router>
+  );
+}
+
+export default App;
+
+```
+7. update user profile, , update constants
+```js
+export const USER_LOGIN_REQUEST = 'USER_LOGIN_REQUEST'
+export const USER_LOGIN_SUCCESS = 'USER_LOGIN_SUCCESS'
+export const USER_LOGIN_FAIL = 'USER_LOGIN_FAIL'
+
+export const USER_LOGOUT = 'USER_LOGOUT'
+
+export const USER_REGISTER_REQUEST = 'USER_REGISTER_REQUEST'
+export const USER_REGISTER_SUCCESS = 'USER_REGISTER_SUCCESS'
+export const USER_REGISTER_FAIL = 'USER_REGISTER_FAIL'
+
+export const USER_DETAILS_REQUEST = 'USER_DETAILS_REQUEST'
+export const USER_DETAILS_SUCCESS = 'USER_DETAILS_SUCCESS'
+export const USER_DETAILS_FAIL = 'USER_DETAILS_FAIL'
+export const USER_DETAILS_RESET = 'USER_DETAILS_RESET'
+
+export const USER_UPDATE_PROFILE_REQUEST = 'USER_UPDATE_PROFILE_REQUEST'
+export const USER_UPDATE_PROFILE_SUCCESS = 'USER_UPDATE_PROFILE_SUCCESS'
+export const USER_UPDATE_PROFILE_FAIL = 'USER_UPDATE_PROFILE_FAIL'
+export const USER_UPDATE_PROFILE_RESET = 'USER_UPDATE_PROFILE_RESET
+```
+8. update userReducer.js
+```js
+import {
+    USER_LOGIN_REQUEST,
+    USER_LOGIN_SUCCESS,
+    USER_LOGIN_FAIL,
+
+    USER_LOGOUT,
+    USER_REGISTER_REQUEST,
+    USER_REGISTER_SUCCESS,
+    USER_REGISTER_FAIL,
+    USER_DETAILS_REQUEST,
+    USER_DETAILS_SUCCESS,
+    USER_DETAILS_FAIL,
+    USER_DETAILS_RESET,
+
+    USER_UPDATE_PROFILE_REQUEST,
+    USER_UPDATE_PROFILE_SUCCESS,
+    USER_UPDATE_PROFILE_FAIL,
+    USER_UPDATE_PROFILE_RESET,
+
+} from '../constants/userConstants'
+
+
+export const userLoginReducer = (state = {}, action) => {
+    switch (action.type) {
+        case USER_LOGIN_REQUEST:
+            return { loading: true }
+
+        case USER_LOGIN_SUCCESS:
+            return { loading: false, userInfo: action.payload }
+
+        case USER_LOGIN_FAIL:
+            return { loading: false, error: action.payload }
+
+        case USER_LOGOUT:
+            return {}
+
+        default:
+            return state
+    }
+}
+export const userRegisterReducer = (state = {}, action) => {
+    switch (action.type) {
+        case USER_REGISTER_REQUEST:
+            return { loading: true }
+
+        case USER_REGISTER_SUCCESS:
+            return { loading: false, userInfo: action.payload }
+
+        case USER_REGISTER_FAIL:
+            return { loading: false, error: action.payload }
+
+        case USER_LOGOUT:
+            return {}
+
+        default:
+            return state
+    }
+}
+
+export const userDetailsReducer = (state = { user: {} }, action) => {
+    switch (action.type) {
+        case USER_DETAILS_REQUEST:
+            return { ...state, loading: true }
+
+        case USER_DETAILS_SUCCESS:
+            return { loading: false, user: action.payload }
+
+        case USER_DETAILS_FAIL:
+            return { loading: false, error: action.payload }
+
+        case USER_DETAILS_RESET:
+            return { user: {} }
+
+
+        default:
+            return state
+    }
+}
+
+export const userUpdateProfileReducer = (state = {}, action) => {
+    switch (action.type) {
+        case USER_UPDATE_PROFILE_REQUEST:
+            return { loading: true }
+
+        case USER_UPDATE_PROFILE_SUCCESS:
+            return { loading: false, success: true, userInfo: action.payload }
+
+        case USER_UPDATE_PROFILE_FAIL:
+            return { loading: false, error: action.payload }
+
+        case USER_UPDATE_PROFILE_RESET:
+            return {}
+
+        default:
+            return state
+    }
+}
+
+
+```
+9. update store.js
+```js
+import { configureStore } from '@reduxjs/toolkit';
+import { productReducer, productDetailsReducer} from "./reducers/productReducers"; // import
+import {cartReducer} from "./reducers/cartReducers";
+import { userLoginReducer, userRegisterReducer, userDetailsReducer, userUpdateProfileReducer } from './reducers/userReducers';
+
+const cartItemsFromStorage = localStorage.getItem('cartItems')
+  ? JSON.parse(localStorage.getItem('cartItems'))
+  : [];
+const userInfoFromStorage = localStorage.getItem('userInfo')
+  ? JSON.parse(localStorage.getItem('userInfo'))
+  : null;
+// 👇 初始化 Redux 状态
+const preloadedState = {
+  cart: {
+    cartItems: cartItemsFromStorage, // 给 cart reducer 赋值
+  },
+  userLogin: {
+    userInfo: userInfoFromStorage, // 给 userLogin reducer 赋值
+  },
+  
+};
+
+export const store = configureStore({
+  reducer: {
+      productList: productReducer,
+      productDetails: productDetailsReducer,
+      cart: cartReducer,
+      userLogin: userLoginReducer,
+      userRegister: userRegisterReducer,
+      userDetails: userDetailsReducer,
+      userUpdateProfile: userUpdateProfileReducer,
+  },
+  // ✅ Thunk + DevTools ARE AUTO INCLUDED — NO SETUP NEEDED!
+  preloadedState : preloadedState
+});
+
+export default store;
+
+```
+10. update userActions.js
+```js
+import axios from 'axios'
+import {
+    USER_LOGIN_REQUEST,
+    USER_LOGIN_SUCCESS,
+    USER_LOGIN_FAIL,
+
+    USER_LOGOUT,
+    USER_REGISTER_REQUEST,
+    USER_REGISTER_SUCCESS,
+    USER_REGISTER_FAIL,
+
+    USER_DETAILS_REQUEST,
+    USER_DETAILS_SUCCESS,
+    USER_DETAILS_FAIL,
+    USER_DETAILS_RESET,
+
+    USER_UPDATE_PROFILE_REQUEST,
+    USER_UPDATE_PROFILE_SUCCESS,
+    USER_UPDATE_PROFILE_FAIL,
+    USER_UPDATE_PROFILE_RESET,
+
+} from '../constants/userConstants'
+
+
+export const login = (email, password) => async (dispatch) => {
+    try {
+        dispatch({
+            type: USER_LOGIN_REQUEST
+        })
+
+        const config = {
+            headers: {
+                'Content-type': 'application/json'
+            }
+        }
+
+        const { data } = await axios.post(
+            '/api/users/login/',
+            { 'username': email, 'password': password },
+            config
+        )
+
+        dispatch({
+            type: USER_LOGIN_SUCCESS,
+            payload: data
+        })
+
+        localStorage.setItem('userInfo', JSON.stringify(data))
+
+    } catch (error) {
+        dispatch({
+            type: USER_LOGIN_FAIL,
+            payload: error.response && error.response.data.detail
+                ? error.response.data.detail
+                : error.message,
+        })
+    }
+}
+
+export const logout = () => (dispatch) => {
+    localStorage.removeItem('userInfo')
+    dispatch({ type: USER_LOGOUT })
+     dispatch({ type: USER_DETAILS_RESET })   // add this reset to clear state
+   
+}
+
+export const register = (name, email, password) => async (dispatch) => {
+    try {
+        dispatch({
+            type: USER_REGISTER_REQUEST
+        })
+
+        const config = {
+            headers: {
+                'Content-type': 'application/json'
+            }
+        }
+
+        const { data } = await axios.post(
+            '/api/users/register/',
+            { 'name': name, 'email': email, 'password': password },
+            config
+        )
+
+        dispatch({
+            type: USER_REGISTER_SUCCESS,
+            payload: data
+        })
+
+        dispatch({
+            type: USER_LOGIN_SUCCESS,
+            payload: data
+        })
+
+        localStorage.setItem('userInfo', JSON.stringify(data))
+
+    } catch (error) {
+        dispatch({
+            type: USER_REGISTER_FAIL,
+            payload: error.response && error.response.data.detail
+                ? error.response.data.detail
+                : error.message,
+        })
+    }
+}
+
+export const getUserDetails = (id) => async (dispatch, getState) => {
+    try {
+        dispatch({
+            type: USER_DETAILS_REQUEST
+        })
+
+        const {
+            userLogin: { userInfo },
+        } = getState()
+
+        const config = {
+            headers: {
+                'Content-type': 'application/json',
+                Authorization: `Bearer ${userInfo.token}`
+            }
+        }
+
+        const { data } = await axios.get(
+            `/api/users/${id}/`,
+            config
+        )
+
+        dispatch({
+            type: USER_DETAILS_SUCCESS,
+            payload: data
+        })
+
+
+    } catch (error) {
+        dispatch({
+            type: USER_DETAILS_FAIL,
+            payload: error.response && error.response.data.detail
+                ? error.response.data.detail
+                : error.message,
+        })
+    }
+}
+
+export const updateUserProfile = (user) => async (dispatch, getState) => {
+    try {
+        dispatch({
+            type: USER_UPDATE_PROFILE_REQUEST
+        })
+
+        const {
+            userLogin: { userInfo },
+        } = getState()
+
+        const config = {
+            headers: {
+                'Content-type': 'application/json',
+                Authorization: `Bearer ${userInfo.token}`
+            }
+        }
+
+        const { data } = await axios.put(
+            `/api/users/profile/update/`,
+            user,
+            config
+        )
+
+        dispatch({
+            type: USER_UPDATE_PROFILE_SUCCESS,
+            payload: data
+        })
+
+        dispatch({
+            type: USER_LOGIN_SUCCESS,
+            payload: data
+        })
+
+        localStorage.setItem('userInfo', JSON.stringify(data))
+
+    } catch (error) {
+        dispatch({
+            type: USER_UPDATE_PROFILE_FAIL,
+            payload: error.response && error.response.data.detail
+                ? error.response.data.detail
+                : error.message,
+        })
+    }
+}
+
+```
+11. update profilescreen.jsx
+```jsx
+import React, { useState, useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
+import { Form, Button, Row, Col } from 'react-bootstrap'
+import { useDispatch, useSelector } from 'react-redux'
+import Loader from '../components/Loader'
+import Message from '../components/Message'
+import { getUserDetails, updateUserProfile } from '../actions/userActions'
+import { USER_UPDATE_PROFILE_RESET } from '../constants/userConstants'
+function ProfileScreen() {
+    const navigate = useNavigate()
+    const [name, setName] = useState('')
+    const [email, setEmail] = useState('')
+    const [password, setPassword] = useState('')
+    const [confirmPassword, setConfirmPassword] = useState('')
+    const [message, setMessage] = useState('')
+
+    const dispatch = useDispatch()
+
+    const userDetails = useSelector(state => state.userDetails)
+    const { error, loading, user } = userDetails
+
+    const userLogin = useSelector(state => state.userLogin)
+    const { userInfo } = userLogin
+
+  const userUpdateProfile = useSelector(state => state.userUpdateProfile)
+  const { success } = userUpdateProfile
+
+
+    useEffect(() => {
+        if (!userInfo) {
+            navigate('/login')
+        } else {
+            if (!user || !user.name || success) {
+               dispatch({ type: USER_UPDATE_PROFILE_RESET })
+                dispatch(getUserDetails('profile'))
+            } else {
+                setName(user.name)
+                setEmail(user.email)
+            }
+        }
+    }, [dispatch, navigate, userInfo, user, success])
+
+    const submitHandler = (e) => {
+        e.preventDefault()
+
+        if (password !== confirmPassword) {
+            setMessage('Passwords do not match')
+        } else {
+           dispatch(updateUserProfile({ id: user._id, name, email, password }))
+           setMessage("")
+        }
+
+    }
+    return (
+        <Row>
+            <Col md={3}>
+                <h2>User Profile</h2>
+
+                {message && <Message variant='danger'>{message}</Message>}
+                {error && <Message variant='danger'>{error}</Message>}
+                {loading && <Loader />}
+                <Form onSubmit={submitHandler}>
+
+                    <Form.Group controlId='name'>
+                        <Form.Label>Name</Form.Label>
+                        <Form.Control
+                            required
+                            type='name'
+                            placeholder='Enter name'
+                            value={name}
+                            onChange={(e) => setName(e.target.value)}
+                        >
+                        </Form.Control>
+                    </Form.Group>
+
+                    <Form.Group controlId='email'>
+                        <Form.Label>Email Address</Form.Label>
+                        <Form.Control
+                            required
+                            type='email'
+                            placeholder='Enter Email'
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
+                        >
+                        </Form.Control>
+                    </Form.Group>
+
+                    <Form.Group controlId='password'>
+                        <Form.Label>Password</Form.Label>
+                        <Form.Control
+
+                            type='password'
+                            placeholder='Enter Password'
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
+                        >
+                        </Form.Control>
+                    </Form.Group>
+
+                    <Form.Group controlId='passwordConfirm'>
+                        <Form.Label>Confirm Password</Form.Label>
+                        <Form.Control
+
+                            type='password'
+                            placeholder='Confirm Password'
+                            value={confirmPassword}
+                            onChange={(e) => setConfirmPassword(e.target.value)}
+                        >
+                        </Form.Control>
+                    </Form.Group>
+
+                    <Button type='submit' variant='primary'>
+                        Update
+                </Button>
+
+                </Form>
+            </Col>
+
+            <Col md={9}>
+                <h2>My Orders</h2>
+           
+            </Col>
+        </Row>
+    )
+}
+
+export default ProfileScreen
+```
 ## step 30
+## step 31
+## step 32
+## step 33
+## step 34
+## step 35
