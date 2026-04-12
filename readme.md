@@ -8181,21 +8181,266 @@ export default ShippingScree
 ## step 31 frontend payment
 1. create paymentScreen.jsx
 ```jsx
+import React, { useState, useEffect } from 'react'
+import { Form, Button, Col } from 'react-bootstrap'
+import { useDispatch, useSelector } from 'react-redux'
+import FormContainer from '../components/FormContainer'
+import CheckoutSteps from '../components/CheckoutSteps'
+import { useNavigate } from 'react-router-dom'
+// import { savePaymentMethod } from '../actions/cartActions'
 
+function PaymentScreen() {
+    const navigate = useNavigate()
+    const cart = useSelector(state => state.cart)
+    const { shippingAddress } = cart
+
+    const dispatch = useDispatch()
+
+    const [paymentMethod, setPaymentMethod] = useState('PayPal')
+
+    if (!shippingAddress.address) {
+        navigate('/shipping')
+    }
+
+    const submitHandler = (e) => {
+        e.preventDefault()
+        // dispatch(savePaymentMethod(paymentMethod))
+        navigate('/placeorder')
+    }
+
+    return (
+        <FormContainer>
+            <CheckoutSteps step1 step2 step3 />
+
+            <Form onSubmit={submitHandler}>
+                <Form.Group>
+                    <Form.Label as='legend'>Select Method</Form.Label>
+                    <Col>
+                        <Form.Check
+                            type='radio'
+                            label='PayPal or Credit Card'
+                            id='paypal'
+                            name='paymentMethod'
+                            checked
+                            onChange={(e) => setPaymentMethod(e.target.value)}
+                        >
+
+                        </Form.Check>
+                    </Col>
+                </Form.Group>
+
+                <Button type='submit' variant='primary'>
+                    Continue
+                </Button>
+            </Form>
+        </FormContainer>
+    )
+}
+
+export default PaymentScree
 
 ```
-2.
-3.
-4.
-5.
-6.
-7.
-8.
-9.
-10.
-11.
-12.
-## step 32
+2. update app.js
+```js
+import { Container } from "react-bootstrap";
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import Footer from "./components/Footer";
+import Header from "./components/Header";
+import HomeScreen from "./screens/HomeScreen";
+import LoginScreen from "./screens/LoginScreen";
+import RegisterScreen from "./screens/RegisterScreen";
+import ProductScreen from "./screens/ProductScreen";
+import CartScreen from "./screens/CartScreen";
+import ProfileScreen from "./screens/ProfileScreen";
+import ShippingScreen from "./screens/ShippingScreen";
+import PaymentScreen from "./screens/PaymentScreen";
+function App() {
+  return (
+    <Router>
+      <Header />
+      <main className="py-3">
+        <Container>
+          <Routes>
+            <Route path="/" element={<HomeScreen />} />
+            <Route path="/login" element={<LoginScreen />} />
+             <Route path="/register" element={<RegisterScreen />} />
+              <Route path='/profile' element={<ProfileScreen />} />
+              <Route path='/shipping' element={<ShippingScreen />} />
+              <Route path='/payment' element={<PaymentScreen />} />
+            <Route path="/product/:id" element={<ProductScreen />} />
+            <Route path="/cart/:id?" element={<CartScreen />} />
+          </Routes>
+        </Container>
+      </main>
+      <Footer />
+    </Router>
+  );
+}
+
+export default App;
+
+```
+3. add payment methods, update the cartConstants.js
+```js
+export const CART_ADD_ITEM = "CART_ADD_ITEM";
+export const CART_REMOVE_ITEM = "CART_REMOVE_ITEM";
+export const CART_SAVE_SHIPPING_ADDRESS = "CART_SAVE_SHIPPING_ADDRESS";
+export const CART_SAVE_PAYMENT_METHOD = "CART_SAVE_PAYMENT_METHOD";
+```
+
+4. update cartReducer.js
+```js
+import { CART_ADD_ITEM, CART_REMOVE_ITEM , CART_SAVE_SHIPPING_ADDRESS, CART_SAVE_PAYMENT_METHOD,} from "../constants/cartConstants";
+
+export const cartReducer = (state = { cartItems: [], shippingAddress: {} }, action) => {
+  switch (action.type) {
+    case CART_ADD_ITEM:
+      const item = action.payload;
+      const existItem = state.cartItems.find((x) => x.product === item.product);
+      if (existItem) {
+        return {
+          ...state,
+          cartItems: state.cartItems.map((x) =>
+            x.product === existItem.product ? item : x
+          ),
+        };
+      } else {
+        return {
+          ...state,
+          cartItems: [...state.cartItems, item],
+        };
+      }
+    case CART_REMOVE_ITEM:
+      return {
+        ...state,
+        cartItems: state.cartItems.filter((x) => x.product !== action.payload),
+      };
+    case CART_SAVE_SHIPPING_ADDRESS:
+            return {
+                ...state,
+                shippingAddress: action.payload
+            };
+    case CART_SAVE_PAYMENT_METHOD:
+            return {
+                ...state,
+                paymentMethod: action.payload
+            }        
+    default:
+      return state;
+  }
+  
+}
+```
+5. update cartActions.js
+```js
+import axios from "axios";
+import { CART_ADD_ITEM ,CART_REMOVE_ITEM, CART_SAVE_SHIPPING_ADDRESS, CART_SAVE_PAYMENT_METHOD} from "../constants/cartConstants";
+
+export const addToCart = (id, qty) => async (dispatch, getState) => {
+  const { data } = await axios.get(`/api/products/${id}/`);
+  dispatch({
+    type: CART_ADD_ITEM,
+    payload: {
+      product: data._id,
+      name: data.name,
+      image: data.image,
+      price: data.price,
+      countInStock: data.countInStock,
+      qty,
+    },
+  });
+  localStorage.setItem("cartItems", JSON.stringify(getState().cart.cartItems));
+};
+
+export const removeFromCart = (id) => (dispatch, getState) => {
+  dispatch({
+    type: CART_REMOVE_ITEM,                   
+    payload: id,                        
+  });                                       
+  localStorage.setItem("cartItems", JSON.stringify(getState().cart.cartItems));                     
+};      
+
+export const saveShippingAddress = (data) => (dispatch) => {
+    dispatch({
+        type: CART_SAVE_SHIPPING_ADDRESS,
+        payload: data,
+    })
+
+    localStorage.setItem('shippingAddress', JSON.stringify(data))
+}
+
+export const savePaymentMethod = (data) => (dispatch) => {
+    dispatch({
+        type: CART_SAVE_PAYMENT_METHOD,
+        payload: data,
+    })
+
+    localStorage.setItem('paymentMethod', JSON.stringify(data))
+}
+```
+6. update paymentScreen.jsx
+```jsx
+import  { useState } from 'react'
+import { Form, Button, Col } from 'react-bootstrap'
+import { useDispatch, useSelector } from 'react-redux'
+import FormContainer from '../components/FormContainer'
+import CheckoutSteps from '../components/CheckoutSteps'
+import { useNavigate } from 'react-router-dom'
+import { savePaymentMethod } from '../actions/cartActions'
+
+function PaymentScreen() {
+    const navigate = useNavigate()
+    const cart = useSelector(state => state.cart)
+    const { shippingAddress } = cart
+
+    const dispatch = useDispatch()
+
+    const [paymentMethod, setPaymentMethod] = useState('PayPal')
+
+    if (!shippingAddress.address) {
+        navigate('/shipping')
+    }
+
+    const submitHandler = (e) => {
+        e.preventDefault()
+        dispatch(savePaymentMethod(paymentMethod))
+        navigate('/placeorder')
+    }
+
+    return (
+        <FormContainer>
+            <CheckoutSteps step1 step2 step3 />
+
+            <Form onSubmit={submitHandler}>
+                <Form.Group>
+                    <Form.Label as='legend'>Select Method</Form.Label>
+                    <Col>
+                        <Form.Check
+                            type='radio'
+                            label='PayPal or Credit Card'
+                            id='paypal'
+                            name='paymentMethod'
+                            checked
+                            onChange={(e) => setPaymentMethod(e.target.value)}
+                        >
+
+                        </Form.Check>
+                    </Col>
+                </Form.Group>
+
+                <Button type='submit' variant='primary'>
+                    Continue
+                </Button>
+            </Form>
+        </FormContainer>
+    )
+}
+
+export default PaymentScreen
+```
+
+## step 32 place order 
+1. 
 ## step 33
 ## step 34
 ## step 35
