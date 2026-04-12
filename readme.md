@@ -5832,7 +5832,8 @@ function LoginScreen() {
 
     const dispatch = useDispatch();
 
-    const redirect = location.search ? location.search.split('=')[1] : '/';
+    const redirect = location.search ? location.search.split('=')[1] : '/';  // this is a bug need to fix below, else error in shipping
+    const redirect = new URLSearchParams(location.search).get('redirect') || '/';
 
     const userLogin = useSelector(state => state.userLogin);
     const { error, loading, userInfo } = userLogin;
@@ -7477,8 +7478,723 @@ function ProfileScreen() {
 
 export default ProfileScreen
 ```
-## step 30
-## step 31
+## step 30 product shipping
+
+1. all the shipping details will be keep insie localstorage, back to frontend create shipping screen, 
+```jsx
+import  { useState} from 'react'
+import { Form, Button } from 'react-bootstrap'
+import { useDispatch, useSelector } from 'react-redux'
+import FormContainer from '../components/FormContainer'
+import { useNavigate } from 'react-router-dom'
+
+function ShippingScreen() {
+    const navigate = useNavigate()
+    const cart = useSelector(state => state.cart)
+    const { shippingAddress } = cart
+
+
+    const [address, setAddress] = useState('')
+    const [city, setCity] = useState('')
+    const [postalCode, setPostalCode] = useState('')
+    const [country, setCountry] = useState('')
+
+    const submitHandler = (e) => {
+        e.preventDefault()
+        
+        navigate('/payment')
+    }
+
+    return (
+        <FormContainer>
+            {/* <CheckoutSteps step1 step2 /> */}
+            <h1>Shipping</h1>
+            <Form onSubmit={submitHandler}>
+
+                <Form.Group controlId='address'>
+                    <Form.Label>Address</Form.Label>
+                    <Form.Control
+                        required
+                        type='text'
+                        placeholder='Enter address'
+                        value={address ? address : ''}
+                        onChange={(e) => setAddress(e.target.value)}
+                    >
+                    </Form.Control>
+                </Form.Group>
+
+                <Form.Group controlId='city'>
+                    <Form.Label>City</Form.Label>
+                    <Form.Control
+                        required
+                        type='text'
+                        placeholder='Enter city'
+                        value={city ? city : ''}
+                        onChange={(e) => setCity(e.target.value)}
+                    >
+                    </Form.Control>
+                </Form.Group>
+
+                <Form.Group controlId='postalCode'>
+                    <Form.Label>Postal Code</Form.Label>
+                    <Form.Control
+                        required
+                        type='text'
+                        placeholder='Enter postal code'
+                        value={postalCode ? postalCode : ''}
+                        onChange={(e) => setPostalCode(e.target.value)}
+                    >
+                    </Form.Control>
+                </Form.Group>
+
+                <Form.Group controlId='country'>
+                    <Form.Label>Country</Form.Label>
+                    <Form.Control
+                        required
+                        type='text'
+                        placeholder='Enter country'
+                        value={country ? country : ''}
+                        onChange={(e) => setCountry(e.target.value)}
+                    >
+                    </Form.Control>
+                </Form.Group>
+
+                <Button type='submit' variant='primary'>
+                    Continue
+                </Button>
+            </Form>
+        </FormContainer>
+    )
+}
+
+export default ShippingScree
+```
+2. update app.js
+```js
+import { Container } from "react-bootstrap";
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import Footer from "./components/Footer";
+import Header from "./components/Header";
+import HomeScreen from "./screens/HomeScreen";
+import LoginScreen from "./screens/LoginScreen";
+import RegisterScreen from "./screens/RegisterScreen";
+import ProductScreen from "./screens/ProductScreen";
+import CartScreen from "./screens/CartScreen";
+import ProfileScreen from "./screens/ProfileScreen";
+import ShippingScreen from "./screens/ShippingScreen";
+function App() {
+  return (
+    <Router>
+      <Header />
+      <main className="py-3">
+        <Container>
+          <Routes>
+            <Route path="/" element={<HomeScreen />} />
+            <Route path="/login" element={<LoginScreen />} />
+             <Route path="/register" element={<RegisterScreen />} />
+              <Route path='/profile' element={<ProfileScreen />} />
+              <Route path='/shipping' element={<ShippingScreen />} />
+            <Route path="/product/:id" element={<ProductScreen />} />
+            <Route path="/cart/:id?" element={<CartScreen />} />
+          </Routes>
+        </Container>
+      </main>
+      <Footer />
+    </Router>
+  );
+}
+
+export default App;
+
+```
+3. update Cartactions.js, we can create the redux in any order, this time demo from actions.js
+```js
+import axios from "axios";
+import { CART_ADD_ITEM ,CART_REMOVE_ITEM, CART_SAVE_SHIPPING_ADDRESS} from "../constants/cartConstants";
+
+export const addToCart = (id, qty) => async (dispatch, getState) => {
+  const { data } = await axios.get(`/api/products/${id}/`);
+  dispatch({
+    type: CART_ADD_ITEM,
+    payload: {
+      product: data._id,
+      name: data.name,
+      image: data.image,
+      price: data.price,
+      countInStock: data.countInStock,
+      qty,
+    },
+  });
+  localStorage.setItem("cartItems", JSON.stringify(getState().cart.cartItems));
+};
+
+export const removeFromCart = (id) => (dispatch, getState) => {
+  dispatch({
+    type: CART_REMOVE_ITEM,                   
+    payload: id,                        
+  });                                       
+  localStorage.setItem("cartItems", JSON.stringify(getState().cart.cartItems));                     
+};      
+
+export const saveShippingAddress = (data) => (dispatch) => {
+    dispatch({
+        type: CART_SAVE_SHIPPING_ADDRESS,
+        payload: data,
+    })
+
+    localStorage.setItem('shippingAddress', JSON.stringify(data))
+}
+```
+4. update cartConstants.js
+```js
+export const CART_ADD_ITEM = 'CART_ADD_ITEM'
+export const CART_REMOVE_ITEM = 'CART_REMOVE_ITEM'
+export const CART_SAVE_SHIPPING_ADDRESS = 'CART_SAVE_SHIPPING_ADDRESS'
+```
+5. update cartReducer.js
+```js
+import { CART_ADD_ITEM, CART_REMOVE_ITEM , CART_SAVE_SHIPPING_ADDRESS} from "../constants/cartConstants";
+
+export const cartReducer = (state = { cartItems: [] , shippingAddress:{}}, action) => {
+  switch (action.type) {
+    case CART_ADD_ITEM:
+      const item = action.payload;
+      const existItem = state.cartItems.find((x) => x.product === item.product);
+      if (existItem) {
+        return {
+          ...state,
+          cartItems: state.cartItems.map((x) =>
+            x.product === existItem.product ? item : x
+          ),
+        };
+      } else {
+        return {
+          ...state,
+          cartItems: [...state.cartItems, item],
+        };
+      }
+    case CART_REMOVE_ITEM:
+      return {
+        ...state,
+        cartItems: state.cartItems.filter((x) => x.product !== action.payload),
+      };
+        case CART_SAVE_SHIPPING_ADDRESS:
+            return {
+                ...state,
+                shippingAddress: action.payload
+            };
+    default:
+      return state;
+  }
+  
+}
+```
+6. update the store.js
+```js
+import { configureStore } from '@reduxjs/toolkit';
+import { productReducer, productDetailsReducer} from "./reducers/productReducers"; // import
+import {cartReducer} from "./reducers/cartReducers";
+import { userLoginReducer, userRegisterReducer, userDetailsReducer, userUpdateProfileReducer } from './reducers/userReducers';
+
+const cartItemsFromStorage = localStorage.getItem('cartItems')
+  ? JSON.parse(localStorage.getItem('cartItems'))
+  : [];
+const userInfoFromStorage = localStorage.getItem('userInfo')
+  ? JSON.parse(localStorage.getItem('userInfo'))
+  : null;
+ 
+const shippingAddressFromStorage = localStorage.getItem('shippingAddress')
+  ? JSON.parse(localStorage.getItem('shippingAddress'))
+  : {};  
+// 👇 初始化 Redux 状态
+const preloadedState = {
+  cart: {
+    cartItems: cartItemsFromStorage, // 给 cart reducer 赋值
+    shippingAddress: shippingAddressFromStorage, // 给 cart reducer 赋值
+  },
+  userLogin: {
+    userInfo: userInfoFromStorage, // 给 userLogin reducer 赋值
+  },
+  
+};
+
+export const store = configureStore({
+  reducer: {
+      productList: productReducer,
+      productDetails: productDetailsReducer,
+      cart: cartReducer,
+      userLogin: userLoginReducer,
+      userRegister: userRegisterReducer,
+      userDetails: userDetailsReducer,
+      userUpdateProfile: userUpdateProfileReducer,
+  },
+  // ✅ Thunk + DevTools ARE AUTO INCLUDED — NO SETUP NEEDED!
+  preloadedState : preloadedState
+});
+
+export default store;
+
+```
+7. update shppingScreen.jsx
+```jsx
+
+import  { useState} from 'react'
+import { Form, Button } from 'react-bootstrap'
+import { useDispatch, useSelector } from 'react-redux'
+import FormContainer from '../components/FormContainer'
+// import CheckoutSteps from '../components/CheckoutSteps'
+import { saveShippingAddress } from '../actions/cartActions'
+import { useNavigate } from 'react-router-dom'
+
+function ShippingScreen() {
+    const navigate = useNavigate()
+    const cart = useSelector(state => state.cart)
+    const { shippingAddress } = cart
+
+    const dispatch = useDispatch()
+
+    const [address, setAddress] = useState(shippingAddress.address)
+    const [city, setCity] = useState(shippingAddress.city)
+    const [postalCode, setPostalCode] = useState(shippingAddress.postalCode)
+    const [country, setCountry] = useState(shippingAddress.country)
+
+    const submitHandler = (e) => {
+        e.preventDefault()
+        dispatch(saveShippingAddress({ address, city, postalCode, country }))
+        navigate('/payment')
+    }
+
+    return (
+        <FormContainer>
+            {/* <CheckoutSteps step1 step2 /> */}
+            <h1>Shipping</h1>
+            <Form onSubmit={submitHandler}>
+
+                <Form.Group controlId='address'>
+                    <Form.Label>Address</Form.Label>
+                    <Form.Control
+                        required
+                        type='text'
+                        placeholder='Enter address'
+                        value={address ? address : ''}
+                        onChange={(e) => setAddress(e.target.value)}
+                    >
+                    </Form.Control>
+                </Form.Group>
+
+                <Form.Group controlId='city'>
+                    <Form.Label>City</Form.Label>
+                    <Form.Control
+                        required
+                        type='text'
+                        placeholder='Enter city'
+                        value={city ? city : ''}
+                        onChange={(e) => setCity(e.target.value)}
+                    >
+                    </Form.Control>
+                </Form.Group>
+
+                <Form.Group controlId='postalCode'>
+                    <Form.Label>Postal Code</Form.Label>
+                    <Form.Control
+                        required
+                        type='text'
+                        placeholder='Enter postal code'
+                        value={postalCode ? postalCode : ''}
+                        onChange={(e) => setPostalCode(e.target.value)}
+                    >
+                    </Form.Control>
+                </Form.Group>
+
+                <Form.Group controlId='country'>
+                    <Form.Label>Country</Form.Label>
+                    <Form.Control
+                        required
+                        type='text'
+                        placeholder='Enter country'
+                        value={country ? country : ''}
+                        onChange={(e) => setCountry(e.target.value)}
+                    >
+                    </Form.Control>
+                </Form.Group>
+
+                <Button type='submit' variant='primary'>
+                    Continue
+                </Button>
+            </Form>
+        </FormContainer>
+    )
+}
+
+export default ShippingScreen
+
+```
+8. type in address and see it can saved into localstorage
+9. bug fixed in loginscreen.jsx
+```jsx
+import React, { useState, useEffect } from 'react'
+import { Link, useNavigate, useLocation } from 'react-router-dom'
+import { Form, Button, Row, Col } from 'react-bootstrap'
+import { useDispatch, useSelector } from 'react-redux'
+import Loader from '../components/Loader'
+import Message from '../components/Message'
+import FormContainer from '../components/FormContainer'
+import { login } from '../actions/userActions'
+
+function LoginScreen() {
+    const navigate = useNavigate();
+    const location = useLocation();
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+
+    const dispatch = useDispatch();
+
+   const redirect = new URLSearchParams(location.search).get('redirect') || '/';   // this is the bug fixed
+
+    const userLogin = useSelector(state => state.userLogin);
+    const { error, loading, userInfo } = userLogin;
+
+    useEffect(() => {
+        if (userInfo) {
+            navigate(redirect)
+        }
+    }, [navigate, userInfo, redirect])
+
+    const submitHandler = (e) => {
+        e.preventDefault()
+        dispatch(login(email, password))
+    }
+
+    return (
+        <FormContainer>
+            <h1>Sign In</h1>
+            {error && <Message variant='danger'>{error}</Message>}
+            {loading && <Loader />}
+            <Form onSubmit={submitHandler}>
+
+                <Form.Group controlId='email' className='mb-3'>
+                    <Form.Label>Email Address</Form.Label>
+                    <Form.Control
+                        type='email'
+                        placeholder='Enter Email'
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                    >
+                    </Form.Control>
+                </Form.Group>
+
+
+                <Form.Group controlId='password' className='mb-4'>
+                    <Form.Label>Password</Form.Label>
+                    <Form.Control
+                        type='password'
+                        placeholder='Enter Password'
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                    >
+                    </Form.Control>
+                </Form.Group>
+
+                <Button type='submit' variant='primary'>
+                    Sign In
+                </Button>
+            </Form>
+
+            <Row className='py-3'>
+                <Col>
+                    New Customer? <Link
+                        to={redirect ? `/register?redirect=${redirect}` : '/register'}>
+                        Register
+                        </Link>
+                </Col>
+            </Row>
+
+        </FormContainer>
+    )
+}
+
+export default LoginScreen
+```
+10. update the cartScreen.jsx for the redirect path 
+```jsx
+import {Row, Col, Form, Button, ListGroup, Card, Image} from "react-bootstrap";
+import Message from "../components/Message";
+import { useEffect } from "react";
+import {addToCart, removeFromCart} from "../actions/cartActions";
+import { useDispatch, useSelector } from "react-redux";
+import { Link, useParams, useNavigate, useLocation } from "react-router-dom";
+const CartScreen = () => {
+    const {id} = useParams();
+    const navigate = useNavigate();
+    const dispatch = useDispatch();
+    const location = useLocation();
+    const qty = location.search ? Number(location.search.split("=")[1]) : 1;
+    const cart = useSelector((state) => state.cart);
+    const {cartItems} = cart;
+    useEffect(() => {
+        if(id){
+            dispatch(addToCart(id, qty));
+        }
+    }, [dispatch, id, qty]);
+    const removeFromCartHandler = (id) => {
+        dispatch(removeFromCart(id))
+    }
+
+    const checkoutHandler = () => {
+        navigate('/login?redirect=/shipping')   // fixed this line
+    }
+
+  return (
+  <Row>
+            <Col md={8}>
+                <h1>Shopping Cart</h1>
+                {cartItems.length === 0 ? (
+                    <Message variant='info'>
+                        Your cart is empty <Link to='/'>Go Back</Link>
+                    </Message>
+                ) : (
+                        <ListGroup variant='flush'>
+                            {cartItems.map(item => (
+                                <ListGroup.Item key={item.product}>
+                                    <Row>
+                                        <Col md={2}>
+                                            <Image src={item.image} alt={item.name} fluid rounded />
+                                        </Col>
+                                        <Col md={3}>
+                                            <Link to={`/product/${item.product}`}>{item.name}</Link>
+                                        </Col>
+
+                                        <Col md={2}>
+                                            ${item.price}
+                                        </Col>
+
+                                        <Col md={3}>
+                                            <Form.Control
+                                                as="select"
+                                                value={item.qty}
+                                                onChange={(e) => dispatch(addToCart(item.product, Number(e.target.value)))}
+                                            >
+                                                {
+
+                                                    [...Array(item.countInStock).keys()].map((x) => (
+                                                        <option key={x + 1} value={x + 1}>
+                                                            {x + 1}
+                                                        </option>
+                                                    ))
+                                                }
+
+                                            </Form.Control>
+                                        </Col>
+
+                                        <Col md={1}>
+                                            <Button
+                                                type='button'
+                                                variant='light'
+                                                onClick={() => removeFromCartHandler(item.product)}
+                                            >
+                                                <i className='fas fa-trash'></i>
+                                            </Button>
+                                        </Col>
+                                    </Row>
+                                </ListGroup.Item>
+                            ))}
+                        </ListGroup>
+                    )}
+            </Col>
+
+            <Col md={4}>
+                <Card>
+                    <ListGroup variant='flush'>
+                        <ListGroup.Item>
+                            <h2>Subtotal ({cartItems.reduce((acc, item) => acc + item.qty, 0)}) items</h2>
+                            ${cartItems.reduce((acc, item) => acc + item.qty * item.price, 0).toFixed(2)}
+                        </ListGroup.Item>
+                    </ListGroup>
+
+                    <ListGroup.Item>
+                        <Button
+                            type='button'
+                            className='w-100 py-2'
+                            disabled={cartItems.length === 0}
+                            onClick={checkoutHandler}
+                        >
+                            Proceed To Checkout
+                        </Button>
+                    </ListGroup.Item>
+
+
+                </Card>
+            </Col>
+        </Row>
+  )
+}
+
+export default CartScreen
+```
+11. add checkout steps progress bar
+```jsx
+import { Nav } from 'react-bootstrap'
+import { LinkContainer } from 'react-router-bootstrap'
+
+function CheckoutSteps({ step1, step2, step3, step4 }) {
+
+    return (
+        <Nav className='justify-content-center mb-4'>
+            <Nav.Item>
+                {step1 ? (
+                    <LinkContainer to='/login'>
+                        <Nav.Link>Login</Nav.Link>
+                    </LinkContainer>
+                ) : (
+                        <Nav.Link disabled>Login</Nav.Link>
+                    )}
+            </Nav.Item>
+
+            <Nav.Item>
+                {step2 ? (
+                    <LinkContainer to='/shipping'>
+                        <Nav.Link>Shipping</Nav.Link>
+                    </LinkContainer>
+                ) : (
+                        <Nav.Link disabled>Shipping</Nav.Link>
+                    )}
+            </Nav.Item>
+
+            <Nav.Item>
+                {step3 ? (
+                    <LinkContainer to='/payment'>
+                        <Nav.Link>Payment</Nav.Link>
+                    </LinkContainer>
+                ) : (
+                        <Nav.Link disabled>Payment</Nav.Link>
+                    )}
+            </Nav.Item>
+
+            <Nav.Item>
+                {step4 ? (
+                    <LinkContainer to='/placeorder'>
+                        <Nav.Link>Place Order</Nav.Link>
+                    </LinkContainer>
+                ) : (
+                        <Nav.Link disabled>Place Order</Nav.Link>
+                    )}
+            </Nav.Item>
+        </Nav>
+    )
+}
+
+export default CheckoutSteps
+
+```
+12. update shippingScreen.jsx
+```jsx
+import  { useState} from 'react'
+import { Form, Button } from 'react-bootstrap'
+import { useDispatch, useSelector } from 'react-redux'
+import FormContainer from '../components/FormContainer'
+import CheckoutSteps from '../components/CheckoutSteps'
+import { saveShippingAddress } from '../actions/cartActions'
+import { useNavigate } from 'react-router-dom'
+
+function ShippingScreen() {
+    const navigate = useNavigate()
+    const cart = useSelector(state => state.cart)
+    const { shippingAddress } = cart
+
+    const dispatch = useDispatch()
+
+    const [address, setAddress] = useState(shippingAddress.address)
+    const [city, setCity] = useState(shippingAddress.city)
+    const [postalCode, setPostalCode] = useState(shippingAddress.postalCode)
+    const [country, setCountry] = useState(shippingAddress.country)
+
+    const submitHandler = (e) => {
+        e.preventDefault()
+        dispatch(saveShippingAddress({ address, city, postalCode, country }))
+        navigate('/payment')
+    }
+
+    return (
+        <FormContainer>
+            <CheckoutSteps step1 step2 />
+            <h1>Shipping</h1>
+            <Form onSubmit={submitHandler}>
+
+                <Form.Group controlId='address'>
+                    <Form.Label>Address</Form.Label>
+                    <Form.Control
+                        required
+                        type='text'
+                        placeholder='Enter address'
+                        value={address ? address : ''}
+                        onChange={(e) => setAddress(e.target.value)}
+                    >
+                    </Form.Control>
+                </Form.Group>
+
+                <Form.Group controlId='city'>
+                    <Form.Label>City</Form.Label>
+                    <Form.Control
+                        required
+                        type='text'
+                        placeholder='Enter city'
+                        value={city ? city : ''}
+                        onChange={(e) => setCity(e.target.value)}
+                    >
+                    </Form.Control>
+                </Form.Group>
+
+                <Form.Group controlId='postalCode'>
+                    <Form.Label>Postal Code</Form.Label>
+                    <Form.Control
+                        required
+                        type='text'
+                        placeholder='Enter postal code'
+                        value={postalCode ? postalCode : ''}
+                        onChange={(e) => setPostalCode(e.target.value)}
+                    >
+                    </Form.Control>
+                </Form.Group>
+
+                <Form.Group controlId='country'>
+                    <Form.Label>Country</Form.Label>
+                    <Form.Control
+                        required
+                        type='text'
+                        placeholder='Enter country'
+                        value={country ? country : ''}
+                        onChange={(e) => setCountry(e.target.value)}
+                    >
+                    </Form.Control>
+                </Form.Group>
+
+                <Button type='submit' variant='primary'>
+                    Continue
+                </Button>
+            </Form>
+        </FormContainer>
+    )
+}
+
+export default ShippingScree
+```
+## step 31 frontend payment
+1. create paymentScreen.jsx
+```jsx
+
+
+```
+2.
+3.
+4.
+5.
+6.
+7.
+8.
+9.
+10.
+11.
+12.
 ## step 32
 ## step 33
 ## step 34

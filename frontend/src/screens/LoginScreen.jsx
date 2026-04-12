@@ -15,7 +15,7 @@ function LoginScreen() {
 
     const dispatch = useDispatch();
 
-    const redirect = location.search ? location.search.split('=')[1] : '/';
+   const redirect = new URLSearchParams(location.search).get('redirect') || '/';
 
     const userLogin = useSelector(state => state.userLogin);
     const { error, loading, userInfo } = userLogin;
