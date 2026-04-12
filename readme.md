@@ -8440,7 +8440,420 @@ export default PaymentScreen
 ```
 
 ## step 32 place order 
-1. 
+1. create placeOrderScreen.jsx
+```jsx
+import React, { useState, useEffect } from 'react'
+import { Button, Row, Col, ListGroup, Image, Card } from 'react-bootstrap'
+import { Link, useNavigate } from 'react-router-dom'
+import { useDispatch, useSelector } from 'react-redux'
+import Message from '../components/Message'
+import CheckoutSteps from '../components/CheckoutSteps'
+
+
+function PlaceOrderScreen() {
+    const navigate = useNavigate()
+    
+
+    const dispatch = useDispatch()
+
+    const cart = useSelector(state => state.cart) // select cart from store
+
+    cart.itemsPrice = cart.cartItems.reduce((acc, item) => acc + item.price * item.qty, 0).toFixed(2)
+    cart.shippingPrice = (cart.itemsPrice > 100 ? 0 : 10).toFixed(2)
+    cart.taxPrice = Number((0.082) * cart.itemsPrice).toFixed(2)
+
+    cart.totalPrice = (Number(cart.itemsPrice) + Number(cart.shippingPrice) + Number(cart.taxPrice)).toFixed(2)
+
+
+    if (!cart.paymentMethod) {
+        navigate('/payment')
+    }
+
+    const placeOrder = () => {
+       
+    }
+
+    return (
+        <div>
+            <CheckoutSteps step1 step2 step3 step4 />
+            <Row>
+                <Col md={8}>
+                    <ListGroup variant='flush'>
+                        <ListGroup.Item>
+                            <h2>Shipping</h2>
+
+                            <p>
+                                <strong>Shipping: </strong>
+                                {cart.shippingAddress.address},  {cart.shippingAddress.city}
+                                {'  '}
+                                {cart.shippingAddress.postalCode},
+                                {'  '}
+                                {cart.shippingAddress.country}
+                            </p>
+                        </ListGroup.Item>
+
+                        <ListGroup.Item>
+                            <h2>Payment Method</h2>
+                            <p>
+                                <strong>Method: </strong>
+                                {cart.paymentMethod}
+                            </p>
+                        </ListGroup.Item>
+
+                        <ListGroup.Item>
+                            <h2>Order Items</h2>
+                            {cart.cartItems.length === 0 ? <Message variant='info'>
+                                Your cart is empty
+                            </Message> : (
+                                    <ListGroup variant='flush'>
+                                        {cart.cartItems.map((item, index) => (
+                                            <ListGroup.Item key={index}>
+                                                <Row>
+                                                    <Col md={1}>
+                                                        <Image src={item.image} alt={item.name} fluid rounded />
+                                                    </Col>
+
+                                                    <Col>
+                                                        <Link to={`/product/${item.product}`}>{item.name}</Link>
+                                                    </Col>
+
+                                                    <Col md={4}>
+                                                        {item.qty} X ${item.price} = ${(item.qty * item.price).toFixed(2)}
+                                                    </Col>
+                                                </Row>
+                                            </ListGroup.Item>
+                                        ))}
+                                    </ListGroup>
+                                )}
+                        </ListGroup.Item>
+
+                    </ListGroup>
+
+                </Col>
+
+                <Col md={4}>
+                    <Card>
+                        <ListGroup variant='flush'>
+                            <ListGroup.Item>
+                                <h2>Order Summary</h2>
+                            </ListGroup.Item>
+
+                            <ListGroup.Item>
+                                <Row>
+                                    <Col>Items:</Col>
+                                    <Col>${cart.itemsPrice}</Col>
+                                </Row>
+                            </ListGroup.Item>
+
+                            <ListGroup.Item>
+                                <Row>
+                                    <Col>Shipping:</Col>
+                                    <Col>${cart.shippingPrice}</Col>
+                                </Row>
+                            </ListGroup.Item>
+
+                            <ListGroup.Item>
+                                <Row>
+                                    <Col>Tax:</Col>
+                                    <Col>${cart.taxPrice}</Col>
+                                </Row>
+                            </ListGroup.Item>
+
+                            <ListGroup.Item>
+                                <Row>
+                                    <Col>Total:</Col>
+                                    <Col>${cart.totalPrice}</Col>
+                                </Row>
+                            </ListGroup.Item>
+
+
+                            <ListGroup.Item>
+                                {/* {error && <Message variant='danger'>{error}</Message>} */}
+                            </ListGroup.Item>
+
+                            <ListGroup.Item>
+                                <Button
+                                    type='button'
+                                    className='btn-block'
+                                    disabled={cart.cartItems === 0}
+                                    onClick={placeOrder}
+                                >
+                                    Place Order
+                                </Button>
+                            </ListGroup.Item>
+
+                        </ListGroup>
+                    </Card>
+                </Col>
+            </Row>
+        </div>
+    )
+}
+
+export default PlaceOrderScreen
+```
+2. update app.js
+```js
+import { Container } from "react-bootstrap";
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import Footer from "./components/Footer";
+import Header from "./components/Header";
+import HomeScreen from "./screens/HomeScreen";
+import LoginScreen from "./screens/LoginScreen";
+import RegisterScreen from "./screens/RegisterScreen";
+import ProductScreen from "./screens/ProductScreen";
+import CartScreen from "./screens/CartScreen";
+import ProfileScreen from "./screens/ProfileScreen";
+import ShippingScreen from "./screens/ShippingScreen";
+import PaymentScreen from "./screens/PaymentScreen";
+import PlaceOrderScreen from "./screens/PlaceOrderScreen";
+function App() {
+  return (
+    <Router>
+      <Header />
+      <main className="py-3">
+        <Container>
+          <Routes>
+            <Route path="/" element={<HomeScreen />} />
+            <Route path="/login" element={<LoginScreen />} />
+             <Route path="/register" element={<RegisterScreen />} />
+              <Route path='/profile' element={<ProfileScreen />} />
+              <Route path='/shipping' element={<ShippingScreen />} />
+              <Route path='/payment' element={<PaymentScreen />} />
+              <Route path='/placeorder' element={<PlaceOrderScreen />} />
+            <Route path="/product/:id" element={<ProductScreen />} />
+            <Route path="/cart/:id?" element={<CartScreen />} />
+          </Routes>
+        </Container>
+      </main>
+      <Footer />
+    </Router>
+  );
+}
+
+export default App;
+
+```
+3. go to backend side, 
+4. update order_view.py
+```py
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import IsAuthenticated, IsAdminUser
+from rest_framework.response import Response
+
+from base.models import Product, Order, OrderItem, ShippingAddress
+from base.serializers import ProductSerializer, OrderSerializer
+
+from rest_framework import status
+from datetime import datetime
+
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def addOrderItems(request):
+    user = request.user
+    data = request.data
+
+    orderItems = data['orderItems']
+
+    if orderItems and len(orderItems) == 0:
+        return Response({'detail': 'No Order Items'}, status=status.HTTP_400_BAD_REQUEST)
+    else:
+
+        # (1) Create order
+
+        order = Order.objects.create(
+            user=user,
+            paymentMethod=data['paymentMethod'],
+            taxPrice=data['taxPrice'],
+            shippingPrice=data['shippingPrice'],
+            totalPrice=data['totalPrice']
+        )
+
+        # (2) Create shipping address
+
+        shipping = ShippingAddress.objects.create(
+            order=order,
+            address=data['shippingAddress']['address'],
+            city=data['shippingAddress']['city'],
+            postalCode=data['shippingAddress']['postalCode'],
+            country=data['shippingAddress']['country'],
+        )
+
+        # (3) Create order items adn set order to orderItem relationship
+        for i in orderItems:
+            product = Product.objects.get(_id=i['product'])
+
+            item = OrderItem.objects.create(
+                product=product,
+                order=order,
+                name=product.name,
+                qty=i['qty'],
+                price=i['price'],
+                image=product.image.url,
+            )
+
+            # (4) Update stock
+
+            product.countInStock -= item.qty
+            product.save()
+
+
+```
+5. update  order_urls.py
+```py
+from django.urls import path
+from base.views import order_views as views
+
+urlpatterns = [
+
+    path('add/', views.addOrderItems, name='orders-add'),
+]
+```
+6. update the serializer.py
+```py
+from rest_framework import serializers
+from django.contrib.auth.models import User
+from rest_framework_simplejwt.tokens import RefreshToken
+from .models import Product, Order, OrderItem, ShippingAddress
+
+class UserSerializer(serializers.ModelSerializer):
+    name = serializers.SerializerMethodField(read_only=True)
+    _id = serializers.SerializerMethodField(read_only=True)
+    isAdmin = serializers.SerializerMethodField(read_only=True)
+    class Meta:
+        model = User
+        fields = ['id', 'username', 'email', 'name', 'isAdmin', '_id']
+    def get__id(self, obj):
+        return obj.id
+    def get_isAdmin(self, obj):
+        return obj.is_staff
+    def get_name(self, obj):
+        name = obj.first_name
+        if name == '':
+            name = obj.email
+        return name
+
+class UserSerializerWithToken(UserSerializer):
+    token = serializers.SerializerMethodField(read_only=True)
+    class Meta:
+        model = User
+        fields = ['id', 'username', 'email', 'name', 'isAdmin', '_id', 'token']
+    def get_token(self, obj):
+        token = RefreshToken.for_user(obj)
+        return str(token.access_token)
+class ProductSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Product
+        fields = '__all__'
+
+class ShippingAddressSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ShippingAddress
+        fields = '__all__'
+
+
+class OrderItemSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = OrderItem
+        fields = '__all__'        
+
+class OrderSerializer(serializers.ModelSerializer):
+    orderItems = serializers.SerializerMethodField(read_only=True)
+    shippingAddress = serializers.SerializerMethodField(read_only=True)
+    user = serializers.SerializerMethodField(read_only=True)
+
+    class Meta:
+        model = Order
+        fields = '__all__'
+
+    def get_orderItems(self, obj):
+        items = obj.orderitem_set.all()
+        serializer = OrderItemSerializer(items, many=True)
+        return serializer.data
+
+    def get_shippingAddress(self, obj):
+        try:
+            address = ShippingAddressSerializer(
+                obj.shippingaddress, many=False).data
+        except:
+            address = False
+        return address
+
+    def get_user(self, obj):
+        user = obj.user
+        serializer = UserSerializer(user, many=False)
+        return serializer.data        
+```
+7. then update the order_views.py
+```py
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import IsAuthenticated, IsAdminUser
+from rest_framework.response import Response
+
+from base.models import Product, Order, OrderItem, ShippingAddress
+from base.serializer import  OrderSerializer
+
+from rest_framework import status
+from datetime import datetime
+
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def addOrderItems(request):
+    user = request.user
+    data = request.data
+
+    orderItems = data['orderItems']
+
+    if orderItems and len(orderItems) == 0:
+        return Response({'detail': 'No Order Items'}, status=status.HTTP_400_BAD_REQUEST)
+    else:
+
+        # (1) Create order
+
+        order = Order.objects.create(
+            user=user,
+            paymentMethod=data['paymentMethod'],
+            taxPrice=data['taxPrice'],
+            shippingPrice=data['shippingPrice'],
+            totalPrice=data['totalPrice']
+        )
+
+        # (2) Create shipping address
+
+        shipping = ShippingAddress.objects.create(
+            order=order,
+            address=data['shippingAddress']['address'],
+            city=data['shippingAddress']['city'],
+            postalCode=data['shippingAddress']['postalCode'],
+            country=data['shippingAddress']['country'],
+        )
+
+        # (3) Create order items adn set order to orderItem relationship
+        for i in orderItems:
+            product = Product.objects.get(_id=i['product'])
+
+            item = OrderItem.objects.create(
+                product=product,
+                order=order,
+                name=product.name,
+                qty=i['qty'],
+                price=i['price'],
+                image=product.image.url,
+            )
+
+            # (4) Update stock
+
+            product.countInStock -= item.qty
+            product.save()
+
+        serializer = OrderSerializer(order, many=False)
+        return Response(serializer.data)
+
+```
+## step 31
+## step 32
 ## step 33
 ## step 34
 ## step 35
