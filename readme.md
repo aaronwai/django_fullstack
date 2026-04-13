@@ -9507,7 +9507,477 @@ export const cartReducer = (state = { cartItems: [], shippingAddress: {} }, acti
 }
 ```
 
-## step 32
+## step 32 getorder by endpoint
+1. backto backend , update order_views.py
+```py
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def getOrderById(request, pk):
+
+    user = request.user
+
+    try:
+        order = Order.objects.get(_id=pk)
+        if user.is_staff or order.user == user:   // if user is staff for checking the order
+            serializer = OrderSerializer(order, many=False)
+            return Response(serializer.data)
+        else:
+            Response({'detail': 'Not authorized to view this order'},
+                     status=status.HTTP_400_BAD_REQUEST)
+    except:
+        return Response({'detail': 'Order does not exist'}, status=status.HTTP_400_BAD_REQUEST)
+
+```
+2. update order_urls.py
+```py
+from django.urls import path
+from base.views import order_views as views
+
+urlpatterns = [
+    path('add/', views.addOrderItems, name='orders-add'),
+    path('<str:pk>/', views.getOrderById, name='user-order'),
+]
+```
+3. goto postman and test, once the backend is fine then back to frontend, create orderConstant.js
+```js
+export const ORDER_CREATE_REQUEST = 'ORDER_CREATE_REQUEST'
+export const ORDER_CREATE_SUCCESS = 'ORDER_CREATE_SUCCESS'
+export const ORDER_CREATE_FAIL = 'ORDER_CREATE_FAIL'
+
+export const ORDER_CREATE_RESET = 'ORDER_CREATE_RESET'
+
+export const ORDER_DETAILS_REQUEST = 'ORDER_DETAILS_REQUEST'
+export const ORDER_DETAILS_SUCCESS = 'ORDER_DETAILS_SUCCESS'
+export const ORDER_DETAILS_FAIL = 'ORDER_DETAILS_FAIL'
+
+```
+4. update orderreducer.js
+```js
+import {
+    ORDER_CREATE_REQUEST,
+    ORDER_CREATE_SUCCESS,
+    ORDER_CREATE_FAIL,
+    ORDER_CREATE_RESET,
+
+    ORDER_DETAILS_REQUEST, 
+    ORDER_DETAILS_SUCCESS,
+    ORDER_DETAILS_FAIL,
+   
+} from '../constants/orderConstants'
+
+
+export const orderCreateReducer = (state = {}, action) => {
+    switch (action.type) {
+        case ORDER_CREATE_REQUEST:
+            return {
+                loading: true
+            }
+
+        case ORDER_CREATE_SUCCESS:
+            return {
+                loading: false,
+                success: true,
+                order: action.payload
+            }
+
+        case ORDER_CREATE_FAIL:
+            return {
+                loading: false,
+                error: action.payload
+            }
+
+        case ORDER_CREATE_RESET:
+            return {}   
+
+        default:
+            return state
+    }
+}
+export const orderDetailsReducer = (state = { loading: true, orderItems: [], shippingAddress: {} }, action) => {
+    switch (action.type) {
+        case ORDER_DETAILS_REQUEST:
+            return {
+                ...state,
+                loading: true
+            }
+
+        case ORDER_DETAILS_SUCCESS:
+            return {
+                loading: false,
+                order: action.payload
+            }
+
+        case ORDER_DETAILS_FAIL:
+            return {
+                loading: false,
+                error: action.payload
+            }
+
+
+        default:
+            return state
+    }
+}
+
+```
+5. update the store.js
+```js
+import { configureStore } from '@reduxjs/toolkit';
+import { productReducer, productDetailsReducer} from "./reducers/productReducers"; // import
+import {cartReducer} from "./reducers/cartReducers";
+import { userLoginReducer, userRegisterReducer, userDetailsReducer, userUpdateProfileReducer } from './reducers/userReducers';
+import { orderCreateReducer, orderDetailsReducer } from './reducers/orderReducers';
+const cartItemsFromStorage = localStorage.getItem('cartItems')
+  ? JSON.parse(localStorage.getItem('cartItems'))
+  : [];
+const userInfoFromStorage = localStorage.getItem('userInfo')
+  ? JSON.parse(localStorage.getItem('userInfo'))
+  : null;
+ 
+const shippingAddressFromStorage = localStorage.getItem('shippingAddress')
+  ? JSON.parse(localStorage.getItem('shippingAddress'))
+  : {};  
+// 👇 初始化 Redux 状态
+const preloadedState = {
+  cart: {
+    cartItems: cartItemsFromStorage, // 给 cart reducer 赋值
+    shippingAddress: shippingAddressFromStorage, // 给 cart reducer 赋值
+  },
+  userLogin: {
+    userInfo: userInfoFromStorage, // 给 userLogin reducer 赋值
+  },
+  
+};
+
+export const store = configureStore({
+  reducer: {
+      productList: productReducer,
+      productDetails: productDetailsReducer,
+      cart: cartReducer,
+      userLogin: userLoginReducer,
+      userRegister: userRegisterReducer,
+      userDetails: userDetailsReducer,
+      userUpdateProfile: userUpdateProfileReducer,
+      orderCreate: orderCreateReducer,
+      orderDetails: orderDetailsReducer
+  },
+  // ✅ Thunk + DevTools ARE AUTO INCLUDED — NO SETUP NEEDED!
+  preloadedState : preloadedState,
+  middleware: (getDefaultMiddleware) => getDefaultMiddleware({ serializableCheck: false, immutableCheck: false, })
+});
+
+export default store;
+
+```
+6. update orderActions.js
+```js
+import axios from 'axios'
+import {
+    ORDER_CREATE_REQUEST,
+    ORDER_CREATE_SUCCESS,
+    ORDER_CREATE_FAIL,
+ ORDER_DETAILS_REQUEST,
+    ORDER_DETAILS_SUCCESS,
+    ORDER_DETAILS_FAIL,
+  
+} from '../constants/orderConstants'
+
+import { CART_CLEAR_ITEMS } from '../constants/cartConstants'
+
+
+export const createOrder = (order) => async (dispatch, getState) => {
+    try {
+        dispatch({
+            type: ORDER_CREATE_REQUEST
+        })
+
+        const {
+            userLogin: { userInfo },
+        } = getState()
+
+        const config = {
+            headers: {
+                'Content-type': 'application/json',
+                Authorization: `Bearer ${userInfo.token}`
+            }
+        }
+
+        const { data } = await axios.post(
+            `/api/orders/add/`,
+            order,
+            config
+        )
+
+        dispatch({
+            type: ORDER_CREATE_SUCCESS,
+            payload: data
+        })
+
+        dispatch({
+            type: CART_CLEAR_ITEMS,
+            payload: data
+        })
+
+        localStorage.removeItem('cartItems');
+
+
+    } catch (error) {
+        dispatch({
+            type: ORDER_CREATE_FAIL,
+            payload: error.response && error.response.data.detail
+                ? error.response.data.detail
+                : error.message,
+        })
+    }
+}
+export const getOrderDetails = (id) => async (dispatch, getState) => {
+    try {
+        dispatch({
+            type: ORDER_DETAILS_REQUEST
+        })
+
+        const {
+            userLogin: { userInfo },
+        } = getState()
+
+        const config = {
+            headers: {
+                'Content-type': 'application/json',
+                Authorization: `Bearer ${userInfo.token}`
+            }
+        }
+
+        const { data } = await axios.get(
+            `/api/orders/${id}/`,
+            config
+        )
+
+        dispatch({
+            type: ORDER_DETAILS_SUCCESS,
+            payload: data
+        })
+
+
+    } catch (error) {
+        dispatch({
+            type: ORDER_DETAILS_FAIL,
+            payload: error.response && error.response.data.detail
+                ? error.response.data.detail
+                : error.message,
+        })
+    }
+}
+
+```
+7. create orderscreen.jsx
+```jsx
+import  {  useEffect } from 'react'
+import {  Row, Col, ListGroup, Image, Card } from 'react-bootstrap'
+import { Link, useNavigate, useParams } from 'react-router-dom'
+import { useDispatch, useSelector } from 'react-redux'
+// import { PayPalButton } from 'react-paypal-button-v2'
+import Message from '../components/Message'
+import Loader from '../components/Loader'
+import { getOrderDetails } from '../actions/orderActions'
+// import { ORDER_PAY_RESET, ORDER_DELIVER_RESET } from '../constants/orderConstants'
+
+function OrderScreen() {
+    const navigate = useNavigate();
+    const { id: orderId } = useParams();
+    const dispatch = useDispatch();
+    const orderDetails = useSelector(state => state.orderDetails)
+    const { order, error, loading } = orderDetails
+
+    const userLogin = useSelector(state => state.userLogin)
+    const { userInfo } = userLogin
+
+// orderItems can't declare inside the if block, const will be blocked inside the if and can't be used outside
+    const itemsPrice = !loading && !error
+  ? order.orderItems.reduce((acc, item) => acc + item.price * item.qty, 0).toFixed(2)
+  : 0
+
+    useEffect(() => {
+
+        if (!userInfo) {
+            navigate('/login')
+            return;
+        }
+
+      
+            dispatch(getOrderDetails(orderId));
+    }, [ dispatch, navigate, orderId, userInfo])
+
+
+    return loading ? (
+        <Loader />
+    ) : error ? (
+        <Message variant='danger'>{error}</Message>
+    ) : (
+                <div>
+                    <h1>Order: {order._id}</h1>
+                    <Row>
+                        <Col md={8}>
+                            <ListGroup variant='flush'>
+                                <ListGroup.Item>
+                                    <h2>Shipping</h2>
+                                    <p><strong>Name: </strong> {order.user.name}</p>
+                                    <p><strong>Email: </strong><a href={`mailto:${order.user.email}`}>{order.user.email}</a></p>
+                                    <p>
+                                        <strong>Shipping: </strong>
+                                        {order.shippingAddress.address},  {order.shippingAddress.city}
+                                        {'  '}
+                                        {order.shippingAddress.postalCode},
+                                {'  '}
+                                        {order.shippingAddress.country}
+                                    </p>
+                                    {order.isDelivered ? (
+                                        <Message variant='success'>Delivered on {order.deliveredAt}</Message>
+                                    ) : (
+                                            <Message variant='danger'>Not Delivered</Message>
+                                        )}
+                                    
+                                </ListGroup.Item>
+
+                                <ListGroup.Item>
+                                    <h2>Payment Method</h2>
+                                    <p>
+                                        <strong>Method: </strong>
+                                        {order.paymentMethod}
+                                    </p>
+                                    {order.isPaid ? (
+                                        <Message variant='success'>Paid on {order.paidAt}</Message>
+                                    ) : (
+                                            <Message variant='danger'>Not Paid</Message>
+                                        )}
+                                </ListGroup.Item>
+
+                                <ListGroup.Item>
+                                    <h2>Order Items</h2>
+                                    {order.orderItems.length === 0 ? <Message variant='info'>
+                                        Order is empty
+                            </Message> : (
+                                            <ListGroup variant='flush'>
+                                                {order.orderItems.map((item, index) => (
+                                                    <ListGroup.Item key={index}>
+                                                        <Row>
+                                                            <Col md={1}>
+                                                                <Image src={item.image} alt={item.name} fluid rounded />
+                                                            </Col>
+
+                                                            <Col>
+                                                                <Link to={`/product/${item.product}`}>{item.name}</Link>
+                                                            </Col>
+
+                                                            <Col md={4}>
+                                                                {item.qty} X ${item.price} = ${(item.qty * item.price).toFixed(2)}
+                                                            </Col>
+                                                        </Row>
+                                                    </ListGroup.Item>
+                                                ))}
+                                            </ListGroup>
+                                        )}
+                                </ListGroup.Item>
+
+                            </ListGroup>
+
+                        </Col>
+
+                        <Col md={4}>
+                            <Card>
+                                <ListGroup variant='flush'>
+                                    <ListGroup.Item>
+                                        <h2>Order Summary</h2>
+                                    </ListGroup.Item>
+
+                                    <ListGroup.Item>
+                                        <Row>
+                                            <Col>Items:</Col>
+                                            <Col>${itemsPrice}</Col>
+                                        </Row>
+                                    </ListGroup.Item>
+
+                                    <ListGroup.Item>
+                                        <Row>
+                                            <Col>Shipping:</Col>
+                                            <Col>${order.shippingPrice}</Col>
+                                        </Row>
+                                    </ListGroup.Item>
+
+                                    <ListGroup.Item>
+                                        <Row>
+                                            <Col>Tax:</Col>
+                                            <Col>${order.taxPrice}</Col>
+                                        </Row>
+                                    </ListGroup.Item>
+
+                                    <ListGroup.Item>
+                                        <Row>
+                                            <Col>Total:</Col>
+                                            <Col>${order.totalPrice}</Col>
+                                        </Row>
+                                    </ListGroup.Item>
+
+
+                                  
+                                </ListGroup>
+                                
+                            </Card>
+                        </Col>
+                    </Row>
+                </div>
+            )
+}
+
+export default OrderScreen
+```
+8. add into app.js
+```js
+import { Container } from "react-bootstrap";
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import Footer from "./components/Footer";
+import Header from "./components/Header";
+import HomeScreen from "./screens/HomeScreen";
+import LoginScreen from "./screens/LoginScreen";
+import RegisterScreen from "./screens/RegisterScreen";
+import ProductScreen from "./screens/ProductScreen";
+import CartScreen from "./screens/CartScreen";
+import ProfileScreen from "./screens/ProfileScreen";
+import ShippingScreen from "./screens/ShippingScreen";
+import PaymentScreen from "./screens/PaymentScreen";
+import PlaceOrderScreen from "./screens/PlaceOrderScreen";
+import OrderScreen from "./screens/OrderScreen";
+function App() {
+  return (
+    <Router>
+      <Header />
+      <main className="py-3">
+        <Container>
+          <Routes>
+            <Route path="/" element={<HomeScreen />} />
+            <Route path="/login" element={<LoginScreen />} />
+             <Route path="/register" element={<RegisterScreen />} />
+              <Route path='/profile' element={<ProfileScreen />} />
+              <Route path='/shipping' element={<ShippingScreen />} />
+              <Route path='/payment' element={<PaymentScreen />} />
+              <Route path='/placeorder' element={<PlaceOrderScreen />} />
+              <Route path='/order/:id' element={<OrderScreen />} />
+            <Route path="/product/:id" element={<ProductScreen />} />
+            <Route path="/cart/:id?" element={<CartScreen />} />
+          </Routes>
+        </Container>
+      </main>
+      <Footer />
+    </Router>
+  );
+}
+
+export default App;
+
+```
+9.
+10.
+11.
+12.
 ## step 33
 ## step 34
 ## step 35
