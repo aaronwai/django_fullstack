@@ -1,49 +1,48 @@
-import React, { useState, useEffect } from 'react'
+import React, { useEffect } from 'react'
 import { Button, Row, Col, ListGroup, Image, Card } from 'react-bootstrap'
 import { Link, useNavigate } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import Message from '../components/Message'
 import CheckoutSteps from '../components/CheckoutSteps'
-// import { createOrder } from '../actions/orderActions'
-// import { ORDER_CREATE_RESET } from '../constants/orderConstants'
+import { createOrder } from '../actions/orderActions'
+import { ORDER_CREATE_RESET } from '../constants/orderConstants'
 
 function PlaceOrderScreen() {
     const navigate = useNavigate()
-    // const orderCreate = useSelector(state => state.orderCreate)
-    // const { order, error, success } = orderCreate
+    const orderCreate = useSelector(state => state.orderCreate)
+    const { order, error, success } = orderCreate
 
     const dispatch = useDispatch()
 
     const cart = useSelector(state => state.cart) // select cart from store
 
-    cart.itemsPrice = cart.cartItems.reduce((acc, item) => acc + item.price * item.qty, 0).toFixed(2)
-    cart.shippingPrice = (cart.itemsPrice > 100 ? 0 : 10).toFixed(2)
-    cart.taxPrice = Number((0.082) * cart.itemsPrice).toFixed(2)
-
-    cart.totalPrice = (Number(cart.itemsPrice) + Number(cart.shippingPrice) + Number(cart.taxPrice)).toFixed(2)
+     const itemsPrice = cart.cartItems.reduce((acc, item) => acc + item.price * item.qty, 0).toFixed(2)
+    const shippingPrice = (itemsPrice > 100 ? 0 : 10).toFixed(2)
+    const taxPrice = Number((0.082) * itemsPrice).toFixed(2)
+    const totalPrice = (Number(itemsPrice) + Number(shippingPrice) + Number(taxPrice)).toFixed(2)
 
 
     if (!cart.paymentMethod) {
         navigate('/payment')
     }
 
-    // useEffect(() => {
-    //     if (success) {
-    //         navigate(`/order/${order._id}`)
-    //          dispatch({ type: ORDER_CREATE_RESET })
-    //     }
-    // }, [success, navigate])
+    useEffect(() => {
+        if (success) {
+            navigate(`/order/${order._id}`)
+             dispatch({ type: ORDER_CREATE_RESET })
+        }
+    }, [success, navigate])
 
     const placeOrder = () => {
-        // dispatch(createOrder({
-        //     orderItems: cart.cartItems,
-        //     shippingAddress: cart.shippingAddress,
-        //     paymentMethod: cart.paymentMethod,
-        //     itemsPrice: cart.itemsPrice,
-        //     shippingPrice: cart.shippingPrice,
-        //     taxPrice: cart.taxPrice,
-        //     totalPrice: cart.totalPrice,
-        // }))
+        dispatch(createOrder({
+             orderItems: cart.cartItems,
+        shippingAddress: cart.shippingAddress,
+        paymentMethod: cart.paymentMethod, // ✅ 现在正常存在
+        itemsPrice: itemsPrice,            // ✅ 本地变量
+        shippingPrice: shippingPrice,      // ✅ 本地变量
+        taxPrice: taxPrice,                // ✅ 本地变量
+        totalPrice: totalPrice,       
+        }))
     }
 
     return (
@@ -114,34 +113,34 @@ function PlaceOrderScreen() {
                             <ListGroup.Item>
                                 <Row>
                                     <Col>Items:</Col>
-                                    <Col>${cart.itemsPrice}</Col>
+                                    <Col>${itemsPrice}</Col>
                                 </Row>
                             </ListGroup.Item>
 
                             <ListGroup.Item>
                                 <Row>
                                     <Col>Shipping:</Col>
-                                    <Col>${cart.shippingPrice}</Col>
+                                    <Col>${shippingPrice}</Col>
                                 </Row>
                             </ListGroup.Item>
 
                             <ListGroup.Item>
                                 <Row>
                                     <Col>Tax:</Col>
-                                    <Col>${cart.taxPrice}</Col>
+                                    <Col>${taxPrice}</Col>
                                 </Row>
                             </ListGroup.Item>
 
                             <ListGroup.Item>
                                 <Row>
                                     <Col>Total:</Col>
-                                    <Col>${cart.totalPrice}</Col>
+                                    <Col>${totalPrice}</Col>
                                 </Row>
                             </ListGroup.Item>
 
 
                             <ListGroup.Item>
-                                {/* {error && <Message variant='danger'>{error}</Message>} */}
+                                {error && <Message variant='danger'>{error}</Message>}
                             </ListGroup.Item>
 
                             <ListGroup.Item>

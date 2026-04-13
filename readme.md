@@ -8458,12 +8458,11 @@ function PlaceOrderScreen() {
 
     const cart = useSelector(state => state.cart) // select cart from store
 
-    cart.itemsPrice = cart.cartItems.reduce((acc, item) => acc + item.price * item.qty, 0).toFixed(2)
-    cart.shippingPrice = (cart.itemsPrice > 100 ? 0 : 10).toFixed(2)
-    cart.taxPrice = Number((0.082) * cart.itemsPrice).toFixed(2)
-
-    cart.totalPrice = (Number(cart.itemsPrice) + Number(cart.shippingPrice) + Number(cart.taxPrice)).toFixed(2)
-
+    const itemsPrice = cart.cartItems.reduce((acc, item) => acc + item.price * item.qty, 0).toFixed(2)
+    const shippingPrice = (itemsPrice > 100 ? 0 : 10).toFixed(2)
+    const taxPrice = Number((0.082) * itemsPrice).toFixed(2)
+    const totalPrice = (Number(itemsPrice) + Number(shippingPrice) + Number(taxPrice)).toFixed(2)
+// can't reassign redux values, use local varibles that will create issues later within django
 
     if (!cart.paymentMethod) {
         navigate('/payment')
@@ -8541,28 +8540,28 @@ function PlaceOrderScreen() {
                             <ListGroup.Item>
                                 <Row>
                                     <Col>Items:</Col>
-                                    <Col>${cart.itemsPrice}</Col>
+                                    <Col>${itemsPrice}</Col>
                                 </Row>
                             </ListGroup.Item>
 
                             <ListGroup.Item>
                                 <Row>
                                     <Col>Shipping:</Col>
-                                    <Col>${cart.shippingPrice}</Col>
+                                    <Col>${shippingPrice}</Col>
                                 </Row>
                             </ListGroup.Item>
 
                             <ListGroup.Item>
                                 <Row>
                                     <Col>Tax:</Col>
-                                    <Col>${cart.taxPrice}</Col>
+                                    <Col>${taxPrice}</Col>
                                 </Row>
                             </ListGroup.Item>
 
                             <ListGroup.Item>
                                 <Row>
                                     <Col>Total:</Col>
-                                    <Col>${cart.totalPrice}</Col>
+                                    <Col>${totalPrice}</Col>
                                 </Row>
                             </ListGroup.Item>
 
@@ -8852,7 +8851,662 @@ def addOrderItems(request):
         return Response(serializer.data)
 
 ```
-## step 31
+## step 31 placeoerder frontend
+1. create orderconstants
+```js
+export const ORDER_CREATE_REQUEST = 'ORDER_CREATE_REQUEST'
+export const ORDER_CREATE_SUCCESS = 'ORDER_CREATE_SUCCESS'
+export const ORDER_CREATE_FAIL = 'ORDER_CREATE_FAIL'
+
+```
+2. create orderreducer.js
+```js
+import {
+    ORDER_CREATE_REQUEST,
+    ORDER_CREATE_SUCCESS,
+    ORDER_CREATE_FAIL,
+
+   
+} from '../constants/orderConstants'
+
+
+export const orderCreateReducer = (state = {}, action) => {
+    switch (action.type) {
+        case ORDER_CREATE_REQUEST:
+            return {
+                loading: true
+            }
+
+        case ORDER_CREATE_SUCCESS:
+            return {
+                loading: false,
+                success: true,
+                order: action.payload
+            }
+
+        case ORDER_CREATE_FAIL:
+            return {
+                loading: false,
+                error: action.payload
+            }
+
+
+        default:
+            return state
+    }
+}
+
+```
+3. update the store.js
+```js
+import { configureStore } from '@reduxjs/toolkit';
+import { productReducer, productDetailsReducer} from "./reducers/productReducers"; // import
+import {cartReducer} from "./reducers/cartReducers";
+import { userLoginReducer, userRegisterReducer, userDetailsReducer, userUpdateProfileReducer } from './reducers/userReducers';
+import { orderCreateReducer } from './reducers/orderReducers';
+const cartItemsFromStorage = localStorage.getItem('cartItems')
+  ? JSON.parse(localStorage.getItem('cartItems'))
+  : [];
+const userInfoFromStorage = localStorage.getItem('userInfo')
+  ? JSON.parse(localStorage.getItem('userInfo'))
+  : null;
+ 
+const shippingAddressFromStorage = localStorage.getItem('shippingAddress')
+  ? JSON.parse(localStorage.getItem('shippingAddress'))
+  : {};  
+// 👇 初始化 Redux 状态
+const preloadedState = {
+  cart: {
+    cartItems: cartItemsFromStorage, // 给 cart reducer 赋值
+    shippingAddress: shippingAddressFromStorage, // 给 cart reducer 赋值
+  },
+  userLogin: {
+    userInfo: userInfoFromStorage, // 给 userLogin reducer 赋值
+  },
+  
+};
+
+export const store = configureStore({
+  reducer: {
+      productList: productReducer,
+      productDetails: productDetailsReducer,
+      cart: cartReducer,
+      userLogin: userLoginReducer,
+      userRegister: userRegisterReducer,
+      userDetails: userDetailsReducer,
+      userUpdateProfile: userUpdateProfileReducer,
+      orderCreate: orderCreateReducer
+  },
+  // ✅ Thunk + DevTools ARE AUTO INCLUDED — NO SETUP NEEDED!
+  preloadedState : preloadedState,
+  middleware: (getDefaultMiddleware) => getDefaultMiddleware({ serializableCheck: false, immutableCheck: false, })  // for devtools bug
+});
+
+export default store;
+
+```
+4. create orderactions.js
+```js
+import axios from 'axios'
+import {
+    ORDER_CREATE_REQUEST,
+    ORDER_CREATE_SUCCESS,
+    ORDER_CREATE_FAIL,
+
+  
+} from '../constants/orderConstants'
+
+export const createOrder = (order) => async (dispatch, getState) => {
+    try {
+        dispatch({
+            type: ORDER_CREATE_REQUEST
+        })
+
+        const {
+            userLogin: { userInfo },
+        } = getState()
+
+        const config = {
+            headers: {
+                'Content-type': 'application/json',
+                Authorization: `Bearer ${userInfo.token}`
+            }
+        }
+
+        const { data } = await axios.post(
+            `/api/orders/add/`,
+            order,
+            config
+        )
+
+        dispatch({
+            type: ORDER_CREATE_SUCCESS,
+            payload: data
+        })
+
+        dispatch({
+            type: CART_CLEAR_ITEMS,
+            payload: data
+        })
+
+        localStorage.removeItem('cartItems')
+
+
+    } catch (error) {
+        dispatch({
+            type: ORDER_CREATE_FAIL,
+            payload: error.response && error.response.data.detail
+                ? error.response.data.detail
+                : error.message,
+        })
+    }
+}
+
+```
+5. update placeorderscreen.jsx
+```jsx
+import React, { useEffect } from 'react'
+import { Button, Row, Col, ListGroup, Image, Card } from 'react-bootstrap'
+import { Link, useNavigate } from 'react-router-dom'
+import { useDispatch, useSelector } from 'react-redux'
+import Message from '../components/Message'
+import CheckoutSteps from '../components/CheckoutSteps'
+import { createOrder } from '../actions/orderActions'
+// import { ORDER_CREATE_RESET } from '../constants/orderConstants'
+
+function PlaceOrderScreen() {
+    const navigate = useNavigate()
+    const orderCreate = useSelector(state => state.orderCreate)
+    const { order, error, success } = orderCreate
+
+    const dispatch = useDispatch()
+
+    const cart = useSelector(state => state.cart) // select cart from store
+
+     const itemsPrice = cart.cartItems.reduce((acc, item) => acc + item.price * item.qty, 0).toFixed(2)
+    const shippingPrice = (itemsPrice > 100 ? 0 : 10).toFixed(2)
+    const taxPrice = Number((0.082) * itemsPrice).toFixed(2)
+    const totalPrice = (Number(itemsPrice) + Number(shippingPrice) + Number(taxPrice)).toFixed(2)
+
+
+    if (!cart.paymentMethod) {
+        navigate('/payment')
+    }
+
+    useEffect(() => {
+        if (success) {
+            navigate(`/order/${order._id}`)
+            //  dispatch({ type: ORDER_CREATE_RESET })
+        }
+    }, [success, navigate])
+
+    const placeOrder = () => {
+        dispatch(createOrder({
+             orderItems: cart.cartItems,
+        shippingAddress: cart.shippingAddress,
+        paymentMethod: cart.paymentMethod, // ✅ 现在正常存在
+        itemsPrice: itemsPrice,            // ✅ 本地变量
+        shippingPrice: shippingPrice,      // ✅ 本地变量
+        taxPrice: taxPrice,                // ✅ 本地变量
+        totalPrice: totalPrice,       
+        }))
+    }
+
+    return (
+        <div>
+            <CheckoutSteps step1 step2 step3 step4 />
+            <Row>
+                <Col md={8}>
+                    <ListGroup variant='flush'>
+                        <ListGroup.Item>
+                            <h2>Shipping</h2>
+
+                            <p>
+                                <strong>Shipping: </strong>
+                                {cart.shippingAddress.address},  {cart.shippingAddress.city}
+                                {'  '}
+                                {cart.shippingAddress.postalCode},
+                                {'  '}
+                                {cart.shippingAddress.country}
+                            </p>
+                        </ListGroup.Item>
+
+                        <ListGroup.Item>
+                            <h2>Payment Method</h2>
+                            <p>
+                                <strong>Method: </strong>
+                                {cart.paymentMethod}
+                            </p>
+                        </ListGroup.Item>
+
+                        <ListGroup.Item>
+                            <h2>Order Items</h2>
+                            {cart.cartItems.length === 0 ? <Message variant='info'>
+                                Your cart is empty
+                            </Message> : (
+                                    <ListGroup variant='flush'>
+                                        {cart.cartItems.map((item, index) => (
+                                            <ListGroup.Item key={index}>
+                                                <Row>
+                                                    <Col md={1}>
+                                                        <Image src={item.image} alt={item.name} fluid rounded />
+                                                    </Col>
+
+                                                    <Col>
+                                                        <Link to={`/product/${item.product}`}>{item.name}</Link>
+                                                    </Col>
+
+                                                    <Col md={4}>
+                                                        {item.qty} X ${item.price} = ${(item.qty * item.price).toFixed(2)}
+                                                    </Col>
+                                                </Row>
+                                            </ListGroup.Item>
+                                        ))}
+                                    </ListGroup>
+                                )}
+                        </ListGroup.Item>
+
+                    </ListGroup>
+
+                </Col>
+
+                <Col md={4}>
+                    <Card>
+                        <ListGroup variant='flush'>
+                            <ListGroup.Item>
+                                <h2>Order Summary</h2>
+                            </ListGroup.Item>
+
+                            <ListGroup.Item>
+                                <Row>
+                                    <Col>Items:</Col>
+                                    <Col>${itemsPrice}</Col>
+                                </Row>
+                            </ListGroup.Item>
+
+                            <ListGroup.Item>
+                                <Row>
+                                    <Col>Shipping:</Col>
+                                    <Col>${shippingPrice}</Col>
+                                </Row>
+                            </ListGroup.Item>
+
+                            <ListGroup.Item>
+                                <Row>
+                                    <Col>Tax:</Col>
+                                    <Col>${taxPrice}</Col>
+                                </Row>
+                            </ListGroup.Item>
+
+                            <ListGroup.Item>
+                                <Row>
+                                    <Col>Total:</Col>
+                                    <Col>${totalPrice}</Col>
+                                </Row>
+                            </ListGroup.Item>
+
+
+                            <ListGroup.Item>
+                                {error && <Message variant='danger'>{error}</Message>}
+                            </ListGroup.Item>
+
+                            <ListGroup.Item>
+                                <Button
+                                    type='button'
+                                    className='btn-block'
+                                    disabled={cart.cartItems === 0}
+                                    onClick={placeOrder}
+                                >
+                                    Place Order
+                                </Button>
+                            </ListGroup.Item>
+
+                        </ListGroup>
+                    </Card>
+                </Col>
+            </Row>
+        </div>
+    )
+}
+
+export default PlaceOrderScree
+```
+6. if everything is ok, placeorder will route to order/:id means the order is created.
+7. need to clear the order from cart, after create order, update constants
+```js
+export const ORDER_CREATE_REQUEST = 'ORDER_CREATE_REQUEST'
+export const ORDER_CREATE_SUCCESS = 'ORDER_CREATE_SUCCESS'
+export const ORDER_CREATE_FAIL = 'ORDER_CREATE_FAIL'
+
+export const ORDER_CREATE_RESET = 'ORDER_CREATE_RESET'
+```
+8. update orderreducer.js
+```js
+import {
+    ORDER_CREATE_REQUEST,
+    ORDER_CREATE_SUCCESS,
+    ORDER_CREATE_FAIL,
+    ORDER_CREATE_RESET
+   
+} from '../constants/orderConstants'
+
+
+export const orderCreateReducer = (state = {}, action) => {
+    switch (action.type) {
+        case ORDER_CREATE_REQUEST:
+            return {
+                loading: true
+            }
+
+        case ORDER_CREATE_SUCCESS:
+            return {
+                loading: false,
+                success: true,
+                order: action.payload
+            }
+
+        case ORDER_CREATE_FAIL:
+            return {
+                loading: false,
+                error: action.payload
+            }
+
+        case ORDER_CREATE_RESET:
+            return {}   
+
+        default:
+            return state
+    }
+}
+
+```
+9. update placeorderscreen.jsx
+```jsx
+import React, { useEffect } from 'react'
+import { Button, Row, Col, ListGroup, Image, Card } from 'react-bootstrap'
+import { Link, useNavigate } from 'react-router-dom'
+import { useDispatch, useSelector } from 'react-redux'
+import Message from '../components/Message'
+import CheckoutSteps from '../components/CheckoutSteps'
+import { createOrder } from '../actions/orderActions'
+import { ORDER_CREATE_RESET } from '../constants/orderConstants'
+
+function PlaceOrderScreen() {
+    const navigate = useNavigate()
+    const orderCreate = useSelector(state => state.orderCreate)
+    const { order, error, success } = orderCreate
+
+    const dispatch = useDispatch()
+
+    const cart = useSelector(state => state.cart) // select cart from store
+
+     const itemsPrice = cart.cartItems.reduce((acc, item) => acc + item.price * item.qty, 0).toFixed(2)
+    const shippingPrice = (itemsPrice > 100 ? 0 : 10).toFixed(2)
+    const taxPrice = Number((0.082) * itemsPrice).toFixed(2)
+    const totalPrice = (Number(itemsPrice) + Number(shippingPrice) + Number(taxPrice)).toFixed(2)
+
+
+    if (!cart.paymentMethod) {
+        navigate('/payment')
+    }
+
+    useEffect(() => {
+        if (success) {
+            navigate(`/order/${order._id}`)
+             dispatch({ type: ORDER_CREATE_RESET })
+        }
+    }, [success, navigate])
+
+    const placeOrder = () => {
+        dispatch(createOrder({
+             orderItems: cart.cartItems,
+        shippingAddress: cart.shippingAddress,
+        paymentMethod: cart.paymentMethod, // ✅ 现在正常存在
+        itemsPrice: itemsPrice,            // ✅ 本地变量
+        shippingPrice: shippingPrice,      // ✅ 本地变量
+        taxPrice: taxPrice,                // ✅ 本地变量
+        totalPrice: totalPrice,       
+        }))
+    }
+
+    return (
+        <div>
+            <CheckoutSteps step1 step2 step3 step4 />
+            <Row>
+                <Col md={8}>
+                    <ListGroup variant='flush'>
+                        <ListGroup.Item>
+                            <h2>Shipping</h2>
+
+                            <p>
+                                <strong>Shipping: </strong>
+                                {cart.shippingAddress.address},  {cart.shippingAddress.city}
+                                {'  '}
+                                {cart.shippingAddress.postalCode},
+                                {'  '}
+                                {cart.shippingAddress.country}
+                            </p>
+                        </ListGroup.Item>
+
+                        <ListGroup.Item>
+                            <h2>Payment Method</h2>
+                            <p>
+                                <strong>Method: </strong>
+                                {cart.paymentMethod}
+                            </p>
+                        </ListGroup.Item>
+
+                        <ListGroup.Item>
+                            <h2>Order Items</h2>
+                            {cart.cartItems.length === 0 ? <Message variant='info'>
+                                Your cart is empty
+                            </Message> : (
+                                    <ListGroup variant='flush'>
+                                        {cart.cartItems.map((item, index) => (
+                                            <ListGroup.Item key={index}>
+                                                <Row>
+                                                    <Col md={1}>
+                                                        <Image src={item.image} alt={item.name} fluid rounded />
+                                                    </Col>
+
+                                                    <Col>
+                                                        <Link to={`/product/${item.product}`}>{item.name}</Link>
+                                                    </Col>
+
+                                                    <Col md={4}>
+                                                        {item.qty} X ${item.price} = ${(item.qty * item.price).toFixed(2)}
+                                                    </Col>
+                                                </Row>
+                                            </ListGroup.Item>
+                                        ))}
+                                    </ListGroup>
+                                )}
+                        </ListGroup.Item>
+
+                    </ListGroup>
+
+                </Col>
+
+                <Col md={4}>
+                    <Card>
+                        <ListGroup variant='flush'>
+                            <ListGroup.Item>
+                                <h2>Order Summary</h2>
+                            </ListGroup.Item>
+
+                            <ListGroup.Item>
+                                <Row>
+                                    <Col>Items:</Col>
+                                    <Col>${itemsPrice}</Col>
+                                </Row>
+                            </ListGroup.Item>
+
+                            <ListGroup.Item>
+                                <Row>
+                                    <Col>Shipping:</Col>
+                                    <Col>${shippingPrice}</Col>
+                                </Row>
+                            </ListGroup.Item>
+
+                            <ListGroup.Item>
+                                <Row>
+                                    <Col>Tax:</Col>
+                                    <Col>${taxPrice}</Col>
+                                </Row>
+                            </ListGroup.Item>
+
+                            <ListGroup.Item>
+                                <Row>
+                                    <Col>Total:</Col>
+                                    <Col>${totalPrice}</Col>
+                                </Row>
+                            </ListGroup.Item>
+
+
+                            <ListGroup.Item>
+                                {error && <Message variant='danger'>{error}</Message>}
+                            </ListGroup.Item>
+
+                            <ListGroup.Item>
+                                <Button
+                                    type='button'
+                                    className='btn-block'
+                                    disabled={cart.cartItems === 0}
+                                    onClick={placeOrder}
+                                >
+                                    Place Order
+                                </Button>
+                            </ListGroup.Item>
+
+                        </ListGroup>
+                    </Card>
+                </Col>
+            </Row>
+        </div>
+    )
+}
+
+export default PlaceOrderScree
+```
+10. we need to delete the items from localstorage, update cartconstants
+```js
+export const CART_ADD_ITEM = "CART_ADD_ITEM";
+export const CART_REMOVE_ITEM = "CART_REMOVE_ITEM";
+export const CART_SAVE_SHIPPING_ADDRESS = "CART_SAVE_SHIPPING_ADDRESS";
+export const CART_SAVE_PAYMENT_METHOD = "CART_SAVE_PAYMENT_METHOD";
+
+export const CART_CLEAR_ITEMS = 'CART_CLEAR_ITEMS'
+```
+11. update orderactions.js
+```js
+import axios from 'axios'
+import {
+    ORDER_CREATE_REQUEST,
+    ORDER_CREATE_SUCCESS,
+    ORDER_CREATE_FAIL,
+
+  
+} from '../constants/orderConstants'
+
+import { CART_CLEAR_ITEMS } from '../constants/cartConstants'
+
+
+export const createOrder = (order) => async (dispatch, getState) => {
+    try {
+        dispatch({
+            type: ORDER_CREATE_REQUEST
+        })
+
+        const {
+            userLogin: { userInfo },
+        } = getState()
+
+        const config = {
+            headers: {
+                'Content-type': 'application/json',
+                Authorization: `Bearer ${userInfo.token}`
+            }
+        }
+
+        const { data } = await axios.post(
+            `/api/orders/add/`,
+            order,
+            config
+        )
+
+        dispatch({
+            type: ORDER_CREATE_SUCCESS,
+            payload: data
+        })
+
+        dispatch({
+            type: CART_CLEAR_ITEMS,
+            payload: data
+        })
+
+        localStorage.removeItem('cartItems');
+
+
+    } catch (error) {
+        dispatch({
+            type: ORDER_CREATE_FAIL,
+            payload: error.response && error.response.data.detail
+                ? error.response.data.detail
+                : error.message,
+        })
+    }
+}
+
+```
+12. remove the state from the cartreducer.js
+```js
+import { CART_ADD_ITEM, CART_REMOVE_ITEM , CART_SAVE_SHIPPING_ADDRESS, CART_SAVE_PAYMENT_METHOD, CART_CLEAR_ITEMS} from "../constants/cartConstants";
+
+export const cartReducer = (state = { cartItems: [], shippingAddress: {} }, action) => {
+  switch (action.type) {
+    case CART_ADD_ITEM:
+      const item = action.payload;
+      const existItem = state.cartItems.find((x) => x.product === item.product);
+      if (existItem) {
+        return {
+          ...state,
+          cartItems: state.cartItems.map((x) =>
+            x.product === existItem.product ? item : x
+          ),
+        };
+      } else {
+        return {
+          ...state,
+          cartItems: [...state.cartItems, item],
+        };
+      }
+    case CART_REMOVE_ITEM:
+      return {
+        ...state,
+        cartItems: state.cartItems.filter((x) => x.product !== action.payload),
+      };
+    case CART_SAVE_SHIPPING_ADDRESS:
+            return {
+                ...state,
+                shippingAddress: action.payload
+            };
+    case CART_SAVE_PAYMENT_METHOD:
+            return {
+                ...state,
+                paymentMethod: action.payload
+            }     
+    case CART_CLEAR_ITEMS:
+            return {
+                ...state,
+                cartItems: []
+            }   
+    default:
+      return state;
+  }
+  
+}
+```
+
 ## step 32
 ## step 33
 ## step 34
