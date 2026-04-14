@@ -9974,10 +9974,948 @@ function App() {
 export default App;
 
 ```
+9. update paid endpoint at the backend side, order_views.py
+```py
+
+@api_view(['PUT'])
+@permission_classes([IsAuthenticated])
+def updateOrderToPaid(request, pk):
+    order = Order.objects.get(_id=pk)
+
+    order.isPaid = True
+    order.paidAt = datetime.now()
+    order.save()
+
+    return Response('Order was paid')
+```
+
+10. update ordr_urls.py
+```py
+from django.urls import path
+from base.views import order_views as views
+
+urlpatterns = [
+    path('add/', views.addOrderItems, name='orders-add'),
+    path('<str:pk>/', views.getOrderById, name='user-order'),
+    path('<str:pk>/pay/', views.updateOrderToPaid, name='pay'),
+]
+```
+11. back to frontend, update the orderConstants.js
+```js
+export const ORDER_CREATE_REQUEST = 'ORDER_CREATE_REQUEST'
+export const ORDER_CREATE_SUCCESS = 'ORDER_CREATE_SUCCESS'
+export const ORDER_CREATE_FAIL = 'ORDER_CREATE_FAIL'
+
+export const ORDER_CREATE_RESET = 'ORDER_CREATE_RESET'
+
+export const ORDER_DETAILS_REQUEST = 'ORDER_DETAILS_REQUEST'
+export const ORDER_DETAILS_SUCCESS = 'ORDER_DETAILS_SUCCESS'
+export const ORDER_DETAILS_FAIL = 'ORDER_DETAILS_FAIL'
+
+export const ORDER_PAY_REQUEST = 'ORDER_PAY_REQUEST'
+export const ORDER_PAY_SUCCESS = 'ORDER_PAY_SUCCESS'
+export const ORDER_PAY_FAIL = 'ORDER_PAY_FAIL'
+export const ORDER_PAY_RESET = 'ORDER_PAY_RESET'
+
+```
+12. update orderreducer.js
+```js
+import {
+    ORDER_CREATE_REQUEST,
+    ORDER_CREATE_SUCCESS,
+    ORDER_CREATE_FAIL,
+    ORDER_CREATE_RESET,
+
+    ORDER_DETAILS_REQUEST, 
+    ORDER_DETAILS_SUCCESS,
+    ORDER_DETAILS_FAIL,
+    ORDER_PAY_REQUEST,
+    ORDER_PAY_SUCCESS,
+    ORDER_PAY_FAIL,
+    ORDER_PAY_RESET, 
+} from '../constants/orderConstants'
+
+
+export const orderCreateReducer = (state = {}, action) => {
+    switch (action.type) {
+        case ORDER_CREATE_REQUEST:
+            return {
+                loading: true
+            }
+
+        case ORDER_CREATE_SUCCESS:
+            return {
+                loading: false,
+                success: true,
+                order: action.payload
+            }
+
+        case ORDER_CREATE_FAIL:
+            return {
+                loading: false,
+                error: action.payload
+            }
+
+        case ORDER_CREATE_RESET:
+            return {}   
+
+        default:
+            return state
+    }
+}
+export const orderDetailsReducer = (state = { loading: true, orderItems: [], shippingAddress: {} }, action) => {
+    switch (action.type) {
+        case ORDER_DETAILS_REQUEST:
+            return {
+                ...state,
+                loading: true
+            }
+
+        case ORDER_DETAILS_SUCCESS:
+            return {
+                loading: false,
+                order: action.payload
+            }
+
+        case ORDER_DETAILS_FAIL:
+            return {
+                loading: false,
+                error: action.payload
+            }
+
+
+        default:
+            return state
+    }
+}
+export const orderPayReducer = (state = {}, action) => {
+    switch (action.type) {
+        case ORDER_PAY_REQUEST:
+            return {
+                loading: true
+            }
+
+        case ORDER_PAY_SUCCESS:
+            return {
+                loading: false,
+                success: true
+            }
+
+        case ORDER_PAY_FAIL:
+            return {
+                loading: false,
+                error: action.payload
+            }
+
+        case ORDER_PAY_RESET:
+            return {}
+
+        default:
+            return state
+    }
+}
+```
+13. update store.js
+```js
+import { configureStore } from '@reduxjs/toolkit';
+import { productReducer, productDetailsReducer} from "./reducers/productReducers"; // import
+import {cartReducer} from "./reducers/cartReducers";
+import { userLoginReducer, userRegisterReducer, userDetailsReducer, userUpdateProfileReducer } from './reducers/userReducers';
+import { orderCreateReducer, orderDetailsReducer, orderPayReducer } from './reducers/orderReducers';
+const cartItemsFromStorage = localStorage.getItem('cartItems')
+  ? JSON.parse(localStorage.getItem('cartItems'))
+  : [];
+const userInfoFromStorage = localStorage.getItem('userInfo')
+  ? JSON.parse(localStorage.getItem('userInfo'))
+  : null;
+ 
+const shippingAddressFromStorage = localStorage.getItem('shippingAddress')
+  ? JSON.parse(localStorage.getItem('shippingAddress'))
+  : {};  
+// 👇 初始化 Redux 状态
+const preloadedState = {
+  cart: {
+    cartItems: cartItemsFromStorage, // 给 cart reducer 赋值
+    shippingAddress: shippingAddressFromStorage, // 给 cart reducer 赋值
+  },
+  userLogin: {
+    userInfo: userInfoFromStorage, // 给 userLogin reducer 赋值
+  },
+  
+};
+
+export const store = configureStore({
+  reducer: {
+      productList: productReducer,
+      productDetails: productDetailsReducer,
+      cart: cartReducer,
+      userLogin: userLoginReducer,
+      userRegister: userRegisterReducer,
+      userDetails: userDetailsReducer,
+      userUpdateProfile: userUpdateProfileReducer,
+      orderCreate: orderCreateReducer,
+      orderDetails: orderDetailsReducer,
+      orderPay: orderPayReducer
+  },
+  // ✅ Thunk + DevTools ARE AUTO INCLUDED — NO SETUP NEEDED!
+  preloadedState : preloadedState,
+  middleware: (getDefaultMiddleware) => getDefaultMiddleware({ serializableCheck: false, immutableCheck: false, })
+});
+
+export default store;
+
+```
+14. update orderActions.js
+```js
+import axios from 'axios'
+import {
+    ORDER_CREATE_REQUEST,
+    ORDER_CREATE_SUCCESS,
+    ORDER_CREATE_FAIL,
+ ORDER_DETAILS_REQUEST,
+    ORDER_DETAILS_SUCCESS,
+    ORDER_DETAILS_FAIL,
+ ORDER_PAY_REQUEST,
+    ORDER_PAY_SUCCESS,
+    ORDER_PAY_FAIL,
+    ORDER_PAY_RESET, 
+} from '../constants/orderConstants'
+
+import { CART_CLEAR_ITEMS } from '../constants/cartConstants'
+
+
+export const createOrder = (order) => async (dispatch, getState) => {
+    try {
+        dispatch({
+            type: ORDER_CREATE_REQUEST
+        })
+
+        const {
+            userLogin: { userInfo },
+        } = getState()
+
+        const config = {
+            headers: {
+                'Content-type': 'application/json',
+                Authorization: `Bearer ${userInfo.token}`
+            }
+        }
+
+        const { data } = await axios.post(
+            `/api/orders/add/`,
+            order,
+            config
+        )
+
+        dispatch({
+            type: ORDER_CREATE_SUCCESS,
+            payload: data
+        })
+
+        dispatch({
+            type: CART_CLEAR_ITEMS,
+            payload: data
+        })
+
+        localStorage.removeItem('cartItems');
+
+
+    } catch (error) {
+        dispatch({
+            type: ORDER_CREATE_FAIL,
+            payload: error.response && error.response.data.detail
+                ? error.response.data.detail
+                : error.message,
+        })
+    }
+}
+export const getOrderDetails = (id) => async (dispatch, getState) => {
+    try {
+        dispatch({
+            type: ORDER_DETAILS_REQUEST
+        })
+
+        const {
+            userLogin: { userInfo },
+        } = getState()
+
+        const config = {
+            headers: {
+                'Content-type': 'application/json',
+                Authorization: `Bearer ${userInfo.token}`
+            }
+        }
+
+        const { data } = await axios.get(
+            `/api/orders/${id}/`,
+            config
+        )
+
+        dispatch({
+            type: ORDER_DETAILS_SUCCESS,
+            payload: data
+        })
+
+
+    } catch (error) {
+        dispatch({
+            type: ORDER_DETAILS_FAIL,
+            payload: error.response && error.response.data.detail
+                ? error.response.data.detail
+                : error.message,
+        })
+    }
+}
+export const payOrder = (id, paymentResult) => async (dispatch, getState) => {
+    try {
+        dispatch({
+            type: ORDER_PAY_REQUEST
+        })
+
+        const {
+            userLogin: { userInfo },
+        } = getState()
+
+        const config = {
+            headers: {
+                'Content-type': 'application/json',
+                Authorization: `Bearer ${userInfo.token}`
+            }
+        }
+
+        const { data } = await axios.put(
+            `/api/orders/${id}/pay/`,
+            paymentResult,
+            config
+        )
+
+        dispatch({
+            type: ORDER_PAY_SUCCESS,
+            payload: data
+        })
+
+
+    } catch (error) {
+        dispatch({
+            type: ORDER_PAY_FAIL,
+            payload: error.response && error.response.data.detail
+                ? error.response.data.detail
+                : error.message,
+        })
+    }
+}
+```
+
+
+## step 33 serilazer function
+
+### **只要你在 DRF（Django REST Framework）里：**
+1. **Model 建好了关联关系**（ForeignKey / OneToOne / ManyToMany）
+2. **Serializer 正确嵌套/返回了关联数据**
+3. API 返回的 JSON 里**包含了关联对象**
+
+### **那么在 React 前端：**
+✅ **你完全可以直接像 Django 模板一样使用：**
+```js
+order.user.name
+order.shippingAddress.address
+order.product.price
+```
+
+---
+
+# 🚀 **完整原理（3 步看懂）**
+
+## 1. 后端 Django Model（你建关系）
+```python
+# 你写的模型关系
+class Order(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    shippingAddress = models.OneToOneField(Address, on_delete=models.SET_NULL)
+
+class User(models.Model):
+    name = models.CharField(max_length=100)
+```
+
+## 2. 后端 Serializer（你把关系返回）
+```python
+class OrderSerializer(serializers.ModelSerializer):
+    user = UserSerializer()  # 嵌套关联
+    shippingAddress = AddressSerializer()
+    
+    class Meta:
+        model = Order
+        fields = '__all__'
+```
+
+## 3. API 返回的 JSON（前端拿到的结构）
+```json
+{
+  "id": 1,
+  "user": {
+    "name": "John"
+  },
+  "shippingAddress": {
+    "address": "123 Street"
+  }
+}
+```
+
+## 4. React 前端使用（**和 Django 语法几乎一样**）
+```js
+<h1>{order.user.name}</h1>
+<p>{order.shippingAddress.address}</p>
+```
+
+---
+
+# ✅ **你的理解完全正确！**
+
+你问的：
+> **can take it as regular django relationship, using modelname.modelname at the frontend side ?**
+
+### **答案：YES！完全可以！一模一样！**
+
+- Django 模板：`{{ order.user.name }}`
+- React 前端：`{order.user.name}`
+
+**写法几乎一样，逻辑完全一样！**
+
+---
+
+# ⚠️ **唯一小区别（必须知道）**
+1. **Django**：如果字段为空，不会崩溃
+2. **React**：如果 `order` 或 `user` 是 `null/undefined`，会直接报错！
+
+## 所以前端要加**安全访问符（可选链）**：
+```js
+order?.user?.name
+order?.shippingAddress?.address
+```
+
+---
+
+# 🎉 **总结（你已经完全掌握）**
+1. **Model 建关系**
+2. **Serializer 嵌套返回**
+3. **前端直接用 `数据.关联模型.字段`**
+4. **和 Django 模板用法几乎一样**
+**Django Model 关系 → DRF Serializer → React 直接使用**
+**完全正确、标准、工业级用法！**
+
+# 🔥 **Serializer 的真正作用：给前端“造”数据结构**
+你可以把 **serializer.py** 理解成：
+
+## **专门为前端 React 设计的“数据桥梁”**
+它决定了：
+1. 前端**能拿到哪些字段**
+2. 前端**能拿到哪些关联数据**（user / shippingAddress / orderItems 等）
+3. 前端**能用什么格式访问**（`order.user.name`）
+
+### **Serializer 里的每一个 class，都是在给前端“搭建关系”**
+
+比如：
+
+```python
+# 这是给前端用的 User 结构
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = '__all__'
+```
+
+```python
+# 这是给前端用的 Order 结构
+# 它里面嵌套了 User，就是让前端能用 order.user
+class OrderSerializer(serializers.ModelSerializer):
+    user = UserSerializer()  # 👈 这里就是给前端建关系！
+    shippingAddress = ShippingAddressSerializer()
+    orderItems = OrderItemSerializer(many=True)
+
+    class Meta:
+        model = Order
+        fields = '__all__'
+```
+
+---
+
+# 🚀 **前端能怎么用，完全由 Serializer 决定**
+
+你在 serializer 里写：
+```python
+user = UserSerializer()
+```
+
+前端就能用：
+```js
+order.user.name
+order.user.email
+```
+
+你在 serializer 里写：
+```python
+shippingAddress = ShippingAddressSerializer()
+```
+
+前端就能用：
+```js
+order.shippingAddress.address
+order.shippingAddress.city
+```
+
+### **Model 定义：数据库之间的关系**
+### **Serializer 定义：前端能使用的关系**
+
+
+## step 34 paid endpoint
+1. create paypal sandbox account, all you need is the client id and secret, get the client id from paypal sandbox
+2. `AZhybHLplgX7KJC5jW9-hRnnSjxWBE9Axu8M2VdygHF1Y5jGcI9M_Dowlg--Fd0ERprgcAUk4mwvlu6l`
+3. update orderscreen.jsx
+```jsx
+import  {  useEffect , useState} from 'react'
+import {  Row, Col, ListGroup, Image, Card } from 'react-bootstrap'
+import { Link, useNavigate, useParams } from 'react-router-dom'
+import { useDispatch, useSelector } from 'react-redux'
+// import { PayPalButton } from 'react-paypal-button-v2'
+import Message from '../components/Message'
+import Loader from '../components/Loader'
+import { getOrderDetails, payOrder } from '../actions/orderActions'
+// import { ORDER_PAY_RESET, ORDER_DELIVER_RESET } from '../constants/orderConstants'
+
+function OrderScreen() {
+    const navigate = useNavigate();
+    const { id: orderId } = useParams();
+    const dispatch = useDispatch();
+    const orderDetails = useSelector(state => state.orderDetails)
+    const { order, error, loading } = orderDetails
+    const [sdkReady, setSdkReady] = useState(false)
+    const userLogin = useSelector(state => state.userLogin)
+    const { userInfo } = userLogin
+    const orderPay = useSelector(state => state.orderPay)
+    const { loading: loadingPay, success: successPay } = orderPay
+// orderItems can't declare inside the if block, const will be blocked inside the if and can't be used outside
+    const itemsPrice = !loading && !error
+  ? order.orderItems.reduce((acc, item) => acc + item.price * item.qty, 0).toFixed(2)
+  : 0
+
+  const addPayPalScript = () => {
+        const script = document.createElement('script')
+        script.type = 'text/javascript'
+        script.src = 'https://www.paypal.com/sdk/js?client-id=AZhybHLplgX7KJC5jW9-hRnnSjxWBE9Axu8M2VdygHF1Y5jGcI9M_Dowlg--Fd0ERprgcAUk4mwvlu6l'
+        script.async = true
+        script.onload = () => {
+            setSdkReady(true)
+        }
+        document.body.appendChild(script)
+    }
+
+    useEffect(() => {
+
+       
+ if (!order || successPay || order._id !== Number(orderId) ) {
+        dispatch(getOrderDetails(orderId))
+      } else if (!order.isPaid) {
+        if (!window.paypal) {
+            addPayPalScript()
+        } else {
+            setSdkReady(true)
+        }
+      }
+    }, [ dispatch, navigate, orderId, successPay, order])
+
+    const successPaymentHandler = (paymentResult) => {
+        dispatch(payOrder(orderId, paymentResult))
+    }
+    return loading ? (
+        <Loader />
+    ) : error ? (
+        <Message variant='danger'>{error}</Message>
+    ) : (
+                <div>
+                    <h1>Order: {order._id}</h1>
+                    <Row>
+                        <Col md={8}>
+                            <ListGroup variant='flush'>
+                                <ListGroup.Item>
+                                    <h2>Shipping</h2>
+                                    <p><strong>Name: </strong> {order.user.name}</p>
+                                    <p><strong>Email: </strong><a href={`mailto:${order.user.email}`}>{order.user.email}</a></p>
+                                    <p>
+                                        <strong>Shipping: </strong>
+                                        {order.shippingAddress.address},  {order.shippingAddress.city}
+                                        {'  '}
+                                        {order.shippingAddress.postalCode},
+                                {'  '}
+                                        {order.shippingAddress.country}
+                                    </p>
+                                    {order.isDelivered ? (
+                                        <Message variant='success'>Delivered on {order.deliveredAt}</Message>
+                                    ) : (
+                                            <Message variant='danger'>Not Delivered</Message>
+                                        )}
+                                    
+                                </ListGroup.Item>
+
+                                <ListGroup.Item>
+                                    <h2>Payment Method</h2>
+                                    <p>
+                                        <strong>Method: </strong>
+                                        {order.paymentMethod}
+                                    </p>
+                                    {order.isPaid ? (
+                                        <Message variant='success'>Paid on {order.paidAt}</Message>
+                                    ) : (
+                                            <Message variant='danger'>Not Paid</Message>
+                                        )}
+                                </ListGroup.Item>
+
+                                <ListGroup.Item>
+                                    <h2>Order Items</h2>
+                                    {order.orderItems.length === 0 ? <Message variant='info'>
+                                        Order is empty
+                            </Message> : (
+                                            <ListGroup variant='flush'>
+                                                {order.orderItems.map((item, index) => (
+                                                    <ListGroup.Item key={index}>
+                                                        <Row>
+                                                            <Col md={1}>
+                                                                <Image src={item.image} alt={item.name} fluid rounded />
+                                                            </Col>
+
+                                                            <Col>
+                                                                <Link to={`/product/${item.product}`}>{item.name}</Link>
+                                                            </Col>
+
+                                                            <Col md={4}>
+                                                                {item.qty} X ${item.price} = ${(item.qty * item.price).toFixed(2)}
+                                                            </Col>
+                                                        </Row>
+                                                    </ListGroup.Item>
+                                                ))}
+                                            </ListGroup>
+                                        )}
+                                </ListGroup.Item>
+
+                            </ListGroup>
+
+                        </Col>
+
+                        <Col md={4}>
+                            <Card>
+                                <ListGroup variant='flush'>
+                                    <ListGroup.Item>
+                                        <h2>Order Summary</h2>
+                                    </ListGroup.Item>
+
+                                    <ListGroup.Item>
+                                        <Row>
+                                            <Col>Items:</Col>
+                                            <Col>${itemsPrice}</Col>
+                                        </Row>
+                                    </ListGroup.Item>
+
+                                    <ListGroup.Item>
+                                        <Row>
+                                            <Col>Shipping:</Col>
+                                            <Col>${order.shippingPrice}</Col>
+                                        </Row>
+                                    </ListGroup.Item>
+
+                                    <ListGroup.Item>
+                                        <Row>
+                                            <Col>Tax:</Col>
+                                            <Col>${order.taxPrice}</Col>
+                                        </Row>
+                                    </ListGroup.Item>
+
+                                    <ListGroup.Item>
+                                        <Row>
+                                            <Col>Total:</Col>
+                                            <Col>${order.totalPrice}</Col>
+                                        </Row>
+                                    </ListGroup.Item>
+
+
+                                  
+                                </ListGroup>
+                                
+                            </Card>
+                        </Col>
+                    </Row>
+                </div>
+            )
+}
+
+export default OrderScreen
+```
+
+- **getOrderDetails / payOrder**：获取订单、支付订单
+
+# 3. 从 Redux 读取数据
+```js
+const orderDetails = useSelector(state => state.orderDetails)
+const { order, error, loading } = orderDetails
+
+const userLogin = useSelector(state => state.userLogin)
+const { userInfo } = userLogin
+
+const orderPay = useSelector(state => state.orderPay)
+const { loading: loadingPay, success: successPay } = orderPay
+```
+
+### 功能：
+- **order**：订单详情（商品、地址、价格、用户…）
+- **loading / error**：加载状态、错误信息
+- **userInfo**：当前登录用户
+- **orderPay**：支付状态（是否支付成功）
+
+---
+
+# 4. 状态：PayPal 是否加载完成
+```js
+const [sdkReady, setSdkReady] = useState(false)
+```
+
+### 功能：
+- 控制 PayPal 按钮是否显示
+- `false` = 没加载好
+- `true` = 加载完成，可以显示支付按钮
+
+---
+
+# 5. 计算商品总价
+```js
+const itemsPrice = !loading && !error
+  ? order.orderItems.reduce((acc, item) => acc + item.price * item.qty, 0).toFixed(2)
+  : 0
+```
+# 6. 动态加载 PayPal 脚本
+```js
+const addPayPalScript = () => {
+    const script = document.createElement('script')
+    script.type = 'text/javascript'
+    script.src = '...paypal sdk...'
+    script.async = true
+    script.onload = () => {
+        setSdkReady(true)
+    }
+    document.body.appendChild(script)
+}
+```
+
+### 功能：
+- 动态向页面插入 PayPal 支付库
+- 加载完成后 → `sdkReady = true`
+- 然后才能显示支付按钮
+
+---
+
+# 7. 核心逻辑：useEffect（最重要）
+```js
+useEffect(() => {
+    if (!order || successPay || order._id !== Number(orderId)) {
+        dispatch(getOrderDetails(orderId))
+    } else if (!order.isPaid) {
+        if (!window.paypal) {
+            addPayPalScript()
+        } else {
+            setSdkReady(true)
+        }
+    }
+}, [dispatch, orderId, successPay, order])
+```
+
+### 功能（超级关键）：
+1. **如果没有订单 或 刚支付成功 或 订单ID不匹配**
+   → 重新获取订单
+2. **如果订单未支付**
+   → 加载 PayPal
+3. ** PayPal 加载好 → 显示支付按钮**
+
+一句话总结：
+**进入页面 → 加载订单 → 未支付就加载PayPal**
+
+---
+
+# 8. 支付成功回调
+```js
+const successPaymentHandler = (paymentResult) => {
+    dispatch(payOrder(orderId, paymentResult))
+}
+```
+
+### 功能：
+- 用户在 PayPal 完成支付
+- 发送 `payOrder` 通知后端
+- 后端更新订单为已支付
+
+4. install paypal button `npm install @paypal/react-paypal-js` for react 19
+
+5. update the orderscreen to add paypal button 
+```jsx
+import { useEffect } from 'react'
+import { Row, Col, ListGroup, Image, Card } from 'react-bootstrap'
+import { Link, useNavigate, useParams } from 'react-router-dom'
+import { useDispatch, useSelector } from 'react-redux'
+import { PayPalScriptProvider, PayPalButtons } from '@paypal/react-paypal-js'
+import Message from '../components/Message'
+import Loader from '../components/Loader'
+import { getOrderDetails, payOrder } from '../actions/orderActions'
+import { ORDER_PAY_RESET } from '../constants/orderConstants'
+
+function OrderScreen() {
+    const navigate = useNavigate()
+    const { id: orderId } = useParams()
+    const dispatch = useDispatch()
+
+    const orderDetails = useSelector(state => state.orderDetails)
+    const { order, error, loading } = orderDetails
+
+    const userLogin = useSelector(state => state.userLogin)
+    const { userInfo } = userLogin
+
+    const orderPay = useSelector(state => state.orderPay)
+    const { loading: loadingPay, success: successPay } = orderPay
+
+    const itemsPrice = !loading && !error && order
+        ? order.orderItems.reduce((acc, item) => acc + item.price * item.qty, 0).toFixed(2)
+        : 0
+
+    useEffect(() => {
+    if (!userInfo) {
+        navigate('/login');
+        return;
+    }
+
+    if (successPay || !order || order._id !== orderId) {
+        dispatch({ type: ORDER_PAY_RESET });
+        dispatch(getOrderDetails(orderId));
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+}, [dispatch, navigate, orderId, successPay, userInfo])
+
+    const createOrderHandler = (data, actions) => {
+        return actions.order.create({
+            purchase_units: [
+                {
+                    amount: {
+                        value: order.totalPrice,
+                    },
+                },
+            ],
+        })
+    }
+
+    const successPaymentHandler = (data, actions) => {
+        return actions.order.capture().then((details) => {
+            dispatch(payOrder(orderId, details))
+        })
+    }
+
+    if (loading) return <Loader />
+    if (error) return <Message variant='danger'>{error}</Message>
+
+    return (
+        <PayPalScriptProvider 
+            options={{
+                clientId: "AZhybHLplgX7KJC5jW9-hRnnSjxWBE9Axu8M2VdygHF1Y5jGcI9M_Dowlg--Fd0ERprgcAUk4mwvlu6l",
+                currency: "USD"
+            }}
+        >
+            <div>
+                <h1>Order: {order._id}</h1>
+                <Row>
+                    <Col md={8}>
+                        <ListGroup variant='flush'>
+                            <ListGroup.Item>
+                                <h2>Shipping</h2>
+                                <p><strong>Name: </strong>{order.user.name}</p>
+                                <p><strong>Email: </strong><a href={`mailto:${order.user.email}`}>{order.user.email}</a></p>
+                                <p>
+                                    {order.shippingAddress.address}, {order.shippingAddress.city}
+                                    {'  '}{order.shippingAddress.postalCode},{'  '}{order.shippingAddress.country}
+                                </p>
+                                {order.isDelivered ? (
+                                    <Message variant='success'>Delivered on {order.deliveredAt}</Message>
+                                ) : (
+                                    <Message variant='danger'>Not Delivered</Message>
+                                )}
+                            </ListGroup.Item>
+
+                            <ListGroup.Item>
+                                <h2>Payment Method</h2>
+                                <p><strong>Method: </strong>{order.paymentMethod}</p>
+                                {order.isPaid ? (
+                                    <Message variant='success'>Paid on {order.paidAt}</Message>
+                                ) : (
+                                    <Message variant='danger'>Not Paid</Message>
+                                )}
+                            </ListGroup.Item>
+
+                            <ListGroup.Item>
+                                <h2>Order Items</h2>
+                                {order.orderItems.length === 0 ? (
+                                    <Message variant='info'>Order is empty</Message>
+                                ) : (
+                                    <ListGroup variant='flush'>
+                                        {order.orderItems.map((item, index) => (
+                                            <ListGroup.Item key={index}>
+                                                <Row>
+                                                    <Col md={1}>
+                                                        <Image src={item.image} alt={item.name} fluid rounded />
+                                                    </Col>
+                                                    <Col>
+                                                        <Link to={`/product/${item.product}`}>{item.name}</Link>
+                                                    </Col>
+                                                    <Col md={4}>
+                                                        {item.qty} X ${item.price} = ${(item.qty * item.price).toFixed(2)}
+                                                    </Col>
+                                                </Row>
+                                            </ListGroup.Item>
+                                        ))}
+                                    </ListGroup>
+                                )}
+                            </ListGroup.Item>
+                        </ListGroup>
+                    </Col>
+
+                    <Col md={4}>
+                        <Card>
+                            <ListGroup variant='flush'>
+                                <ListGroup.Item><h2>Order Summary</h2></ListGroup.Item>
+                                <ListGroup.Item><Row><Col>Items:</Col><Col>${itemsPrice}</Col></Row></ListGroup.Item>
+                                <ListGroup.Item><Row><Col>Shipping:</Col><Col>${order.shippingPrice}</Col></Row></ListGroup.Item>
+                                <ListGroup.Item><Row><Col>Tax:</Col><Col>${order.taxPrice}</Col></Row></ListGroup.Item>
+                                <ListGroup.Item><Row><Col>Total:</Col><Col>${order.totalPrice}</Col></Row></ListGroup.Item>
+
+                                {!order.isPaid && (
+                                    <ListGroup.Item>
+                                        {loadingPay && <Loader />}
+                                        <PayPalButtons
+                                            createOrder={createOrderHandler}
+                                            onApprove={successPaymentHandler}
+                                        />
+                                    </ListGroup.Item>
+                                )}
+                            </ListGroup>
+                        </Card>
+                    </Col>
+                </Row>
+            </div>
+        </PayPalScriptProvider>
+    )
+}
+
+export default OrderScreen
+```
+6. we won't use testing paypal for now, we need to create business account on paypal
+7.
+8.
 9.
-10.
-11.
-12.
-## step 33
-## step 34
+
 ## step 35
+## step 36
+## Step 37
+## step 38
+## step 39
+## step 40
