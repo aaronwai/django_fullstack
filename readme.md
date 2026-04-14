@@ -10909,11 +10909,772 @@ function OrderScreen() {
 export default OrderScreen
 ```
 6. we won't use testing paypal for now, we need to create business account on paypal
-7.
-8.
-9.
 
-## step 35
+
+## step 35 orders in profile
+1. back to backend, update the order_views.py
+```py
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def getMyOrders(request):
+    user = request.user
+    orders = user.order_set.all()
+    serializer = OrderSerializer(orders, many=True)
+    return Response(serializer.data)
+
+```
+2. update order_url.py
+```py
+from django.urls import path
+from base.views import order_views as views
+
+urlpatterns = [
+    path('add/', views.addOrderItems, name='orders-add'),
+    path("myorders/", views.getMyOrders, name="myorders"),
+    path('<str:pk>/', views.getOrderById, name='user-order'),
+    path('<str:pk>/pay/', views.updateOrderToPaid, name='pay'),
+]
+```
+3. test under postman
+4. back to frontend, update constants.js
+```js
+
+export const ORDER_LIST_MY_REQUEST = 'ORDER_LIST_MY_REQUEST'
+export const ORDER_LIST_MY_SUCCESS = 'ORDER_LIST_MY_SUCCESS'
+export const ORDER_LIST_MY_FAIL = 'ORDER_LIST_MY_FAIL'
+export const ORDER_LIST_MY_RESET = 'ORDER_LIST_MY_RESET'
+```
+5. update orderreducer.js
+```js
+import {
+    ORDER_CREATE_REQUEST,
+    ORDER_CREATE_SUCCESS,
+    ORDER_CREATE_FAIL,
+    ORDER_CREATE_RESET,
+
+    ORDER_DETAILS_REQUEST, 
+    ORDER_DETAILS_SUCCESS,
+    ORDER_DETAILS_FAIL,
+    ORDER_PAY_REQUEST,
+    ORDER_PAY_SUCCESS,
+    ORDER_PAY_FAIL,
+    ORDER_PAY_RESET, 
+
+    ORDER_LIST_MY_REQUEST,
+    ORDER_LIST_MY_SUCCESS,
+    ORDER_LIST_MY_FAIL,
+    ORDER_LIST_MY_RESET,
+
+
+} from '../constants/orderConstants'
+
+
+export const orderCreateReducer = (state = {}, action) => {
+    switch (action.type) {
+        case ORDER_CREATE_REQUEST:
+            return {
+                loading: true
+            }
+
+        case ORDER_CREATE_SUCCESS:
+            return {
+                loading: false,
+                success: true,
+                order: action.payload
+            }
+
+        case ORDER_CREATE_FAIL:
+            return {
+                loading: false,
+                error: action.payload
+            }
+
+        case ORDER_CREATE_RESET:
+            return {}   
+
+        default:
+            return state
+    }
+}
+export const orderDetailsReducer = (state = { loading: true, orderItems: [], shippingAddress: {} }, action) => {
+    switch (action.type) {
+        case ORDER_DETAILS_REQUEST:
+            return {
+                ...state,
+                loading: true
+            }
+
+        case ORDER_DETAILS_SUCCESS:
+            return {
+                loading: false,
+                order: action.payload
+            }
+
+        case ORDER_DETAILS_FAIL:
+            return {
+                loading: false,
+                error: action.payload
+            }
+
+
+        default:
+            return state
+    }
+}
+export const orderPayReducer = (state = {}, action) => {
+    switch (action.type) {
+        case ORDER_PAY_REQUEST:
+            return {
+                loading: true
+            }
+
+        case ORDER_PAY_SUCCESS:
+            return {
+                loading: false,
+                success: true
+            }
+
+        case ORDER_PAY_FAIL:
+            return {
+                loading: false,
+                error: action.payload
+            }
+
+        case ORDER_PAY_RESET:
+            return {}
+
+        default:
+            return state
+    }
+}
+
+export const orderListMyReducer = (state = { orders: [] }, action) => {
+    switch (action.type) {
+        case ORDER_LIST_MY_REQUEST:
+            return {
+                loading: true
+            }
+
+        case ORDER_LIST_MY_SUCCESS:
+            return {
+                loading: false,
+                orders: action.payload
+            }
+
+        case ORDER_LIST_MY_FAIL:
+            return {
+                loading: false,
+                error: action.payload
+            }
+
+        case ORDER_LIST_MY_RESET:
+            return {
+                orders: []
+            }
+
+        default:
+            return state
+    }
+}
+
+```
+6. update store.js
+```js
+import { configureStore } from '@reduxjs/toolkit';
+import { productReducer, productDetailsReducer} from "./reducers/productReducers"; // import
+import {cartReducer} from "./reducers/cartReducers";
+import { userLoginReducer, userRegisterReducer, userDetailsReducer, userUpdateProfileReducer } from './reducers/userReducers';
+import { orderCreateReducer, orderDetailsReducer, orderPayReducer, orderListMyReducer } from './reducers/orderReducers';
+const cartItemsFromStorage = localStorage.getItem('cartItems')
+  ? JSON.parse(localStorage.getItem('cartItems'))
+  : [];
+const userInfoFromStorage = localStorage.getItem('userInfo')
+  ? JSON.parse(localStorage.getItem('userInfo'))
+  : null;
+ 
+const shippingAddressFromStorage = localStorage.getItem('shippingAddress')
+  ? JSON.parse(localStorage.getItem('shippingAddress'))
+  : {};  
+// 👇 初始化 Redux 状态
+const preloadedState = {
+  cart: {
+    cartItems: cartItemsFromStorage, // 给 cart reducer 赋值
+    shippingAddress: shippingAddressFromStorage, // 给 cart reducer 赋值
+  },
+  userLogin: {
+    userInfo: userInfoFromStorage, // 给 userLogin reducer 赋值
+  },
+  
+};
+
+export const store = configureStore({
+  reducer: {
+      productList: productReducer,
+      productDetails: productDetailsReducer,
+      cart: cartReducer,
+      userLogin: userLoginReducer,
+      userRegister: userRegisterReducer,
+      userDetails: userDetailsReducer,
+      userUpdateProfile: userUpdateProfileReducer,
+      orderCreate: orderCreateReducer,
+      orderDetails: orderDetailsReducer,
+      orderPay: orderPayReducer,
+      orderListMy: orderListMyReducer,
+  },
+  // ✅ Thunk + DevTools ARE AUTO INCLUDED — NO SETUP NEEDED!
+  preloadedState : preloadedState,
+  middleware: (getDefaultMiddleware) => getDefaultMiddleware({ serializableCheck: false, immutableCheck: false, })
+});
+
+export default store;
+
+```
+7. update orderaction.js
+```js
+import axios from 'axios'
+import {
+    ORDER_CREATE_REQUEST,
+    ORDER_CREATE_SUCCESS,
+    ORDER_CREATE_FAIL,
+ ORDER_DETAILS_REQUEST,
+    ORDER_DETAILS_SUCCESS,
+    ORDER_DETAILS_FAIL,
+ ORDER_PAY_REQUEST,
+    ORDER_PAY_SUCCESS,
+    ORDER_PAY_FAIL,
+    ORDER_PAY_RESET, 
+    ORDER_LIST_MY_REQUEST,
+    ORDER_LIST_MY_SUCCESS,
+    ORDER_LIST_MY_FAIL,
+    ORDER_LIST_MY_RESET,
+} from '../constants/orderConstants'
+
+import { CART_CLEAR_ITEMS } from '../constants/cartConstants'
+
+
+export const createOrder = (order) => async (dispatch, getState) => {
+    try {
+        dispatch({
+            type: ORDER_CREATE_REQUEST
+        })
+
+        const {
+            userLogin: { userInfo },
+        } = getState()
+
+        const config = {
+            headers: {
+                'Content-type': 'application/json',
+                Authorization: `Bearer ${userInfo.token}`
+            }
+        }
+
+        const { data } = await axios.post(
+            `/api/orders/add/`,
+            order,
+            config
+        )
+
+        dispatch({
+            type: ORDER_CREATE_SUCCESS,
+            payload: data
+        })
+
+        dispatch({
+            type: CART_CLEAR_ITEMS,
+            payload: data
+        })
+
+        localStorage.removeItem('cartItems');
+
+
+    } catch (error) {
+        dispatch({
+            type: ORDER_CREATE_FAIL,
+            payload: error.response && error.response.data.detail
+                ? error.response.data.detail
+                : error.message,
+        })
+    }
+}
+export const getOrderDetails = (id) => async (dispatch, getState) => {
+    try {
+        dispatch({
+            type: ORDER_DETAILS_REQUEST
+        })
+
+        const {
+            userLogin: { userInfo },
+        } = getState()
+
+        const config = {
+            headers: {
+                'Content-type': 'application/json',
+                Authorization: `Bearer ${userInfo.token}`
+            }
+        }
+
+        const { data } = await axios.get(
+            `/api/orders/${id}/`,
+            config
+        )
+
+        dispatch({
+            type: ORDER_DETAILS_SUCCESS,
+            payload: data
+        })
+
+
+    } catch (error) {
+        dispatch({
+            type: ORDER_DETAILS_FAIL,
+            payload: error.response && error.response.data.detail
+                ? error.response.data.detail
+                : error.message,
+        })
+    }
+}
+export const payOrder = (id, paymentResult) => async (dispatch, getState) => {
+    try {
+        dispatch({
+            type: ORDER_PAY_REQUEST
+        })
+
+        const {
+            userLogin: { userInfo },
+        } = getState()
+
+        const config = {
+            headers: {
+                'Content-type': 'application/json',
+                Authorization: `Bearer ${userInfo.token}`
+            }
+        }
+
+        const { data } = await axios.put(
+            `/api/orders/${id}/pay/`,
+            paymentResult,
+            config
+        )
+
+        dispatch({
+            type: ORDER_PAY_SUCCESS,
+            payload: data
+        })
+
+
+    } catch (error) {
+        dispatch({
+            type: ORDER_PAY_FAIL,
+            payload: error.response && error.response.data.detail
+                ? error.response.data.detail
+                : error.message,
+        })
+    }
+}
+
+export const listMyOrders = () => async (dispatch, getState) => {
+    try {
+        dispatch({
+            type: ORDER_LIST_MY_REQUEST
+        })
+
+        const {
+            userLogin: { userInfo },
+        } = getState()
+
+        const config = {
+            headers: {
+                'Content-type': 'application/json',
+                Authorization: `Bearer ${userInfo.token}`
+            }
+        }
+
+        const { data } = await axios.get(
+            `/api/orders/myorders/`,
+            config
+        )
+
+        dispatch({
+            type: ORDER_LIST_MY_SUCCESS,
+            payload: data
+        })
+
+
+    } catch (error) {
+        dispatch({
+            type: ORDER_LIST_MY_FAIL,
+            payload: error.response && error.response.data.detail
+                ? error.response.data.detail
+                : error.message,
+        })
+    }
+}
+```
+8. update useraction.js to add reset
+```js
+import axios from 'axios'
+import {
+    USER_LOGIN_REQUEST,
+    USER_LOGIN_SUCCESS,
+    USER_LOGIN_FAIL,
+
+    USER_LOGOUT,
+    USER_REGISTER_REQUEST,
+    USER_REGISTER_SUCCESS,
+    USER_REGISTER_FAIL,
+
+    USER_DETAILS_REQUEST,
+    USER_DETAILS_SUCCESS,
+    USER_DETAILS_FAIL,
+    USER_DETAILS_RESET,
+
+    USER_UPDATE_PROFILE_REQUEST,
+    USER_UPDATE_PROFILE_SUCCESS,
+    USER_UPDATE_PROFILE_FAIL,
+    USER_UPDATE_PROFILE_RESET,
+
+} from '../constants/userConstants'
+
+import { ORDER_LIST_MY_RESET } from '../constants/orderConstants'
+export const login = (email, password) => async (dispatch) => {
+    try {
+        dispatch({
+            type: USER_LOGIN_REQUEST
+        })
+
+        const config = {
+            headers: {
+                'Content-type': 'application/json'
+            }
+        }
+
+        const { data } = await axios.post(
+            '/api/users/login/',
+            { 'username': email, 'password': password },
+            config
+        )
+
+        dispatch({
+            type: USER_LOGIN_SUCCESS,
+            payload: data
+        })
+
+        localStorage.setItem('userInfo', JSON.stringify(data))
+
+    } catch (error) {
+        dispatch({
+            type: USER_LOGIN_FAIL,
+            payload: error.response && error.response.data.detail
+                ? error.response.data.detail
+                : error.message,
+        })
+    }
+}
+
+export const logout = () => (dispatch) => {
+    localStorage.removeItem('userInfo')
+    dispatch({ type: USER_LOGOUT })
+    dispatch({ type: USER_DETAILS_RESET })
+    dispatch({ type: ORDER_LIST_MY_RESET })
+}
+
+export const register = (name, email, password) => async (dispatch) => {
+    try {
+        dispatch({
+            type: USER_REGISTER_REQUEST
+        })
+
+        const config = {
+            headers: {
+                'Content-type': 'application/json'
+            }
+        }
+
+        const { data } = await axios.post(
+            '/api/users/register/',
+            { 'name': name, 'email': email, 'password': password },
+            config
+        )
+
+        dispatch({
+            type: USER_REGISTER_SUCCESS,
+            payload: data
+        })
+
+        dispatch({
+            type: USER_LOGIN_SUCCESS,
+            payload: data
+        })
+
+        localStorage.setItem('userInfo', JSON.stringify(data))
+
+    } catch (error) {
+        dispatch({
+            type: USER_REGISTER_FAIL,
+            payload: error.response && error.response.data.detail
+                ? error.response.data.detail
+                : error.message,
+        })
+    }
+}
+
+export const getUserDetails = (id) => async (dispatch, getState) => {
+    try {
+        dispatch({
+            type: USER_DETAILS_REQUEST
+        })
+
+        const {
+            userLogin: { userInfo },
+        } = getState()
+
+        const config = {
+            headers: {
+                'Content-type': 'application/json',
+                Authorization: `Bearer ${userInfo.token}`
+            }
+        }
+
+        const { data } = await axios.get(
+            `/api/users/${id}/`,
+            config
+        )
+
+        dispatch({
+            type: USER_DETAILS_SUCCESS,
+            payload: data
+        })
+
+
+    } catch (error) {
+        dispatch({
+            type: USER_DETAILS_FAIL,
+            payload: error.response && error.response.data.detail
+                ? error.response.data.detail
+                : error.message,
+        })
+    }
+}
+
+export const updateUserProfile = (user) => async (dispatch, getState) => {
+    try {
+        dispatch({
+            type: USER_UPDATE_PROFILE_REQUEST
+        })
+
+        const {
+            userLogin: { userInfo },
+        } = getState()
+
+        const config = {
+            headers: {
+                'Content-type': 'application/json',
+                Authorization: `Bearer ${userInfo.token}`
+            }
+        }
+
+        const { data } = await axios.put(
+            `/api/users/profile/update/`,
+            user,
+            config
+        )
+
+        dispatch({
+            type: USER_UPDATE_PROFILE_SUCCESS,
+            payload: data
+        })
+
+        dispatch({
+            type: USER_LOGIN_SUCCESS,
+            payload: data
+        })
+
+        localStorage.setItem('userInfo', JSON.stringify(data))
+
+    } catch (error) {
+        dispatch({
+            type: USER_UPDATE_PROFILE_FAIL,
+            payload: error.response && error.response.data.detail
+                ? error.response.data.detail
+                : error.message,
+        })
+    }
+}
+
+```
+9. update profilescreen.jsx
+```jsx
+import React, { useState, useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
+import { Form, Button, Row, Col, Table } from 'react-bootstrap'
+import { LinkContainer } from 'react-router-bootstrap'
+import { useDispatch, useSelector } from 'react-redux'
+import Loader from '../components/Loader'
+import Message from '../components/Message'
+import { getUserDetails, updateUserProfile } from '../actions/userActions'
+import { USER_UPDATE_PROFILE_RESET } from '../constants/userConstants'
+import { listMyOrders } from '../actions/orderActions'
+function ProfileScreen() {
+    const navigate = useNavigate()
+    const [name, setName] = useState('')
+    const [email, setEmail] = useState('')
+    const [password, setPassword] = useState('')
+    const [confirmPassword, setConfirmPassword] = useState('')
+    const [message, setMessage] = useState('')
+
+    const dispatch = useDispatch()
+
+    const userDetails = useSelector(state => state.userDetails)
+    const { error, loading, user } = userDetails
+
+    const userLogin = useSelector(state => state.userLogin)
+    const { userInfo } = userLogin
+
+  const userUpdateProfile = useSelector(state => state.userUpdateProfile)
+  const { success } = userUpdateProfile
+
+    const orderListMy = useSelector(state => state.orderListMy)
+    const { loading: loadingOrders, error: errorOrders, orders } = orderListMy
+
+    useEffect(() => {
+        if (!userInfo) {
+            navigate('/login')
+        } else {
+            if (!user || !user.name || success) {
+               dispatch({ type: USER_UPDATE_PROFILE_RESET })
+                dispatch(getUserDetails('profile'))
+                dispatch(listMyOrders())
+            } else {
+                setName(user.name)
+                setEmail(user.email)
+            }
+        }
+    }, [dispatch, navigate, userInfo, user, success])
+
+    const submitHandler = (e) => {
+        e.preventDefault()
+
+        if (password !== confirmPassword) {
+            setMessage('Passwords do not match')
+        } else {
+           dispatch(updateUserProfile({ id: user._id, name, email, password }))
+           setMessage("")
+        }
+
+    }
+    return (
+        <Row>
+            <Col md={3}>
+                <h2>User Profile</h2>
+
+                {message && <Message variant='danger'>{message}</Message>}
+                {error && <Message variant='danger'>{error}</Message>}
+                {loading && <Loader />}
+                <Form onSubmit={submitHandler}>
+
+                    <Form.Group controlId='name'>
+                        <Form.Label>Name</Form.Label>
+                        <Form.Control
+                            required
+                            type='name'
+                            placeholder='Enter name'
+                            value={name}
+                            onChange={(e) => setName(e.target.value)}
+                        >
+                        </Form.Control>
+                    </Form.Group>
+
+                    <Form.Group controlId='email'>
+                        <Form.Label>Email Address</Form.Label>
+                        <Form.Control
+                            required
+                            type='email'
+                            placeholder='Enter Email'
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
+                        >
+                        </Form.Control>
+                    </Form.Group>
+
+                    <Form.Group controlId='password'>
+                        <Form.Label>Password</Form.Label>
+                        <Form.Control
+
+                            type='password'
+                            placeholder='Enter Password'
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
+                        >
+                        </Form.Control>
+                    </Form.Group>
+
+                    <Form.Group controlId='passwordConfirm'>
+                        <Form.Label>Confirm Password</Form.Label>
+                        <Form.Control
+
+                            type='password'
+                            placeholder='Confirm Password'
+                            value={confirmPassword}
+                            onChange={(e) => setConfirmPassword(e.target.value)}
+                        >
+                        </Form.Control>
+                    </Form.Group>
+
+                    <Button type='submit' variant='primary'>
+                        Update
+                </Button>
+
+                </Form>
+            </Col>
+
+            <Col md={9}>
+                <h2>My Orders</h2>
+           {loadingOrders ? (
+                    <Loader />
+                ) : errorOrders ? (
+                    <Message variant='danger'>{errorOrders}</Message>
+                ) : (
+                            <Table striped responsive className='table-sm'>
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Date</th>
+                                        <th>Total</th>
+                                        <th>Paid</th>
+                                        <th>Delivered</th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+
+                                <tbody>
+                                    {orders.map(order => (
+                                        <tr key={order._id}>
+                                            <td>{order._id}</td>
+                                            <td>{order.createdAt.substring(0, 10)}</td>
+                                            <td>${order.totalPrice}</td>
+                                            <td>{order.isPaid ? order.paidAt.substring(0, 10) : (
+                                                <i className='fas fa-times' style={{ color: 'red' }}></i>
+                                            )}</td>
+                                            <td>
+                                                <LinkContainer to={`/order/${order._id}`}>
+                                                    <Button className='btn-sm'>Details</Button>
+                                                </LinkContainer>
+                                            </td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </Table>
+                        )}
+            </Col>
+        </Row>
+    )
+}
+
+export default ProfileScreenxs
+```
+10. 
+
 ## step 36
 ## Step 37
 ## step 38
