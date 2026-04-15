@@ -1,7 +1,7 @@
 import { configureStore } from '@reduxjs/toolkit';
 import { productReducer, productDetailsReducer} from "./reducers/productReducers"; // import
 import {cartReducer} from "./reducers/cartReducers";
-import { userLoginReducer, userRegisterReducer, userDetailsReducer, userUpdateProfileReducer, userListReducer, userDeleteReducer } from './reducers/userReducers';
+import { userLoginReducer, userRegisterReducer, userDetailsReducer, userUpdateProfileReducer, userListReducer, userDeleteReducer, userUpdateReducer } from './reducers/userReducers';
 import { orderCreateReducer, orderDetailsReducer, orderPayReducer, orderListMyReducer } from './reducers/orderReducers';
 const cartItemsFromStorage = localStorage.getItem('cartItems')
   ? JSON.parse(localStorage.getItem('cartItems'))
@@ -39,7 +39,8 @@ export const store = configureStore({
       orderDetails: orderDetailsReducer,
       orderPay: orderPayReducer,
       orderListMy: orderListMyReducer,
-      userDelete: userDeleteReducer
+      userDelete: userDeleteReducer,
+      userUpdate: userUpdateReducer
   },
   // ✅ Thunk + DevTools ARE AUTO INCLUDED — NO SETUP NEEDED!
   preloadedState : preloadedState,

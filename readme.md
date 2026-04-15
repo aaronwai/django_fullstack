@@ -13087,9 +13087,1235 @@ function UserListScreen() {
 
 export default UserListScreen
 ```
-8.
-9.
-10.
-## step 38
-## step 39
+
+## step 38 update user
+1. update user_view.py
+```py
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import IsAuthenticated, IsAdminUser
+from rest_framework.response import Response
+
+from django.contrib.auth.models import User
+from base.serializer import UserSerializer, UserSerializerWithToken
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
+from rest_framework_simplejwt.views import TokenObtainPairView
+
+from django.contrib.auth.hashers import make_password
+from rest_framework import status
+
+
+class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
+    def validate(self, attrs):
+        data = super().validate(attrs)
+
+        serializer = UserSerializerWithToken(self.user).data
+        for k, v in serializer.items():
+            data[k] = v
+
+        return data
+
+
+class MyTokenObtainPairView(TokenObtainPairView):
+    serializer_class = MyTokenObtainPairSerializer
+
+@api_view(['POST'])
+def registerUser(request):
+    data = request.data
+    try:
+        user = User.objects.create(
+            first_name=data['name'],
+            username=data['email'],
+            email=data['email'],
+            password=make_password(data['password'])
+        )
+        serializer = UserSerializerWithToken(user, many=False)
+        return Response(serializer.data)
+    except:
+        message = {'detail': 'User with this email already exists'}
+        return Response(message, status=status.HTTP_400_BAD_REQUEST)    
+
+@api_view(['PUT'])
+@permission_classes([IsAuthenticated])
+def updateUserProfile(request):
+    user = request.user
+    serializer = UserSerializerWithToken(user, many=False)
+
+    data = request.data
+    user.first_name = data['name']
+    user.username = data['email']
+    user.email = data['email']
+
+    if data['password'] != '':
+        user.password = make_password(data['password'])
+
+    user.save()
+
+    return Response(serializer.data)
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def getUserProfile(request):
+    user = request.user
+    serializer = UserSerializer(user, many=False)
+    return Response(serializer.data)
+
+@api_view(['GET'])
+@permission_classes([IsAdminUser])
+def getUsers(request):
+    users = User.objects.all()
+    serializer = UserSerializer(users, many=True)
+    return Response(serializer.data)
+
+@api_view(['DELETE'])
+@permission_classes([IsAdminUser])
+def deleteUser(request, pk):
+    userForDeletion = User.objects.get(id=pk)
+    userForDeletion.delete()
+    return Response('User was deleted')
+
+@api_view(['GET'])
+@permission_classes([IsAdminUser])
+def getUserById(request, pk):
+    user = User.objects.get(id=pk)
+    serializer = UserSerializer(user, many=False)
+    return Response(serializer.data)
+
+@api_view(['PUT'])
+@permission_classes([IsAuthenticated])
+def updateUser(request, pk):
+    user = User.objects.get(id=pk)
+
+    data = request.data
+
+    user.first_name = data['name']
+    user.username = data['email']
+    user.email = data['email']
+    user.is_staff = data['isAdmin']
+
+    user.save()
+
+    serializer = UserSerializer(user, many=False)
+
+    return Response(serializer.data)
+
+
+```
+2. update user_url.py
+```py
+from django.urls import path
+from base.views import user_views as views
+
+
+urlpatterns = [
+    path('login/', views.MyTokenObtainPairView.as_view(),
+         name='token_obtain_pair'),
+
+    path('register/', views.registerUser, name='register'),
+
+    path('profile/', views.getUserProfile, name="users-profile"),
+    path('profile/update/', views.updateUserProfile, name="user-profile-update"),
+    path('', views.getUsers, name="users"),
+    path('delete/<str:pk>/', views.deleteUser, name='user-delete'),
+    path('<str:pk>/', views.getUserById, name='user'),
+
+    path('update/<str:pk>/', views.updateUser, name='user-update'),
+]
+```
+3. back to frontend, create UserEditScreen.jsx
+```jsx
+import React, { useState, useEffect } from 'react'
+import { Link, useNavigate, useParams } from 'react-router-dom'
+import { Form, Button } from 'react-bootstrap'
+import { useDispatch, useSelector } from 'react-redux'
+import Loader from '../components/Loader'
+import Message from '../components/Message'
+import FormContainer from '../components/FormContainer'
+import { getUserDetails, updateUser } from '../actions/userActions'
+import { USER_UPDATE_RESET } from '../constants/userConstants'
+
+function UserEditScreen() {
+    const navigate = useNavigate()
+    const userId = useParams().id
+
+    const [name, setName] = useState('')
+    const [email, setEmail] = useState('')
+    const [isAdmin, setIsAdmin] = useState(false)
+
+    const dispatch = useDispatch()
+
+    const userDetails = useSelector(state => state.userDetails)
+    const { error, loading, user } = userDetails
+
+
+    useEffect(() => {
+
+
+    }, [user, userId, navigate, dispatch])
+
+    const submitHandler = (e) => {
+        e.preventDefault()
+      
+    }
+
+    return (
+        <div>
+            <Link to='/admin/userlist'>
+                Go Back
+            </Link>
+
+            <FormContainer>
+                <h1>Edit User</h1>
+
+                {loading ? <Loader /> : error ? <Message variant='danger'>{error}</Message>
+                    : (
+                        <Form onSubmit={submitHandler}>
+
+                            <Form.Group controlId='name'>
+                                <Form.Label>Name</Form.Label>
+                                <Form.Control
+
+                                    type='name'
+                                    placeholder='Enter name'
+                                    value={name}
+                                    onChange={(e) => setName(e.target.value)}
+                                >
+                                </Form.Control>
+                            </Form.Group>
+
+                            <Form.Group controlId='email'>
+                                <Form.Label>Email Address</Form.Label>
+                                <Form.Control
+                                    type='email'
+                                    placeholder='Enter Email'
+                                    value={email}
+                                    onChange={(e) => setEmail(e.target.value)}
+                                >
+                                </Form.Control>
+                            </Form.Group>
+
+                            <Form.Group controlId='isadmin'>
+                                <Form.Check
+                                    type='checkbox'
+                                    label='Is Admin'
+                                    checked={isAdmin}
+                                    onChange={(e) => setIsAdmin(e.target.checked)}
+                                >
+                                </Form.Check>
+                            </Form.Group>
+
+                            <Button type='submit' variant='primary'>
+                                Update
+                        </Button>
+
+                        </Form>
+                    )}
+
+            </FormContainer >
+        </div>
+
+    )
+}
+
+export default UserEditScreen
+```
+4. update app.js
+```js
+import { Container } from "react-bootstrap";
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import Footer from "./components/Footer";
+import Header from "./components/Header";
+import HomeScreen from "./screens/HomeScreen";
+import LoginScreen from "./screens/LoginScreen";
+import RegisterScreen from "./screens/RegisterScreen";
+import ProductScreen from "./screens/ProductScreen";
+import CartScreen from "./screens/CartScreen";
+import ProfileScreen from "./screens/ProfileScreen";
+import ShippingScreen from "./screens/ShippingScreen";
+import PaymentScreen from "./screens/PaymentScreen";
+import PlaceOrderScreen from "./screens/PlaceOrderScreen";
+import OrderScreen from "./screens/OrderScreen";
+import UserListScreen from "./screens/UserListScreen";
+import UserEditScreen from "./screens/UserEditScreen";
+function App() {
+  return (
+    <Router>
+      <Header />
+      <main className="py-3">
+        <Container>
+          <Routes>
+            <Route path="/admin/userlist" element={<UserListScreen />} />
+            <Route path='/admin/user/:id/edit' element={<UserEditScreen />} /> 
+            {/* PUBLIC ROUTES */}
+            <Route path="/" element={<HomeScreen />} />
+            <Route path="/login" element={<LoginScreen />} />
+            <Route path="/register" element={<RegisterScreen />} />
+            <Route path='/profile' element={<ProfileScreen />} />
+            <Route path='/shipping' element={<ShippingScreen />} />
+            <Route path='/payment' element={<PaymentScreen />} />
+            <Route path='/placeorder' element={<PlaceOrderScreen />} />
+            <Route path='/order/:id' element={<OrderScreen />} />
+            <Route path="/product/:id" element={<ProductScreen />} />
+            <Route path="/cart/:id?" element={<CartScreen />} />
+          </Routes>
+        </Container>
+      </main>
+      <Footer />
+    </Router>
+  );
+}
+
+export default App;
+
+```
+5. should see the form is loaded
+6. update the usereditscreen to load user data
+```jsx
+import React, { useState, useEffect } from 'react'
+import { Link, useNavigate, useParams } from 'react-router-dom'
+import { Form, Button } from 'react-bootstrap'
+import { useDispatch, useSelector } from 'react-redux'
+import Loader from '../components/Loader'
+import Message from '../components/Message'
+import FormContainer from '../components/FormContainer'
+import { getUserDetails, updateUser } from '../actions/userActions'
+import { USER_UPDATE_RESET } from '../constants/userConstants'
+
+function UserEditScreen() {
+    const navigate = useNavigate()
+    const userId = useParams().id
+
+    const [name, setName] = useState('')
+    const [email, setEmail] = useState('')
+    const [isAdmin, setIsAdmin] = useState(false)
+
+    const dispatch = useDispatch()
+
+    const userDetails = useSelector(state => state.userDetails)
+    const { error, loading, user } = userDetails
+
+    // const userUpdate = useSelector(state => state.userUpdate)
+    // const { error: errorUpdate, loading: loadingUpdate, success: successUpdate } = userUpdate
+
+    useEffect(() => {
+
+        // if (successUpdate) {
+        //     dispatch({ type: USER_UPDATE_RESET })
+        //     navigate('/admin/userlist')
+        // } else {
+
+            if (!user || !user.name || user._id !== Number(userId)) {
+                dispatch(getUserDetails(userId))
+            } else {
+                setName(user.name)
+                setEmail(user.email)
+                setIsAdmin(user.isAdmin)
+            }
+        // }
+
+    }, [user, userId, navigate, dispatch])
+
+    const submitHandler = (e) => {
+        e.preventDefault()
+        // dispatch(updateUser({ _id: user._id, name, email, isAdmin }))
+    }
+
+    return (
+        <div>
+            <Link to='/admin/userlist'>
+                Go Back
+            </Link>
+
+            <FormContainer>
+                <h1>Edit User</h1>
+                {/* {loadingUpdate && <Loader />}
+                {errorUpdate && <Message variant='danger'>{errorUpdate}</Message>} */}
+
+                {loading ? <Loader /> : error ? <Message variant='danger'>{error}</Message>
+                    : (
+                        <Form onSubmit={submitHandler}>
+
+                            <Form.Group controlId='name'>
+                                <Form.Label>Name</Form.Label>
+                                <Form.Control
+
+                                    type='name'
+                                    placeholder='Enter name'
+                                    value={name}
+                                    onChange={(e) => setName(e.target.value)}
+                                >
+                                </Form.Control>
+                            </Form.Group>
+
+                            <Form.Group controlId='email'>
+                                <Form.Label>Email Address</Form.Label>
+                                <Form.Control
+                                    type='email'
+                                    placeholder='Enter Email'
+                                    value={email}
+                                    onChange={(e) => setEmail(e.target.value)}
+                                >
+                                </Form.Control>
+                            </Form.Group>
+
+                            <Form.Group controlId='isadmin'>
+                                <Form.Check
+                                    type='checkbox'
+                                    label='Is Admin'
+                                    checked={isAdmin}
+                                    onChange={(e) => setIsAdmin(e.target.checked)}
+                                >
+                                </Form.Check>
+                            </Form.Group>
+
+                            <Button type='submit' variant='primary'>
+                                Update
+                        </Button>
+
+                        </Form>
+                    )}
+
+            </FormContainer >
+        </div>
+
+    )
+}
+
+export default UserEditScreen
+```
+6. there is bug for user info, need to go to profilescreen to in sync the userinfo
+```jsx
+import React, { useState, useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
+import { Form, Button, Row, Col, Table } from 'react-bootstrap'
+import { LinkContainer } from 'react-router-bootstrap'
+import { useDispatch, useSelector } from 'react-redux'
+import Loader from '../components/Loader'
+import Message from '../components/Message'
+import { getUserDetails, updateUserProfile } from '../actions/userActions'
+import { USER_UPDATE_PROFILE_RESET } from '../constants/userConstants'
+import { listMyOrders } from '../actions/orderActions'
+function ProfileScreen() {
+    const navigate = useNavigate()
+    const [name, setName] = useState('')
+    const [email, setEmail] = useState('')
+    const [password, setPassword] = useState('')
+    const [confirmPassword, setConfirmPassword] = useState('')
+    const [message, setMessage] = useState('')
+
+    const dispatch = useDispatch()
+
+    const userDetails = useSelector(state => state.userDetails)
+    const { error, loading, user } = userDetails
+
+    const userLogin = useSelector(state => state.userLogin)
+    const { userInfo } = userLogin
+
+  const userUpdateProfile = useSelector(state => state.userUpdateProfile)
+  const { success } = userUpdateProfile
+
+    const orderListMy = useSelector(state => state.orderListMy)
+    const { loading: loadingOrders, error: errorOrders, orders } = orderListMy
+
+    useEffect(() => {
+        if (!userInfo) {
+            navigate('/login')
+        } else {
+            if (!user || !user.name || success || userInfo._id !== user._id) { // check userinfo and user id
+               dispatch({ type: USER_UPDATE_PROFILE_RESET })
+                dispatch(getUserDetails('profile'))
+                dispatch(listMyOrders())
+            } else {
+                setName(user.name)
+                setEmail(user.email)
+            }
+        }
+    }, [dispatch, navigate, userInfo, user, success])
+
+    const submitHandler = (e) => {
+        e.preventDefault()
+
+        if (password !== confirmPassword) {
+            setMessage('Passwords do not match')
+        } else {
+           dispatch(updateUserProfile({ id: user._id, name, email, password }))
+           setMessage("")
+        }
+
+    }
+    return (
+        <Row>
+            <Col md={3}>
+                <h2>User Profile</h2>
+
+                {message && <Message variant='danger'>{message}</Message>}
+                {error && <Message variant='danger'>{error}</Message>}
+                {loading && <Loader />}
+                <Form onSubmit={submitHandler}>
+
+                    <Form.Group controlId='name'>
+                        <Form.Label>Name</Form.Label>
+                        <Form.Control
+                            required
+                            type='name'
+                            placeholder='Enter name'
+                            value={name}
+                            onChange={(e) => setName(e.target.value)}
+                        >
+                        </Form.Control>
+                    </Form.Group>
+
+                    <Form.Group controlId='email'>
+                        <Form.Label>Email Address</Form.Label>
+                        <Form.Control
+                            required
+                            type='email'
+                            placeholder='Enter Email'
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
+                        >
+                        </Form.Control>
+                    </Form.Group>
+
+                    <Form.Group controlId='password'>
+                        <Form.Label>Password</Form.Label>
+                        <Form.Control
+
+                            type='password'
+                            placeholder='Enter Password'
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
+                        >
+                        </Form.Control>
+                    </Form.Group>
+
+                    <Form.Group controlId='passwordConfirm'>
+                        <Form.Label>Confirm Password</Form.Label>
+                        <Form.Control
+
+                            type='password'
+                            placeholder='Confirm Password'
+                            value={confirmPassword}
+                            onChange={(e) => setConfirmPassword(e.target.value)}
+                        >
+                        </Form.Control>
+                    </Form.Group>
+
+                    <Button type='submit' variant='primary'>
+                        Update
+                </Button>
+
+                </Form>
+            </Col>
+
+            <Col md={9}>
+                <h2>My Orders</h2>
+           {loadingOrders ? (
+                    <Loader />
+                ) : errorOrders ? (
+                    <Message variant='danger'>{errorOrders}</Message>
+                ) : (
+                            <Table striped responsive className='table-sm'>
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Date</th>
+                                        <th>Total</th>
+                                        <th>Paid</th>
+                                        <th>Delivered</th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+
+                                <tbody>
+                                    {orders.map(order => (
+                                        <tr key={order._id}>
+                                            <td>{order._id}</td>
+                                            <td>{order.createdAt.substring(0, 10)}</td>
+                                            <td>${order.totalPrice}</td>
+                                            <td>{order.isPaid ? order.paidAt.substring(0, 10) : (
+                                                <i className='fas fa-times' style={{ color: 'red' }}></i>
+                                            )}</td>
+                                            <td>
+                                                <LinkContainer to={`/order/${order._id}`}>
+                                                    <Button className='btn-sm'>Details</Button>
+                                                </LinkContainer>
+                                            </td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </Table>
+                        )}
+            </Col>
+        </Row>
+    )
+}
+
+export default ProfileScreen
+```
+7. form is ready, add function to the update button then update reducer related function, update userConstants.js
+```js
+
+export const USER_UPDATE_REQUEST = 'USER_UPDATE_REQUEST'
+export const USER_UPDATE_SUCCESS = 'USER_UPDATE_SUCCESS'
+export const USER_UPDATE_FAIL = 'USER_UPDATE_FAIL'
+export const USER_UPDATE_RESET = 'USER_UPDATE_RESET'
+```
+8. update userReducer.js
+```js
+import {
+    USER_LOGIN_REQUEST,
+    USER_LOGIN_SUCCESS,
+    USER_LOGIN_FAIL,
+
+    USER_LOGOUT,
+    USER_REGISTER_REQUEST,
+    USER_REGISTER_SUCCESS,
+    USER_REGISTER_FAIL,
+    USER_DETAILS_REQUEST,
+    USER_DETAILS_SUCCESS,
+    USER_DETAILS_FAIL,
+    USER_DETAILS_RESET,
+
+    USER_UPDATE_PROFILE_REQUEST,
+    USER_UPDATE_PROFILE_SUCCESS,
+    USER_UPDATE_PROFILE_FAIL,
+    USER_UPDATE_PROFILE_RESET,
+
+    USER_LIST_REQUEST,
+    USER_LIST_SUCCESS,
+    USER_LIST_FAIL,
+    USER_LIST_RESET,
+
+     USER_DELETE_REQUEST,
+    USER_DELETE_SUCCESS,
+    USER_DELETE_FAIL,
+    USER_UPDATE_REQUEST,
+    USER_UPDATE_SUCCESS,
+    USER_UPDATE_FAIL,
+    USER_UPDATE_RESET,
+
+} from '../constants/userConstants'
+
+
+export const userLoginReducer = (state = {}, action) => {
+    switch (action.type) {
+        case USER_LOGIN_REQUEST:
+            return { loading: true }
+
+        case USER_LOGIN_SUCCESS:
+            return { loading: false, userInfo: action.payload }
+
+        case USER_LOGIN_FAIL:
+            return { loading: false, error: action.payload }
+
+        case USER_LOGOUT:
+            return {}
+
+        default:
+            return state
+    }
+}
+export const userRegisterReducer = (state = {}, action) => {
+    switch (action.type) {
+        case USER_REGISTER_REQUEST:
+            return { loading: true }
+
+        case USER_REGISTER_SUCCESS:
+            return { loading: false, userInfo: action.payload }
+
+        case USER_REGISTER_FAIL:
+            return { loading: false, error: action.payload }
+
+        case USER_LOGOUT:
+            return {}
+
+        default:
+            return state
+    }
+}
+
+export const userDetailsReducer = (state = { user: {} }, action) => {
+    switch (action.type) {
+        case USER_DETAILS_REQUEST:
+            return { ...state, loading: true }
+
+        case USER_DETAILS_SUCCESS:
+            return { loading: false, user: action.payload }
+
+        case USER_DETAILS_FAIL:
+            return { loading: false, error: action.payload }
+
+        case USER_DETAILS_RESET:
+            return { user: {} }
+
+
+        default:
+            return state
+    }
+}
+
+export const userUpdateProfileReducer = (state = {}, action) => {
+    switch (action.type) {
+        case USER_UPDATE_PROFILE_REQUEST:
+            return { loading: true }
+
+        case USER_UPDATE_PROFILE_SUCCESS:
+            return { loading: false, success: true, userInfo: action.payload }
+
+        case USER_UPDATE_PROFILE_FAIL:
+            return { loading: false, error: action.payload }
+
+        case USER_UPDATE_PROFILE_RESET:
+            return {}
+
+        default:
+            return state
+    }
+}
+
+export const userListReducer = (state = { users: [] }, action) => {
+    switch (action.type) {
+        case USER_LIST_REQUEST:
+            return { loading: true }
+
+        case USER_LIST_SUCCESS:
+            return { loading: false, users: action.payload }
+
+        case USER_LIST_FAIL:
+            return { loading: false, error: action.payload }
+
+        case USER_LIST_RESET:
+            return { users: [] }
+
+        default:
+            return state
+    }
+}
+
+export const userDeleteReducer = (state = {}, action) => {
+    switch (action.type) {
+        case USER_DELETE_REQUEST:
+            return { loading: true }
+
+        case USER_DELETE_SUCCESS:
+            return { loading: false, success: true }
+
+        case USER_DELETE_FAIL:
+            return { loading: false, error: action.payload }
+
+        default:
+            return state
+    }
+}
+
+export const userUpdateReducer = (state = { user: {} }, action) => {
+    switch (action.type) {
+        case USER_UPDATE_REQUEST:
+            return { loading: true }
+
+        case USER_UPDATE_SUCCESS:
+            return { loading: false, success: true }
+
+        case USER_UPDATE_FAIL:
+            return { loading: false, error: action.payload }
+
+        case USER_UPDATE_RESET:
+            return { user: {} }
+
+        default:
+            return state
+    }
+}
+```
+9. update store.js
+```js
+import { configureStore } from '@reduxjs/toolkit';
+import { productReducer, productDetailsReducer} from "./reducers/productReducers"; // import
+import {cartReducer} from "./reducers/cartReducers";
+import { userLoginReducer, userRegisterReducer, userDetailsReducer, userUpdateProfileReducer, userListReducer, userDeleteReducer, userUpdateReducer } from './reducers/userReducers';
+import { orderCreateReducer, orderDetailsReducer, orderPayReducer, orderListMyReducer } from './reducers/orderReducers';
+const cartItemsFromStorage = localStorage.getItem('cartItems')
+  ? JSON.parse(localStorage.getItem('cartItems'))
+  : [];
+const userInfoFromStorage = localStorage.getItem('userInfo')
+  ? JSON.parse(localStorage.getItem('userInfo'))
+  : null;
+ 
+const shippingAddressFromStorage = localStorage.getItem('shippingAddress')
+  ? JSON.parse(localStorage.getItem('shippingAddress'))
+  : {};  
+// 👇 初始化 Redux 状态
+const preloadedState = {
+  cart: {
+    cartItems: cartItemsFromStorage, // 给 cart reducer 赋值
+    shippingAddress: shippingAddressFromStorage, // 给 cart reducer 赋值
+  },
+  userLogin: {
+    userInfo: userInfoFromStorage, // 给 userLogin reducer 赋值
+  },
+  
+};
+
+export const store = configureStore({
+  reducer: {
+      productList: productReducer,
+      productDetails: productDetailsReducer,
+      cart: cartReducer,
+      userLogin: userLoginReducer,
+      userRegister: userRegisterReducer,
+      userDetails: userDetailsReducer,
+      userUpdateProfile: userUpdateProfileReducer,
+     userList: userListReducer, 
+      orderCreate: orderCreateReducer,
+      orderDetails: orderDetailsReducer,
+      orderPay: orderPayReducer,
+      orderListMy: orderListMyReducer,
+      userDelete: userDeleteReducer,
+      userUpdate: userUpdateReducer
+  },
+  // ✅ Thunk + DevTools ARE AUTO INCLUDED — NO SETUP NEEDED!
+  preloadedState : preloadedState,
+  middleware: (getDefaultMiddleware) => getDefaultMiddleware({ serializableCheck: false, immutableCheck: false, })
+});
+
+export default store;
+
+```
+10. update userActions.js
+```js
+import axios from 'axios'
+import {
+    USER_LOGIN_REQUEST,
+    USER_LOGIN_SUCCESS,
+    USER_LOGIN_FAIL,
+
+    USER_LOGOUT,
+    USER_REGISTER_REQUEST,
+    USER_REGISTER_SUCCESS,
+    USER_REGISTER_FAIL,
+
+    USER_DETAILS_REQUEST,
+    USER_DETAILS_SUCCESS,
+    USER_DETAILS_FAIL,
+    USER_DETAILS_RESET,
+
+    USER_UPDATE_PROFILE_REQUEST,
+    USER_UPDATE_PROFILE_SUCCESS,
+    USER_UPDATE_PROFILE_FAIL,
+    USER_UPDATE_PROFILE_RESET,
+
+    USER_LIST_REQUEST,
+    USER_LIST_SUCCESS,
+    USER_LIST_FAIL,
+    USER_LIST_RESET,
+
+    USER_DELETE_REQUEST,
+    USER_DELETE_SUCCESS,
+    USER_DELETE_FAIL,
+    USER_UPDATE_REQUEST,
+    USER_UPDATE_SUCCESS,
+    USER_UPDATE_FAIL,
+
+} from '../constants/userConstants'
+
+import { ORDER_LIST_MY_RESET } from '../constants/orderConstants'
+export const login = (email, password) => async (dispatch) => {
+    try {
+        dispatch({
+            type: USER_LOGIN_REQUEST
+        })
+
+        const config = {
+            headers: {
+                'Content-type': 'application/json'
+            }
+        }
+
+        const { data } = await axios.post(
+            '/api/users/login/',
+            { 'username': email, 'password': password },
+            config
+        )
+
+        dispatch({
+            type: USER_LOGIN_SUCCESS,
+            payload: data
+        })
+
+        localStorage.setItem('userInfo', JSON.stringify(data))
+
+    } catch (error) {
+        dispatch({
+            type: USER_LOGIN_FAIL,
+            payload: error.response && error.response.data.detail
+                ? error.response.data.detail
+                : error.message,
+        })
+    }
+}
+
+export const logout = () => (dispatch) => {
+    localStorage.removeItem('userInfo')
+    dispatch({ type: USER_LOGOUT })
+    dispatch({ type: USER_DETAILS_RESET })
+    dispatch({ type: ORDER_LIST_MY_RESET })
+    dispatch({ type: USER_LIST_RESET })
+}
+
+export const register = (name, email, password) => async (dispatch) => {
+    try {
+        dispatch({
+            type: USER_REGISTER_REQUEST
+        })
+
+        const config = {
+            headers: {
+                'Content-type': 'application/json'
+            }
+        }
+
+        const { data } = await axios.post(
+            '/api/users/register/',
+            { 'name': name, 'email': email, 'password': password },
+            config
+        )
+
+        dispatch({
+            type: USER_REGISTER_SUCCESS,
+            payload: data
+        })
+
+        dispatch({
+            type: USER_LOGIN_SUCCESS,
+            payload: data
+        })
+
+        localStorage.setItem('userInfo', JSON.stringify(data))
+
+    } catch (error) {
+        dispatch({
+            type: USER_REGISTER_FAIL,
+            payload: error.response && error.response.data.detail
+                ? error.response.data.detail
+                : error.message,
+        })
+    }
+}
+
+export const getUserDetails = (id) => async (dispatch, getState) => {
+    try {
+        dispatch({
+            type: USER_DETAILS_REQUEST
+        })
+
+        const {
+            userLogin: { userInfo },
+        } = getState()
+
+        const config = {
+            headers: {
+                'Content-type': 'application/json',
+                Authorization: `Bearer ${userInfo.token}`
+            }
+        }
+
+        const { data } = await axios.get(
+            `/api/users/${id}/`,
+            config
+        )
+
+        dispatch({
+            type: USER_DETAILS_SUCCESS,
+            payload: data
+        })
+
+
+    } catch (error) {
+        dispatch({
+            type: USER_DETAILS_FAIL,
+            payload: error.response && error.response.data.detail
+                ? error.response.data.detail
+                : error.message,
+        })
+    }
+}
+
+export const updateUserProfile = (user) => async (dispatch, getState) => {
+    try {
+        dispatch({
+            type: USER_UPDATE_PROFILE_REQUEST
+        })
+
+        const {
+            userLogin: { userInfo },
+        } = getState()
+
+        const config = {
+            headers: {
+                'Content-type': 'application/json',
+                Authorization: `Bearer ${userInfo.token}`
+            }
+        }
+
+        const { data } = await axios.put(
+            `/api/users/profile/update/`,
+            user,
+            config
+        )
+
+        dispatch({
+            type: USER_UPDATE_PROFILE_SUCCESS,
+            payload: data
+        })
+
+        dispatch({
+            type: USER_LOGIN_SUCCESS,
+            payload: data
+        })
+
+        localStorage.setItem('userInfo', JSON.stringify(data))
+
+    } catch (error) {
+        dispatch({
+            type: USER_UPDATE_PROFILE_FAIL,
+            payload: error.response && error.response.data.detail
+                ? error.response.data.detail
+                : error.message,
+        })
+    }
+}
+export const listUsers = () => async (dispatch, getState) => {
+    try {
+        dispatch({
+            type: USER_LIST_REQUEST
+        })
+
+        const {
+            userLogin: { userInfo },
+        } = getState()
+
+        const config = {
+            headers: {
+                'Content-type': 'application/json',
+                Authorization: `Bearer ${userInfo.token}`
+            }
+        }
+
+        const { data } = await axios.get(
+            `/api/users/`,
+            config
+        )
+
+        dispatch({
+            type: USER_LIST_SUCCESS,
+            payload: data
+        })
+
+
+    } catch (error) {
+        dispatch({
+            type: USER_LIST_FAIL,
+            payload: error.response && error.response.data.detail
+                ? error.response.data.detail
+                : error.message,
+        })
+    }
+}
+
+export const deleteUser = (id) => async (dispatch, getState) => {
+    try {
+        dispatch({
+            type: USER_DELETE_REQUEST
+        })
+
+        const {
+            userLogin: { userInfo },
+        } = getState()
+
+        const config = {
+            headers: {
+                'Content-type': 'application/json',
+                Authorization: `Bearer ${userInfo.token}`
+            }
+        }
+
+        const { data } = await axios.delete(
+            `/api/users/delete/${id}/`,
+            config
+        )
+
+        dispatch({
+            type: USER_DELETE_SUCCESS,
+            payload: data
+        })
+
+
+    } catch (error) {
+        dispatch({
+            type: USER_DELETE_FAIL,
+            payload: error.response && error.response.data.detail
+                ? error.response.data.detail
+                : error.message,
+        })
+    }
+}
+export const updateUser = (user) => async (dispatch, getState) => {
+    try {
+        dispatch({
+            type: USER_UPDATE_REQUEST
+        })
+
+        const {
+            userLogin: { userInfo },
+        } = getState()
+
+        const config = {
+            headers: {
+                'Content-type': 'application/json',
+                Authorization: `Bearer ${userInfo.token}`
+            }
+        }
+
+        const { data } = await axios.put(
+            `/api/users/update/${user._id}/`,
+            user,
+            config
+        )
+
+        dispatch({
+            type: USER_UPDATE_SUCCESS,
+        })
+
+        dispatch({
+            type: USER_DETAILS_SUCCESS,
+            payload: data
+        })
+
+
+    } catch (error) {
+        dispatch({
+            type: USER_UPDATE_FAIL,
+            payload: error.response && error.response.data.detail
+                ? error.response.data.detail
+                : error.message,
+        })
+    }
+}
+```
+11. update usereditscreen.jsx
+```jsx
+import React, { useState, useEffect } from 'react'
+import { Link, useNavigate, useParams } from 'react-router-dom'
+import { Form, Button } from 'react-bootstrap'
+import { useDispatch, useSelector } from 'react-redux'
+import Loader from '../components/Loader'
+import Message from '../components/Message'
+import FormContainer from '../components/FormContainer'
+import { getUserDetails, updateUser } from '../actions/userActions'
+import { USER_UPDATE_RESET } from '../constants/userConstants'
+
+function UserEditScreen() {
+    const navigate = useNavigate()
+    const userId = useParams().id
+
+    const [name, setName] = useState('')
+    const [email, setEmail] = useState('')
+    const [isAdmin, setIsAdmin] = useState(false)
+
+    const dispatch = useDispatch()
+
+    const userDetails = useSelector(state => state.userDetails)
+    const { error, loading, user } = userDetails
+
+    const userUpdate = useSelector(state => state.userUpdate)
+    const { error: errorUpdate, loading: loadingUpdate, success: successUpdate } = userUpdate
+
+    useEffect(() => {
+
+        if (successUpdate) {
+            dispatch({ type: USER_UPDATE_RESET })
+            navigate('/admin/userlist')
+        } else {
+
+            if ( !user.name || user._id !== Number(userId)) {
+                dispatch(getUserDetails(userId))
+            } else {
+                setName(user.name)
+                setEmail(user.email)
+                setIsAdmin(user.isAdmin)
+            }
+        }
+
+    }, [user, userId, navigate, dispatch])
+
+    const submitHandler = (e) => {
+        e.preventDefault()
+        dispatch(updateUser({ _id: user._id, name, email, isAdmin }))
+    }
+
+    return (
+        <div>
+            <Link to='/admin/userlist'>
+                Go Back
+            </Link>
+
+            <FormContainer>
+                <h1>Edit User</h1>
+                {loadingUpdate && <Loader />}
+                {errorUpdate && <Message variant='danger'>{errorUpdate}</Message>}
+
+                {loading ? <Loader /> : error ? <Message variant='danger'>{error}</Message>
+                    : (
+                        <Form onSubmit={submitHandler}>
+
+                            <Form.Group controlId='name'>
+                                <Form.Label>Name</Form.Label>
+                                <Form.Control
+
+                                    type='name'
+                                    placeholder='Enter name'
+                                    value={name}
+                                    onChange={(e) => setName(e.target.value)}
+                                >
+                                </Form.Control>
+                            </Form.Group>
+
+                            <Form.Group controlId='email'>
+                                <Form.Label>Email Address</Form.Label>
+                                <Form.Control
+                                    type='email'
+                                    placeholder='Enter Email'
+                                    value={email}
+                                    onChange={(e) => setEmail(e.target.value)}
+                                >
+                                </Form.Control>
+                            </Form.Group>
+
+                            <Form.Group controlId='isadmin'>
+                                <Form.Check
+                                    type='checkbox'
+                                    label='Is Admin'
+                                    checked={isAdmin}
+                                    onChange={(e) => setIsAdmin(e.target.checked)}
+                                >
+                                </Form.Check>
+                            </Form.Group>
+
+                            <Button type='submit' variant='primary'>
+                                Update
+                        </Button>
+
+                        </Form>
+                    )}
+
+            </FormContainer >
+        </div>
+
+    )
+}
+
+export default UserEditScreen
+```
+
+## step 39 admin update order
 ## step 40
