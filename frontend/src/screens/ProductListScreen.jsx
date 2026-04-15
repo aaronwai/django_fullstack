@@ -4,8 +4,8 @@ import { Table, Button, Row, Col } from 'react-bootstrap'
 import { useDispatch, useSelector } from 'react-redux'
 import Loader from '../components/Loader'
 import Message from '../components/Message'
-import { useNavigate, useParams } from 'react-router-dom'
-import { listProducts, deleteProduct} from '../actions/productActions'
+import { useNavigate, useParams , useLocation} from 'react-router-dom'
+import { listProducts, deleteProduct, createProduct} from '../actions/productActions'
 import { PRODUCT_CREATE_RESET } from '../constants/productConstants'
 
 function ProductListScreen() {
@@ -19,18 +19,25 @@ function ProductListScreen() {
     const productDelete = useSelector(state => state.productDelete)
     const { loading: loadingDelete, error: errorDelete, success: successDelete } = productDelete
 
+    const productCreate = useSelector(state => state.productCreate)
+    const { loading: loadingCreate, error: errorCreate, success: successCreate, product: createdProduct } = productCreate
+
     const userLogin = useSelector(state => state.userLogin)
     const { userInfo } = userLogin
-
+    const location = useLocation()
+    let keyword = location.search  // ✅ CORRECT
+   
     useEffect(() => {
 
-        if (userInfo && userInfo.isAdmin) {
-            dispatch(listProducts())}
-        else {
+        if (!userInfo.isAdmin) {
             navigate('/login')
         }
-
-    }, [dispatch, navigate, userInfo, successDelete])
+         if (successCreate) {
+            navigate(`/admin/product/${createdProduct._id}/edit`)
+        } else {
+            dispatch(listProducts(keyword))
+        }
+    }, [dispatch, navigate, userInfo, successDelete, keyword, successCreate, createdProduct])
 
     const deleteHandler = (id) => {
 
@@ -40,8 +47,8 @@ function ProductListScreen() {
     }
 
     const createProductHandler = () => {
-        // dispatch({ type: PRODUCT_CREATE_RESET })
-        // navigate('/admin/product/create')
+        dispatch({ type: PRODUCT_CREATE_RESET })
+        navigate('/admin/product/create')
     }
 
     return (
@@ -62,8 +69,8 @@ function ProductListScreen() {
             {errorDelete && <Message variant='danger'>{errorDelete}</Message>}
 
 
-            {/* {loadingCreate && <Loader />}
-            {errorCreate && <Message variant='danger'>{errorCreate}</Message>}  */}
+            {loadingCreate && <Loader />}
+            {errorCreate && <Message variant='danger'>{errorCreate}</Message>} 
 
             {loading
                 ? (<Loader />)

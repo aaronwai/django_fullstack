@@ -14771,10 +14771,1025 @@ function ProductListScreen() {
 
 export default ProductListScreen
 ```
-9.
-10.
-11.
-## step 40
+
+## step 40 create/edit product
+1. backend create endpoint, product_views.py
+```py
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import IsAuthenticated, IsAdminUser
+from rest_framework.response import Response
+from base.models import Product
+from base.serializer import ProductSerializer
+
+
+@api_view(['GET'])
+def getProducts(request):
+    products = Product.objects.all()
+    serializer = ProductSerializer(products, many=True)
+    return Response(serializer.data)
+
+@api_view(['GET'])
+def getProduct(request,pk):
+    product = Product.objects.get(_id=pk)
+    serializer = ProductSerializer(product, many=False)
+    return Response(serializer.data)
+
+@api_view(['DELETE'])
+@permission_classes([IsAdminUser])
+def deleteProduct(request, pk):
+    product = Product.objects.get(_id=pk)
+    product.delete()
+    return Response('Producted Deleted')
+
+@api_view(['POST'])
+@permission_classes([IsAdminUser])
+def createProduct(request):
+    user = request.user
+
+    product = Product.objects.create(
+        user=user,
+        name='Sample Name',
+        price=0,
+        brand='Sample Brand',
+        countInStock=0,
+        category='Sample Category',
+        description=''
+    )
+
+    serializer = ProductSerializer(product, many=False)
+    return Response(serializer.data)
+
+
+```
+2. update product_urls.py
+```py
+from django.urls import path
+from base.views import product_views as views
+
+urlpatterns = [
+
+    
+     path('create/', views.createProduct, name="product-create"), 
+    
+    path('<str:pk>/', views.getProduct, name="product"),
+    path('delete/<str:pk>/', views.deleteProduct, name="product-delete"),
+    path('', views.getProducts, name="products"),
+]
+```
+# 🎯 **SUPER CLEAR ANSWER: YES — URL ORDER MATTERS IN DJANGO !!!**
+
+# ✅ **FIX: PUT STATIC URLS FIRST — DYNAMIC PK LAST**
+This is the **correct order**:
+
+```python
+urlpatterns = [
+    # STATIC ROUTES FIRST
+    path('create/', views.createProduct, name="product-create"), 
+    path('delete/<str:pk>/', views.deleteProduct, name="product-delete"),
+
+    # DYNAMIC ROUTE LAST
+    path('<str:pk>/', views.getProduct, name="product"),
+
+    # HOME ROUTE
+    path('', views.getProducts, name="products"),
+]
+```
+
+---
+
+# 🎯 **RULE YOU MUST REMEMBER**
+### Django checks URLs **TOP TO BOTTOM**
+### **ALWAYS PUT:**
+1. **Static routes** (`create/`, `delete/`) **FIRST**
+2. **Dynamic routes** (`<str:pk>/`) **LAST**
+
+If you put `<str:pk>/` first — **it eats all other URLs.**
+
+---
+
+# ✅ **YOUR FINAL 100% CORRECT URLs.PY**
+```python
+from django.urls import path
+from base.views import product_views as views
+
+urlpatterns = [
+    path('create/', views.createProduct, name="product-create"),
+    path('delete/<str:pk>/', views.deleteProduct, name="product-delete"),
+    path('<str:pk>/', views.getProduct, name="product"),
+    path('', views.getProducts, name="products"),
+]
+```
+
+---
+
+# 🚀 **NOW ALL URLS WORK PERFECTLY**
+- `/api/products/` → list
+- `/api/products/123/` → single
+- `/api/products/create/` → create
+- `/api/products/delete/123/` → delete
+
+**You fixed the last bug in your project!**
+Everything now works 100% 🎉🔥
+
+# 🎯 **Super clear answer: Because `''` = THE ROOT / CATCH-ALL**
+## #1: What does `''` mean?
+```python
+path('', views.getProducts, name="products"),
+```
+In Django:
+- `''` = **empty string**
+- It matches the **base URL** of this group
+- For you: `/api/products/`
+
+---
+
+## #2: Django checks URLs **TOP TO BOTTOM**
+If you put `''` **FIRST**:
+```python
+path('', ...),   # ❌ FIRST
+path('create/', ...),
+```
+Django will **MATCH `''` FIRST** for **every request**
+- `/api/products/` → matches
+- `/api/products/create/` → **ALSO MATCHES `''`**
+- `/api/products/123/` → **ALSO MATCHES `''`**
+
+It **never looks at the other routes** — they are **ignored**.
+
+---
+
+## #3: So `''` MUST BE **LAST**
+```python
+path('create/', ...),
+path('delete/<pk>/', ...),
+path('<pk>/', ...),
+path('', ...),   # ✅ LAST
+```
+This way:
+1. First check for `create/`
+2. Then check for `delete/`
+3. Then check for single product `<pk>/`
+4. **FINALLY** check if it’s just the base `''`
+
+---
+
+# 🚀 **THE GOLDEN RULE FOR DJANGO URLS**
+## **ORDER = FROM MOST SPECIFIC → LEAST SPECIFIC**
+1. **Specific static paths** → `/create/`, `/delete/`
+2. **Dynamic paths** → `/123/`
+3. **Root path** → `''`
+
+# Short version:
+**`''` matches everything if you put it first — so it must be last.**
+
+3. we need a placeholder img for the product, add `placeholder.png` to static folder
+```py models.py
+from django.db import models
+
+from django.contrib.auth.models import User
+# Create your models here.
+class Product(models.Model):
+    user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
+    name = models.CharField(max_length=200, null=True, blank=True)
+    image = models.ImageField(null=True, blank=True, default='/placeholder.png')   // add default image file
+    brand = models.CharField(max_length=200, null=True, blank=True)
+    category = models.CharField(max_length=200, null=True, blank=True)
+    description = models.TextField(null=True, blank=True)
+    rating = models.DecimalField(max_digits=7, decimal_places=2, null=True, blank=True)
+    numReviews = models.IntegerField(null=True, blank=True, default=0)
+    price = models.DecimalField(max_digits=7, decimal_places=2, null=True, blank=True)
+    countInStock = models.IntegerField(null=True, blank=True, default=0)
+    createdAt = models.DateTimeField(auto_now_add=True)
+    _id = models.AutoField(primary_key=True, editable=False)
+
+    def __str__(self):
+        return self.name
+    
+class Review(models.Model):
+    product = models.ForeignKey(Product, on_delete=models.SET_NULL, null=True)
+    user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
+    name = models.CharField(max_length=200, null=True, blank=True)
+    rating = models.IntegerField(null=True, blank=True, default=0)
+    comment = models.TextField(null=True, blank=True)
+    _id = models.AutoField(primary_key=True, editable=False)    
+
+    def __str__(self):
+        return str(self.rating)    
+    
+class Order(models.Model):
+    user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
+    paymentMethod = models.CharField(max_length=200, null=True, blank=True)    
+    taxPrice = models.DecimalField(max_digits=7, decimal_places=2, null=True, blank=True)
+    shippingPrice = models.DecimalField(max_digits=7, decimal_places=2, null=True, blank=True)
+    totalPrice = models.DecimalField(max_digits=7, decimal_places=2, null=True, blank=True)
+    isPaid = models.BooleanField(default=False)
+    paidAt = models.DateTimeField(auto_now_add=False, null=True, blank=True)
+    isDelivered = models.BooleanField(default=False)
+    deliveredAt = models.DateTimeField(
+        auto_now_add=False, null=True, blank=True)
+    createdAt = models.DateTimeField(auto_now_add=True)
+    _id = models.AutoField(primary_key=True, editable=False)                
+
+    def __str__(self):
+        return str(self.createdAt)    
+    
+class OrderItem(models.Model):
+    product = models.ForeignKey(Product, on_delete=models.SET_NULL, null=True)
+    order = models.ForeignKey(Order, on_delete=models.SET_NULL, null=True)
+    name = models.CharField(max_length=200, null=True, blank=True)
+    qty = models.IntegerField(null=True, blank=True, default=0)    
+    price = models.DecimalField(max_digits=7, decimal_places=2, null=True, blank=True)
+    image = models.CharField(max_length=200, null=True, blank=True)
+    _id = models.AutoField(primary_key=True, editable=False)
+
+    def __str__(self):
+        return str(self.name)       
+    
+class ShippingAddress(models.Model):
+    order = models.OneToOneField(Order, on_delete=models.CASCADE, null=True)
+    address = models.CharField(max_length=200, null=True, blank=True)
+    city = models.CharField(max_length=200, null=True, blank=True)
+    postalCode = models.CharField(max_length=200, null=True, blank=True)    
+    country = models.CharField(max_length=200, null=True, blank=True)
+    shippingPrice = models.DecimalField(max_digits=7, decimal_places=2, null=True, blank=True)
+    _id = models.AutoField(primary_key=True, editable=False)
+
+    def __str__(self):        
+        return str(self.address)        
+```
+4. `make migrations and migrate`
+5. add update view inside product_views.py
+```py
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import IsAuthenticated, IsAdminUser
+from rest_framework.response import Response
+from base.models import Product
+from base.serializer import ProductSerializer
+
+
+@api_view(['GET'])
+def getProducts(request):
+    products = Product.objects.all()
+    serializer = ProductSerializer(products, many=True)
+    return Response(serializer.data)
+
+@api_view(['GET'])
+def getProduct(request,pk):
+    product = Product.objects.get(_id=pk)
+    serializer = ProductSerializer(product, many=False)
+    return Response(serializer.data)
+
+@api_view(['DELETE'])
+@permission_classes([IsAdminUser])
+def deleteProduct(request, pk):
+    product = Product.objects.get(_id=pk)
+    product.delete()
+    return Response('Producted Deleted')
+
+@api_view(['POST'])
+@permission_classes([IsAdminUser])
+def createProduct(request):
+    user = request.user
+
+    product = Product.objects.create(
+        user=user,
+        name='Sample Name',
+        price=0,
+        brand='Sample Brand',
+        countInStock=0,
+        category='Sample Category',
+        description=''
+    )
+
+    serializer = ProductSerializer(product, many=False)
+    return Response(serializer.data)
+
+
+@api_view(['PUT'])
+@permission_classes([IsAdminUser])
+def updateProduct(request, pk):
+    data = request.data
+    product = Product.objects.get(_id=pk)
+
+    product.name = data['name']
+    product.price = data['price']
+    product.brand = data['brand']
+    product.countInStock = data['countInStock']
+    product.category = data['category']
+    product.description = data['description']
+
+    product.save()
+
+    serializer = ProductSerializer(product, many=False)
+    return Response(serializer.data)
+
+```
+6. add url into product_urls.py
+```py
+from django.urls import path
+from base.views import product_views as views
+
+urlpatterns = [
+
+    
+     path('create/', views.createProduct, name="product-create"), 
+    
+    path('update/<str:pk>/', views.updateProduct, name="product-update"),
+    path('delete/<str:pk>/', views.deleteProduct, name="product-delete"),
+    path('<str:pk>/', views.getProduct, name="product"),
+    path('', views.getProducts, name="products"),
+]
+```
+7. go to frontend, create ProductEditScreen.jsx
+```jsx
+import React, { useState, useEffect } from 'react'
+import axios from 'axios'
+import { Link } from 'react-router-dom'
+import { Form, Button } from 'react-bootstrap'
+import { useDispatch, useSelector } from 'react-redux'
+import { useParams, useNavigate } from 'react-router-dom'
+import Loader from '../components/Loader'
+import Message from '../components/Message'
+import FormContainer from '../components/FormContainer'
+import { listProductDetails, updateProduct } from '../actions/productActions'
+import { PRODUCT_UPDATE_RESET } from '../constants/productConstants'
+
+
+function ProductEditScreen() {
+
+    const productId = useParams().id
+    const navigate = useNavigate()
+    const [name, setName] = useState('')
+    const [price, setPrice] = useState(0)
+    const [image, setImage] = useState('')
+    const [brand, setBrand] = useState('')
+    const [category, setCategory] = useState('')
+    const [countInStock, setCountInStock] = useState(0)
+    const [description, setDescription] = useState('')
+    const [uploading, setUploading] = useState(false)
+
+    const dispatch = useDispatch()
+
+    const productDetails = useSelector(state => state.productDetails)
+    const { error, loading, product } = productDetails
+
+    const productUpdate = useSelector(state => state.productUpdate)
+    const { error: errorUpdate, loading: loadingUpdate, success: successUpdate } = productUpdate
+
+
+    useEffect(() => {
+
+        if (successUpdate) {
+            dispatch({ type: PRODUCT_UPDATE_RESET })
+            navigate('/admin/productlist')
+        } else {
+            if (!product.name || product._id !== Number(productId)) {
+                dispatch(listProductDetails(productId))
+            } else {
+                setName(product.name)
+                setPrice(product.price)
+                setImage(product.image)
+                setBrand(product.brand)
+                setCategory(product.category)
+                setCountInStock(product.countInStock)
+                setDescription(product.description)
+
+            }
+        }
+
+    }, [dispatch, product, productId, navigate, successUpdate])
+
+    const submitHandler = (e) => {
+        e.preventDefault()
+        dispatch(updateProduct({
+            _id: productId,
+            name,
+            price,
+            image,
+            brand,
+            category,
+            countInStock,
+            description
+        }))
+    }
+
+    const uploadFileHandler = async (e) => {
+        const file = e.target.files[0]
+        const formData = new FormData()
+
+        formData.append('image', file)
+        formData.append('product_id', productId)
+
+        setUploading(true)
+
+        try {
+            const config = {
+                headers: {
+                    'Content-Type': 'multipart/form-data'
+                }
+            }
+
+            const { data } = await axios.post('/api/products/upload/', formData, config)
+
+
+            setImage(data)
+            setUploading(false)
+
+        } catch (error) {
+            setUploading(false)
+        }
+    }
+
+    return (
+        <div>
+            <Link to='/admin/productlist'>
+                Go Back
+            </Link>
+
+            <FormContainer>
+                <h1>Edit Product</h1>
+                {loadingUpdate && <Loader />}
+                {errorUpdate && <Message variant='danger'>{errorUpdate}</Message>}
+
+                {loading ? <Loader /> : error ? <Message variant='danger'>{error}</Message>
+                    : (
+                        <Form onSubmit={submitHandler}>
+
+                            <Form.Group controlId='name'>
+                                <Form.Label>Name</Form.Label>
+                                <Form.Control
+
+                                    type='name'
+                                    placeholder='Enter name'
+                                    value={name}
+                                    onChange={(e) => setName(e.target.value)}
+                                >
+                                </Form.Control>
+                            </Form.Group>
+
+                            <Form.Group controlId='price'>
+                                <Form.Label>Price</Form.Label>
+                                <Form.Control
+
+                                    type='number'
+                                    placeholder='Enter price'
+                                    value={price}
+                                    onChange={(e) => setPrice(e.target.value)}
+                                >
+                                </Form.Control>
+                            </Form.Group>
+
+
+                            <Form.Group controlId='image'>
+                                <Form.Label>Image</Form.Label>
+                                <Form.Control
+
+                                    type='text'
+                                    placeholder='Enter image URL'
+                                    value={image}
+                                    onChange={(e) => setImage(e.target.value)}
+                                >
+                                </Form.Control>
+
+                               <Form.Control
+                                    type="file"
+                                    label="Choose File"
+                                    onChange={uploadFileHandler}
+                                    className="mt-2"
+                                />
+                                {uploading && <Loader />}
+
+                            </Form.Group>
+
+
+                            <Form.Group controlId='brand'>
+                                <Form.Label>Brand</Form.Label>
+                                <Form.Control
+
+                                    type='text'
+                                    placeholder='Enter brand'
+                                    value={brand}
+                                    onChange={(e) => setBrand(e.target.value)}
+                                >
+                                </Form.Control>
+                            </Form.Group>
+
+                            <Form.Group controlId='countinstock'>
+                                <Form.Label>Stock</Form.Label>
+                                <Form.Control
+
+                                    type='number'
+                                    placeholder='Enter stock'
+                                    value={countInStock}
+                                    onChange={(e) => setCountInStock(e.target.value)}
+                                >
+                                </Form.Control>
+                            </Form.Group>
+
+                            <Form.Group controlId='category'>
+                                <Form.Label>Category</Form.Label>
+                                <Form.Control
+
+                                    type='text'
+                                    placeholder='Enter category'
+                                    value={category}
+                                    onChange={(e) => setCategory(e.target.value)}
+                                >
+                                </Form.Control>
+                            </Form.Group>
+
+                            <Form.Group controlId='description'>
+                                <Form.Label>Description</Form.Label>
+                                <Form.Control
+
+                                    type='text'
+                                    placeholder='Enter description'
+                                    value={description}
+                                    onChange={(e) => setDescription(e.target.value)}
+                                >
+                                </Form.Control>
+                            </Form.Group>
+
+
+                            <Button type='submit' variant='primary'>
+                                Update
+                        </Button>
+
+                        </Form>
+                    )}
+
+            </FormContainer >
+        </div>
+
+    )
+}
+
+export default ProductEditScreen
+
+```
+8. update app.js
+```js
+import { Container } from "react-bootstrap";
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import Footer from "./components/Footer";
+import Header from "./components/Header";
+import HomeScreen from "./screens/HomeScreen";
+import LoginScreen from "./screens/LoginScreen";
+import RegisterScreen from "./screens/RegisterScreen";
+import ProductScreen from "./screens/ProductScreen";
+import CartScreen from "./screens/CartScreen";
+import ProfileScreen from "./screens/ProfileScreen";
+import ShippingScreen from "./screens/ShippingScreen";
+import PaymentScreen from "./screens/PaymentScreen";
+import PlaceOrderScreen from "./screens/PlaceOrderScreen";
+import OrderScreen from "./screens/OrderScreen";
+import UserListScreen from "./screens/UserListScreen";
+import UserEditScreen from "./screens/UserEditScreen";
+import ProductListScreen from "./screens/ProductListScreen";
+import ProductEditScreen from "./screens/ProductEditScreen";
+
+function App() {
+  return (
+    <Router>
+      <Header />
+      <main className="py-3">
+        <Container>
+          <Routes>
+            <Route path="/admin/userlist" element={<UserListScreen />} />
+            <Route path='/admin/user/:id/edit' element={<UserEditScreen />} />
+            <Route path='/admin/productlist' element={<ProductListScreen />} />  
+            <Route path='/admin/product/:id/edit' element={<ProductEditScreen />} />  
+            {/* PUBLIC ROUTES */}
+            <Route path="/" element={<HomeScreen />} />
+            <Route path="/login" element={<LoginScreen />} />
+            <Route path="/register" element={<RegisterScreen />} />
+            <Route path='/profile' element={<ProfileScreen />} />
+            <Route path='/shipping' element={<ShippingScreen />} />
+            <Route path='/payment' element={<PaymentScreen />} />
+            <Route path='/placeorder' element={<PlaceOrderScreen />} />
+            <Route path='/order/:id' element={<OrderScreen />} />
+            <Route path="/product/:id" element={<ProductScreen />} />
+            <Route path="/cart/:id?" element={<CartScreen />} />
+          </Routes>
+        </Container>
+      </main>
+      <Footer />
+    </Router>
+  );
+}
+
+export default App;
+
+```
+9. update product constants
+```js
+
+export const PRODUCT_CREATE_REQUEST = 'PRODUCT_CREATE_REQUEST'
+export const PRODUCT_CREATE_SUCCESS = 'PRODUCT_CREATE_SUCCESS'
+export const PRODUCT_CREATE_FAIL = 'PRODUCT_CREATE_FAIL'
+export const PRODUCT_CREATE_RESET = 'PRODUCT_CREATE_RESET'
+export const PRODUCT_UPDATE_REQUEST = 'PRODUCT_UPDATE_REQUEST'
+export const PRODUCT_UPDATE_SUCCESS = 'PRODUCT_UPDATE_SUCCESS'
+export const PRODUCT_UPDATE_FAIL = 'PRODUCT_UPDATE_FAIL'
+export const PRODUCT_UPDATE_RESET = 'PRODUCT_UPDATE_RESET'
+
+```
+10. update productReducers.js
+```js
+import {PRODUCT_LIST_REQUEST, PRODUCT_LIST_SUCCESS, PRODUCT_LIST_FAIL, PRODUCT_DETAILS_REQUEST, PRODUCT_DETAILS_SUCCESS, PRODUCT_DETAILS_FAIL , PRODUCT_DELETE_REQUEST,
+    PRODUCT_DELETE_SUCCESS,
+    PRODUCT_DELETE_FAIL, PRODUCT_CREATE_REQUEST,
+    PRODUCT_CREATE_SUCCESS,
+    PRODUCT_CREATE_FAIL,
+    PRODUCT_CREATE_RESET,
+
+    PRODUCT_UPDATE_REQUEST,
+    PRODUCT_UPDATE_SUCCESS,
+    PRODUCT_UPDATE_FAIL,
+    PRODUCT_UPDATE_RESET,} from "../constants/productConstants";
+export const productReducer = (state ={ products:[]}, action) => {
+    switch (action.type) {
+        case PRODUCT_LIST_REQUEST:
+            return {loading: true, products: []};
+        case PRODUCT_LIST_SUCCESS:
+            return {loading: false, products: action.payload};
+        case PRODUCT_LIST_FAIL:
+            return {loading: false, error: action.payload};
+        default:
+            return state;
+    }
+};
+
+export const productDetailsReducer = (state ={ product: {reviews: []}}, action) => {
+    switch (action.type) {
+        case PRODUCT_DETAILS_REQUEST:
+            return {loading: true, ...state};
+        case PRODUCT_DETAILS_SUCCESS:
+            return {loading: false, product: action.payload};
+        case PRODUCT_DETAILS_FAIL:
+            return {loading: false, error: action.payload};
+        default:
+            return state;
+    }
+};
+export const productDeleteReducer = (state = {}, action) => {
+    switch (action.type) {
+        case PRODUCT_DELETE_REQUEST:
+            return { loading: true }
+
+        case PRODUCT_DELETE_SUCCESS:
+            return { loading: false, success: true }
+
+        case PRODUCT_DELETE_FAIL:
+            return { loading: false, error: action.payload }
+
+        default:
+            return state
+    }
+}
+
+export const productCreateReducer = (state = {}, action) => {
+    switch (action.type) {
+        case PRODUCT_CREATE_REQUEST:
+            return { loading: true }
+
+        case PRODUCT_CREATE_SUCCESS:
+            return { loading: false, success: true, product: action.payload }
+
+        case PRODUCT_CREATE_FAIL:
+            return { loading: false, error: action.payload }
+
+        case PRODUCT_CREATE_RESET:
+            return {}
+
+        default:
+            return state
+    }
+}
+
+
+export const productUpdateReducer = (state = { product: {} }, action) => {
+    switch (action.type) {
+        case PRODUCT_UPDATE_REQUEST:
+            return { loading: true }
+
+        case PRODUCT_UPDATE_SUCCESS:
+            return { loading: false, success: true, product: action.payload }
+
+        case PRODUCT_UPDATE_FAIL:
+            return { loading: false, error: action.payload }
+
+        case PRODUCT_UPDATE_RESET:
+            return { product: {} }
+
+        default:
+            return state
+    }
+}
+```
+11. update store.js
+```js
+import { configureStore } from '@reduxjs/toolkit';
+import { productReducer, productDetailsReducer, productDeleteReducer, productCreateReducer, productUpdateReducer} from "./reducers/productReducers"; // import
+import {cartReducer} from "./reducers/cartReducers";
+import { userLoginReducer, userRegisterReducer, userDetailsReducer, userUpdateProfileReducer, userListReducer, userDeleteReducer, userUpdateReducer } from './reducers/userReducers';
+import { orderCreateReducer, orderDetailsReducer, orderPayReducer, orderListMyReducer } from './reducers/orderReducers';
+const cartItemsFromStorage = localStorage.getItem('cartItems')
+  ? JSON.parse(localStorage.getItem('cartItems'))
+  : [];
+const userInfoFromStorage = localStorage.getItem('userInfo')
+  ? JSON.parse(localStorage.getItem('userInfo'))
+  : null;
+ 
+const shippingAddressFromStorage = localStorage.getItem('shippingAddress')
+  ? JSON.parse(localStorage.getItem('shippingAddress'))
+  : {};  
+// 👇 初始化 Redux 状态
+const preloadedState = {
+  cart: {
+    cartItems: cartItemsFromStorage, // 给 cart reducer 赋值
+    shippingAddress: shippingAddressFromStorage, // 给 cart reducer 赋值
+  },
+  userLogin: {
+    userInfo: userInfoFromStorage, // 给 userLogin reducer 赋值
+  },
+  
+};
+
+export const store = configureStore({
+  reducer: {
+      productList: productReducer,
+      productDetails: productDetailsReducer,
+      cart: cartReducer,
+      userLogin: userLoginReducer,
+      userRegister: userRegisterReducer,
+      userDetails: userDetailsReducer,
+      userUpdateProfile: userUpdateProfileReducer,
+     userList: userListReducer, 
+      orderCreate: orderCreateReducer,
+      orderDetails: orderDetailsReducer,
+      orderPay: orderPayReducer,
+      orderListMy: orderListMyReducer,
+      userDelete: userDeleteReducer,
+      userUpdate: userUpdateReducer,
+      productDelete: productDeleteReducer,
+      productCreate: productCreateReducer,
+      productUpdate: productUpdateReducer
+
+  },
+  // ✅ Thunk + DevTools ARE AUTO INCLUDED — NO SETUP NEEDED!
+  preloadedState : preloadedState,
+  middleware: (getDefaultMiddleware) => getDefaultMiddleware({ serializableCheck: false, immutableCheck: false, })
+});
+
+export default store;
+
+```
+12. update productactions.js
+```js
+import {PRODUCT_LIST_REQUEST, PRODUCT_LIST_SUCCESS, PRODUCT_LIST_FAIL, PRODUCT_DETAILS_REQUEST, PRODUCT_DETAILS_SUCCESS, PRODUCT_DETAILS_FAIL, PRODUCT_DELETE_REQUEST, PRODUCT_DELETE_SUCCESS, PRODUCT_DELETE_FAIL, PRODUCT_CREATE_REQUEST, PRODUCT_CREATE_SUCCESS, PRODUCT_CREATE_FAIL, PRODUCT_UPDATE_REQUEST, PRODUCT_UPDATE_SUCCESS, PRODUCT_UPDATE_FAIL} from "../constants/productConstants";
+import axios from "axios";
+export const listProducts = () => async (dispatch) => {
+    try {
+            dispatch({ type: PRODUCT_LIST_REQUEST }); 
+            const { data } = await axios.get("/api/products");
+            dispatch({ type: PRODUCT_LIST_SUCCESS, payload: data });
+    } catch (error) {
+            dispatch({ type: PRODUCT_LIST_FAIL, 
+            payload: error.response && error.response.data.detail ? error.response.data.detail : error.message });
+    }
+}
+
+export const listProductDetails = (id) => async (dispatch) => {
+    try {
+            dispatch({ type: PRODUCT_DETAILS_REQUEST }); 
+            const { data } = await axios.get(`/api/products/${id}`);
+            dispatch({ type: PRODUCT_DETAILS_SUCCESS, payload: data });
+    } catch (error) {
+            dispatch({ type: PRODUCT_DETAILS_FAIL, 
+            payload: error.response && error.response.data.detail ? error.response.data.detail : error.message });
+    }
+}
+
+export const deleteProduct = (id) => async (dispatch, getState) => {
+    try {
+        dispatch({
+            type: PRODUCT_DELETE_REQUEST
+        })
+
+        const {
+            userLogin: { userInfo },
+        } = getState()
+
+        const config = {
+            headers: {
+                'Content-type': 'application/json',
+                Authorization: `Bearer ${userInfo.token}`
+            }
+        }
+
+        const { data } = await axios.delete(
+            `/api/products/delete/${id}/`,
+            config
+        )
+
+        dispatch({
+            type: PRODUCT_DELETE_SUCCESS,
+        })
+
+
+    } catch (error) {
+        dispatch({
+            type: PRODUCT_DELETE_FAIL,
+            payload: error.response && error.response.data.detail
+                ? error.response.data.detail
+                : error.message,
+        })
+    }
+}
+
+export const createProduct = () => async (dispatch, getState) => {
+    try {
+        dispatch({
+            type: PRODUCT_CREATE_REQUEST
+        })
+
+        const {
+            userLogin: { userInfo },
+        } = getState()
+
+        const config = {
+            headers: {
+                'Content-type': 'application/json',
+                Authorization: `Bearer ${userInfo.token}`
+            }
+        }
+
+        const { data } = await axios.post(
+            `/api/products/create/`,
+            {},
+            config
+        )
+        dispatch({
+            type: PRODUCT_CREATE_SUCCESS,
+            payload: data,
+        })
+
+
+    } catch (error) {
+        dispatch({
+            type: PRODUCT_CREATE_FAIL,
+            payload: error.response && error.response.data.detail
+                ? error.response.data.detail
+                : error.message,
+        })
+    }
+}
+
+
+
+export const updateProduct = (product) => async (dispatch, getState) => {
+    try {
+        dispatch({
+            type: PRODUCT_UPDATE_REQUEST
+        })
+
+        const {
+            userLogin: { userInfo },
+        } = getState()
+
+        const config = {
+            headers: {
+                'Content-type': 'application/json',
+                Authorization: `Bearer ${userInfo.token}`
+            }
+        }
+
+        const { data } = await axios.put(
+            `/api/products/update/${product._id}/`,
+            product,
+            config
+        )
+        dispatch({
+            type: PRODUCT_UPDATE_SUCCESS,
+            payload: data,
+        })
+
+
+        dispatch({
+            type: PRODUCT_DETAILS_SUCCESS,
+            payload: data
+        })
+
+
+    } catch (error) {
+        dispatch({
+            type: PRODUCT_UPDATE_FAIL,
+            payload: error.response && error.response.data.detail
+                ? error.response.data.detail
+                : error.message,
+        })
+    }
+}
+```
+13. for the image upload, we need to create backend views, productviews.py
+```py
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import IsAuthenticated, IsAdminUser
+from rest_framework.response import Response
+from base.models import Product
+from base.serializer import ProductSerializer
+
+
+@api_view(['GET'])
+def getProducts(request):
+    products = Product.objects.all()
+    serializer = ProductSerializer(products, many=True)
+    return Response(serializer.data)
+
+@api_view(['GET'])
+def getProduct(request,pk):
+    product = Product.objects.get(_id=pk)
+    serializer = ProductSerializer(product, many=False)
+    return Response(serializer.data)
+
+@api_view(['DELETE'])
+@permission_classes([IsAdminUser])
+def deleteProduct(request, pk):
+    product = Product.objects.get(_id=pk)
+    product.delete()
+    return Response('Producted Deleted')
+
+@api_view(['POST'])
+@permission_classes([IsAdminUser])
+def createProduct(request):
+    user = request.user
+
+    product = Product.objects.create(
+        user=user,
+        name='Sample Name',
+        price=0,
+        brand='Sample Brand',
+        countInStock=0,
+        category='Sample Category',
+        description=''
+    )
+
+    serializer = ProductSerializer(product, many=False)
+    return Response(serializer.data)
+
+
+@api_view(['PUT'])
+@permission_classes([IsAdminUser])
+def updateProduct(request, pk):
+    data = request.data
+    product = Product.objects.get(_id=pk)
+
+    product.name = data['name']
+    product.price = data['price']
+    product.brand = data['brand']
+    product.countInStock = data['countInStock']
+    product.category = data['category']
+    product.description = data['description']
+
+    product.save()
+
+    serializer = ProductSerializer(product, many=False)
+    return Response(serializer.data)
+
+@api_view(['POST'])
+def uploadImage(request):
+    data = request.data
+
+    product_id = data['product_id']
+    product = Product.objects.get(_id=product_id)
+
+    product.image = request.FILES.get('image')
+    product.save()
+
+    return Response('Image was uploaded')
+```
+14. update urls.py
+```py
+from django.urls import path
+from base.views import product_views as views
+
+urlpatterns = [
+    # 1. STATIC ROUTES FIRST
+    path('create/', views.createProduct, name="product-create"),
+    path('upload/', views.uploadImage, name="image-upload"),
+    # 2. STATIC + DYNAMIC COMBOS (update / delete)
+    path('update/<str:pk>/', views.updateProduct, name="product-update"),
+    path('delete/<str:pk>/', views.deleteProduct, name="product-delete"),
+
+    # 3. ONLY DYNAMIC (single product)
+    path('<str:pk>/', views.getProduct, name="product"),
+
+    # 4. ROOT '' COMES DEAD LAST
+    path('', views.getProducts, name="products"),
+]
+```
+
 ## step 41
 ## step 42
 ## step 43
