@@ -17,8 +17,8 @@ function UserListScreen() {
     const userLogin = useSelector(state => state.userLogin)
     const { userInfo } = userLogin
 
-    // const userDelete = useSelector(state => state.userDelete)
-    // const { success: successDelete } = userDelete
+    const userDelete = useSelector(state => state.userDelete)
+    const { success: successDelete } = userDelete
 
 
     useEffect(() => {
@@ -30,14 +30,14 @@ function UserListScreen() {
            
        
 
-    }, [dispatch, navigate,  userInfo])
+    }, [dispatch, navigate,  userInfo, successDelete])
 
 
     const deleteHandler = (id) => {
-        console.log("something")
-        // if (window.confirm('Are you sure you want to delete this user?')) {
-        //     dispatch(deleteUser(id))
-        //}
+       
+        if (window.confirm('Are you sure you want to delete this user?')) {
+            dispatch(deleteUser(id))
+        }
     }
 
     return (
