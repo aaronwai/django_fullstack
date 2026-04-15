@@ -14317,5 +14317,465 @@ function UserEditScreen() {
 export default UserEditScreen
 ```
 
-## step 39 admin update order
+## step 39 admin update product list
+1. create ProductListScreen.jsx, copy from userlistscreen.jsx
+```jsx
+import React, { useState, useEffect } from 'react'
+import { LinkContainer } from 'react-router-bootstrap'
+import { Table, Button, Row, Col } from 'react-bootstrap'
+import { useDispatch, useSelector } from 'react-redux'
+import Loader from '../components/Loader'
+import Message from '../components/Message'
+import { useNavigate, useParams } from 'react-router-dom'
+import { listProducts} from '../actions/productActions'
+import { PRODUCT_CREATE_RESET } from '../constants/productConstants'
+
+function ProductListScreen() {
+    const navigate = useNavigate()
+    const productId = useParams().id
+    const dispatch = useDispatch()
+
+    const productList = useSelector(state => state.productList)
+    const { loading, error, products } = productList
+
+
+    const userLogin = useSelector(state => state.userLogin)
+    const { userInfo } = userLogin
+
+    useEffect(() => {
+
+        if (userInfo && userInfo.isAdmin) {
+            dispatch(listProducts())}
+        else {
+            navigate('/login')
+        }
+
+    }, [dispatch, navigate, userInfo])
+
+    const deleteHandler = (id) => {
+
+        if (window.confirm('Are you sure you want to delete this product?')) {
+            // dispatch(deleteProduct(id))
+        }
+    }
+
+    const createProductHandler = () => {
+        // dispatch({ type: PRODUCT_CREATE_RESET })
+        // navigate('/admin/product/create')
+    }
+
+    return (
+        <div>
+            <Row className='align-items-center'>
+                <Col>
+                    <h1>Products</h1>
+                </Col>
+
+                <Col className='text-right'>
+                    <Button className='my-3' onClick={createProductHandler}>
+                        <i className='fas fa-plus'></i> Create Product
+                    </Button>
+                </Col>
+            </Row>
+
+            {loading
+                ? (<Loader />)
+                : error
+                    ? (<Message variant='danger'>{error}</Message>)
+                    : (
+                        <div>
+                            <Table striped bordered hover responsive className='table-sm'>
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>NAME</th>
+                                        <th>PRICE</th>
+                                        <th>CATEGORY</th>
+                                        <th>BRAND</th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+
+                                <tbody>
+                                    {products.map(product => (
+                                        <tr key={product._id}>
+                                            <td>{product._id}</td>
+                                            <td>{product.name}</td>
+                                            <td>${product.price}</td>
+                                            <td>{product.category}</td>
+                                            <td>{product.brand}</td>
+
+                                            <td>
+                                                <LinkContainer to={`/admin/product/${product._id}/edit`}>
+                                                    <Button variant='light' className='btn-sm'>
+                                                        <i className='fas fa-edit'></i>
+                                                    </Button>
+                                                </LinkContainer>
+
+                                                <Button variant='danger' className='btn-sm' onClick={() => deleteHandler(product._id)}>
+                                                    <i className='fas fa-trash'></i>
+                                                </Button>
+                                            </td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </Table>
+                          
+                        </div>
+                    )}
+        </div>
+    )
+}
+
+export default ProductListScreen
+```
+2. create delete product and create product function, back to backend, product_views.py
+```py
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import IsAuthenticated, IsAdminUser
+from rest_framework.response import Response
+from base.models import Product
+from base.serializer import ProductSerializer
+
+
+@api_view(['GET'])
+def getProducts(request):
+    products = Product.objects.all()
+    serializer = ProductSerializer(products, many=True)
+    return Response(serializer.data)
+
+@api_view(['GET'])
+def getProduct(request,pk):
+    product = Product.objects.get(_id=pk)
+    serializer = ProductSerializer(product, many=False)
+    return Response(serializer.data)
+
+@api_view(['DELETE'])
+@permission_classes([IsAdminUser])
+def deleteProduct(request, pk):
+    product = Product.objects.get(_id=pk)
+    product.delete()
+    return Response('Producted Deleted')
+
+
+```
+3. update product_urls.py
+```py
+from django.urls import path
+from base.views import product_views as views
+
+urlpatterns = [
+
+    path('', views.getProducts, name="products"),
+    path('<str:pk>/', views.getProduct, name="product"),
+    path('delete/<str:pk>/', views.deleteProduct, name="product-delete"),
+   
+]
+```
+4. back to frontend, update the productConstants.js
+```js
+export const PRODUCT_LIST_REQUEST = "PRODUCT_LIST_REQUEST";
+export const PRODUCT_LIST_SUCCESS = "PRODUCT_LIST_SUCCESS";
+export const PRODUCT_LIST_FAIL = "PRODUCT_LIST_FAIL";
+
+export const PRODUCT_DETAILS_REQUEST = "PRODUCT_DETAILS_REQUEST";
+export const PRODUCT_DETAILS_SUCCESS = "PRODUCT_DETAILS_SUCCESS";
+export const PRODUCT_DETAILS_FAIL = "PRODUCT_DETAILS_FAIL";
+
+export const PRODUCT_DELETE_REQUEST = 'PRODUCT_DELETE_REQUEST'
+export const PRODUCT_DELETE_SUCCESS = 'PRODUCT_DELETE_SUCCESS'
+export const PRODUCT_DELETE_FAIL = 'PRODUCT_DELETE_FAIL'
+```
+5. update productreducers.js
+```js
+import {PRODUCT_LIST_REQUEST, PRODUCT_LIST_SUCCESS, PRODUCT_LIST_FAIL, PRODUCT_DETAILS_REQUEST, PRODUCT_DETAILS_SUCCESS, PRODUCT_DETAILS_FAIL , PRODUCT_DELETE_REQUEST,
+    PRODUCT_DELETE_SUCCESS,
+    PRODUCT_DELETE_FAIL,} from "../constants/productConstants";
+export const productReducer = (state ={ products:[]}, action) => {
+    switch (action.type) {
+        case PRODUCT_LIST_REQUEST:
+            return {loading: true, products: []};
+        case PRODUCT_LIST_SUCCESS:
+            return {loading: false, products: action.payload};
+        case PRODUCT_LIST_FAIL:
+            return {loading: false, error: action.payload};
+        default:
+            return state;
+    }
+};
+
+export const productDetailsReducer = (state ={ product: {reviews: []}}, action) => {
+    switch (action.type) {
+        case PRODUCT_DETAILS_REQUEST:
+            return {loading: true, ...state};
+        case PRODUCT_DETAILS_SUCCESS:
+            return {loading: false, product: action.payload};
+        case PRODUCT_DETAILS_FAIL:
+            return {loading: false, error: action.payload};
+        default:
+            return state;
+    }
+};
+export const productDeleteReducer = (state = {}, action) => {
+    switch (action.type) {
+        case PRODUCT_DELETE_REQUEST:
+            return { loading: true }
+
+        case PRODUCT_DELETE_SUCCESS:
+            return { loading: false, success: true }
+
+        case PRODUCT_DELETE_FAIL:
+            return { loading: false, error: action.payload }
+
+        default:
+            return state
+    }
+}
+```
+6. update the store.js
+```js
+import { configureStore } from '@reduxjs/toolkit';
+import { productReducer, productDetailsReducer, productDeleteReducer} from "./reducers/productReducers"; // import
+import {cartReducer} from "./reducers/cartReducers";
+import { userLoginReducer, userRegisterReducer, userDetailsReducer, userUpdateProfileReducer, userListReducer, userDeleteReducer, userUpdateReducer } from './reducers/userReducers';
+import { orderCreateReducer, orderDetailsReducer, orderPayReducer, orderListMyReducer } from './reducers/orderReducers';
+const cartItemsFromStorage = localStorage.getItem('cartItems')
+  ? JSON.parse(localStorage.getItem('cartItems'))
+  : [];
+const userInfoFromStorage = localStorage.getItem('userInfo')
+  ? JSON.parse(localStorage.getItem('userInfo'))
+  : null;
+ 
+const shippingAddressFromStorage = localStorage.getItem('shippingAddress')
+  ? JSON.parse(localStorage.getItem('shippingAddress'))
+  : {};  
+// 👇 初始化 Redux 状态
+const preloadedState = {
+  cart: {
+    cartItems: cartItemsFromStorage, // 给 cart reducer 赋值
+    shippingAddress: shippingAddressFromStorage, // 给 cart reducer 赋值
+  },
+  userLogin: {
+    userInfo: userInfoFromStorage, // 给 userLogin reducer 赋值
+  },
+  
+};
+
+export const store = configureStore({
+  reducer: {
+      productList: productReducer,
+      productDetails: productDetailsReducer,
+      cart: cartReducer,
+      userLogin: userLoginReducer,
+      userRegister: userRegisterReducer,
+      userDetails: userDetailsReducer,
+      userUpdateProfile: userUpdateProfileReducer,
+     userList: userListReducer, 
+      orderCreate: orderCreateReducer,
+      orderDetails: orderDetailsReducer,
+      orderPay: orderPayReducer,
+      orderListMy: orderListMyReducer,
+      userDelete: userDeleteReducer,
+      userUpdate: userUpdateReducer,
+      productDelete: productDeleteReducer
+  },
+  // ✅ Thunk + DevTools ARE AUTO INCLUDED — NO SETUP NEEDED!
+  preloadedState : preloadedState,
+  middleware: (getDefaultMiddleware) => getDefaultMiddleware({ serializableCheck: false, immutableCheck: false, })
+});
+
+export default store;
+
+```
+7. update productactions.js
+```js
+import {PRODUCT_LIST_REQUEST, PRODUCT_LIST_SUCCESS, PRODUCT_LIST_FAIL, PRODUCT_DETAILS_REQUEST, PRODUCT_DETAILS_SUCCESS, PRODUCT_DETAILS_FAIL, PRODUCT_DELETE_REQUEST, PRODUCT_DELETE_SUCCESS, PRODUCT_DELETE_FAIL} from "../constants/productConstants";
+import axios from "axios";
+export const listProducts = () => async (dispatch) => {
+    try {
+            dispatch({ type: PRODUCT_LIST_REQUEST }); 
+            const { data } = await axios.get("/api/products");
+            dispatch({ type: PRODUCT_LIST_SUCCESS, payload: data });
+    } catch (error) {
+            dispatch({ type: PRODUCT_LIST_FAIL, 
+            payload: error.response && error.response.data.detail ? error.response.data.detail : error.message });
+    }
+}
+
+export const listProductDetails = (id) => async (dispatch) => {
+    try {
+            dispatch({ type: PRODUCT_DETAILS_REQUEST }); 
+            const { data } = await axios.get(`/api/products/${id}`);
+            dispatch({ type: PRODUCT_DETAILS_SUCCESS, payload: data });
+    } catch (error) {
+            dispatch({ type: PRODUCT_DETAILS_FAIL, 
+            payload: error.response && error.response.data.detail ? error.response.data.detail : error.message });
+    }
+}
+
+export const deleteProduct = (id) => async (dispatch, getState) => {
+    try {
+        dispatch({
+            type: PRODUCT_DELETE_REQUEST
+        })
+
+        const {
+            userLogin: { userInfo },
+        } = getState()
+
+        const config = {
+            headers: {
+                'Content-type': 'application/json',
+                Authorization: `Bearer ${userInfo.token}`
+            }
+        }
+
+        const { data } = await axios.delete(
+            `/api/products/delete/${id}/`,
+            config
+        )
+
+        dispatch({
+            type: PRODUCT_DELETE_SUCCESS,
+        })
+
+
+    } catch (error) {
+        dispatch({
+            type: PRODUCT_DELETE_FAIL,
+            payload: error.response && error.response.data.detail
+                ? error.response.data.detail
+                : error.message,
+        })
+    }
+}
+
+```
+8. update productlistscreen.jsx
+```jsx
+import React, { useState, useEffect } from 'react'
+import { LinkContainer } from 'react-router-bootstrap'
+import { Table, Button, Row, Col } from 'react-bootstrap'
+import { useDispatch, useSelector } from 'react-redux'
+import Loader from '../components/Loader'
+import Message from '../components/Message'
+import { useNavigate, useParams } from 'react-router-dom'
+import { listProducts, deleteProduct} from '../actions/productActions'
+import { PRODUCT_CREATE_RESET } from '../constants/productConstants'
+
+function ProductListScreen() {
+    const navigate = useNavigate()
+    const productId = useParams().id
+    const dispatch = useDispatch()
+
+    const productList = useSelector(state => state.productList)
+    const { loading, error, products } = productList
+
+    const productDelete = useSelector(state => state.productDelete)
+    const { loading: loadingDelete, error: errorDelete, success: successDelete } = productDelete
+
+    const userLogin = useSelector(state => state.userLogin)
+    const { userInfo } = userLogin
+
+    useEffect(() => {
+
+        if (userInfo && userInfo.isAdmin) {
+            dispatch(listProducts())}
+        else {
+            navigate('/login')
+        }
+
+    }, [dispatch, navigate, userInfo, successDelete])
+
+    const deleteHandler = (id) => {
+
+        if (window.confirm('Are you sure you want to delete this product?')) {
+            dispatch(deleteProduct(id))
+        }
+    }
+
+    const createProductHandler = () => {
+        // dispatch({ type: PRODUCT_CREATE_RESET })
+        // navigate('/admin/product/create')
+    }
+
+    return (
+        <div>
+            <Row className='align-items-center'>
+                <Col>
+                    <h1>Products</h1>
+                </Col>
+
+                <Col className='text-right'>
+                    <Button className='my-3' onClick={createProductHandler}>
+                        <i className='fas fa-plus'></i> Create Product
+                    </Button>
+                </Col>
+            </Row>
+
+             {loadingDelete && <Loader />}
+            {errorDelete && <Message variant='danger'>{errorDelete}</Message>}
+
+
+            {/* {loadingCreate && <Loader />}
+            {errorCreate && <Message variant='danger'>{errorCreate}</Message>}  */}
+
+            {loading
+                ? (<Loader />)
+                : error
+                    ? (<Message variant='danger'>{error}</Message>)
+                    : (
+                        <div>
+                            <Table striped bordered hover responsive className='table-sm'>
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>NAME</th>
+                                        <th>PRICE</th>
+                                        <th>CATEGORY</th>
+                                        <th>BRAND</th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+
+                                <tbody>
+                                    {products.map(product => (
+                                        <tr key={product._id}>
+                                            <td>{product._id}</td>
+                                            <td>{product.name}</td>
+                                            <td>${product.price}</td>
+                                            <td>{product.category}</td>
+                                            <td>{product.brand}</td>
+
+                                            <td>
+                                                <LinkContainer to={`/admin/product/${product._id}/edit`}>
+                                                    <Button variant='light' className='btn-sm'>
+                                                        <i className='fas fa-edit'></i>
+                                                    </Button>
+                                                </LinkContainer>
+
+                                                <Button variant='danger' className='btn-sm' onClick={() => deleteHandler(product._id)}>
+                                                    <i className='fas fa-trash'></i>
+                                                </Button>
+                                            </td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </Table>
+                          
+                        </div>
+                    )}
+        </div>
+    )
+}
+
+export default ProductListScreen
+```
+9.
+10.
+11.
 ## step 40
+## step 41
+## step 42
+## step 43
+## step 44
