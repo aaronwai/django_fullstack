@@ -5,6 +5,7 @@ urlpatterns = [
     # 1. STATIC ROUTES FIRST
     path('create/', views.createProduct, name="product-create"),
     path('upload/', views.uploadImage, name="image-upload"),
+     path('top/', views.getTopProducts, name='top-products'),
     # 2. STATIC + DYNAMIC COMBOS (update / delete)
     path('update/<str:pk>/', views.updateProduct, name="product-update"),
     path('delete/<str:pk>/', views.deleteProduct, name="product-delete"),

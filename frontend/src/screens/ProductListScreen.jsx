@@ -29,7 +29,7 @@ function ProductListScreen() {
     let keyword = location.search  // ✅ CORRECT
    
     useEffect(() => {
-
+dispatch({ type: PRODUCT_CREATE_RESET })
         if (!userInfo.isAdmin) {
             navigate('/login')
         }
@@ -48,9 +48,9 @@ function ProductListScreen() {
     }
 
     const createProductHandler = () => {
-        dispatch({ type: PRODUCT_CREATE_RESET })
-        navigate('/admin/product/create')
+        dispatch(createProduct())
     }
+
 
     return (
         <div>
