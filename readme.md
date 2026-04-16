@@ -190,7 +190,9 @@ import Header from "./components/Header";
 
 function App() {
   return (
-    <div>  // keep this div for now, later replace with router
+    <div>
+      {" "}
+      // keep this div for now, later replace with router
       <Header />
       <main>
         <h1>Welcome</h1>
@@ -246,7 +248,7 @@ function App() {
   return (
     <div>
       <Header />
-      <main className='py-3'>
+      <main className="py-3">
         <Container>
           <h1>Welcome</h1>
         </Container>
@@ -269,7 +271,7 @@ const Footer = () => {
     <footer>
       <Container>
         <Row>
-          <Col className='text-center py-3'>Copyright &copy: ProShop</Col>
+          <Col className="text-center py-3">Copyright &copy: ProShop</Col>
         </Row>
       </Container>
     </footer>
@@ -294,14 +296,14 @@ import { Container, Navbar, Nav } from "react-bootstrap";
 const Header = () => {
   return (
     <header>
-      <Navbar bg='dark' variant='dark' expand='lg' collapseOnSelect>
+      <Navbar bg="dark" variant="dark" expand="lg" collapseOnSelect>
         <Container>
-          <Navbar.Brand href='/'>ProShop</Navbar.Brand>
-          <Navbar.Toggle aria-controls='basic-navbar-nav' />
-          <Navbar.Collapse id='basic-navbar-nav'>
-            <Nav className='mr-auto'>
-              <Nav.Link href='/cart'>Cart</Nav.Link>
-              <Nav.Link href='/login'>Login</Nav.Link>
+          <Navbar.Brand href="/">ProShop</Navbar.Brand>
+          <Navbar.Toggle aria-controls="basic-navbar-nav" />
+          <Navbar.Collapse id="basic-navbar-nav">
+            <Nav className="mr-auto">
+              <Nav.Link href="/cart">Cart</Nav.Link>
+              <Nav.Link href="/login">Login</Nav.Link>
             </Nav>
           </Navbar.Collapse>
         </Container>
@@ -322,17 +324,17 @@ import { Container, Navbar, Nav } from "react-bootstrap";
 const Header = () => {
   return (
     <header>
-      <Navbar bg='dark' variant='dark' expand='lg' collapseOnSelect>
+      <Navbar bg="dark" variant="dark" expand="lg" collapseOnSelect>
         <Container>
-          <Navbar.Brand href='/'>ProShop</Navbar.Brand>
-          <Navbar.Toggle aria-controls='basic-navbar-nav' />
-          <Navbar.Collapse id='basic-navbar-nav'>
-            <Nav className='mr-auto'>
-              <Nav.Link href='/cart'>
-                <i className='fas fa-shopping-cart'></i>Cart
+          <Navbar.Brand href="/">ProShop</Navbar.Brand>
+          <Navbar.Toggle aria-controls="basic-navbar-nav" />
+          <Navbar.Collapse id="basic-navbar-nav">
+            <Nav className="mr-auto">
+              <Nav.Link href="/cart">
+                <i className="fas fa-shopping-cart"></i>Cart
               </Nav.Link>
-              <Nav.Link href='/login'>
-                <i className='fas fa-user'></i>Login
+              <Nav.Link href="/login">
+                <i className="fas fa-user"></i>Login
               </Nav.Link>
             </Nav>
           </Navbar.Collapse>
@@ -436,7 +438,7 @@ export default products;
 
 2. copy images inside `public/images`
 3. create `src/screens` folder for pages
-4. create HomeScreen.jsx, add the dump data and key with product._id
+4. create HomeScreen.jsx, add the dump data and key with product.\_id
 
 ```jsx homescreen.jsx
 import { Row, Col } from "react-bootstrap";
@@ -486,7 +488,9 @@ function App() {
 export default App;
 
 ```
+
 2. for the homescreen, insert a product component
+
 ```jsx homescreen.jsx
 import { Row, Col } from "react-bootstrap";
 import Product from "../components/Product";
@@ -498,7 +502,7 @@ const HomeScreen = () => {
       <Row>
         {products.map((product) => (
           <Col key={product._id} sm={12} md={6} lg={4} xl={3}>
-            <Product product={product} />   // insert product component
+            <Product product={product} /> // insert product component
           </Col>
         ))}
       </Row>
@@ -507,26 +511,26 @@ const HomeScreen = () => {
 };
 
 export default HomeScreen;
-
 ```
+
 3. create Product.jsx inside components folder
 
 ```jsx
 import { Card } from "react-bootstrap";
 const Product = ({ product }) => {
   return (
-    <Card className='my-3 p-3 rounded'>
+    <Card className="my-3 p-3 rounded">
       <a href={`/product/${product._id}`}>
         <Card.Img src={product.image} />
       </a>
       <Card.Body>
         <a href={`/product/${product._id}`}>
-          <Card.Title as='div'>
+          <Card.Title as="div">
             <strong>{product.name}</strong>
           </Card.Title>
         </a>
-        <Card.Text as='div'>
-          <div className='my-3'>
+        <Card.Text as="div">
+          <div className="my-3">
             // this line will be replace by component later, for now just make
             sure it works
             <strong>
@@ -534,7 +538,7 @@ const Product = ({ product }) => {
             </strong>
           </div>
         </Card.Text>
-        <Card.Title as='h3'>${product.price}</Card.Title>
+        <Card.Title as="h3">${product.price}</Card.Title>
       </Card.Body>
     </Card>
   );
@@ -542,7 +546,9 @@ const Product = ({ product }) => {
 
 export default Product;
 ```
+
 3. update app.jsx for the product component
+
 ```jsx
 import { Container } from "react-bootstrap";
 import Footer from "./components/Footer";
@@ -563,6 +569,7 @@ function App() {
 
 export default App;
 ```
+
 # step 8 : rating component
 
 1. we will be re-using this component later
@@ -573,26 +580,26 @@ import { Card } from "react-bootstrap";
 import Rating from "./Rating";
 const Product = ({ product }) => {
   return (
-    <Card className='my-3 p-3 rounded'>
+    <Card className="my-3 p-3 rounded">
       <a href={`/product/${product._id}`}>
         <Card.Img src={product.image} />
       </a>
       <Card.Body>
         <a href={`/product/${product._id}`}>
-          <Card.Title as='div'>
+          <Card.Title as="div">
             <strong>{product.name}</strong>
           </Card.Title>
         </a>
-        <Card.Text as='div'>
-          <div className='my-3'>
+        <Card.Text as="div">
+          <div className="my-3">
             <Rating
               value={product.rating}
               text={`${product.numReviews} reviews`}
-              color='#f8e825'
+              color="#f8e825"
             />
           </div>
         </Card.Text>
-        <Card.Title as='h3'>${product.price}</Card.Title>
+        <Card.Title as="h3">${product.price}</Card.Title>
       </Card.Body>
     </Card>
   );
@@ -606,7 +613,7 @@ export default Product;
 ```jsx rating.jsx
 const Rating = ({ value, text, color }) => {
   return (
-    <div className='rating'>
+    <div className="rating">
       <span>
         <i
           style={{ color }}
@@ -713,10 +720,10 @@ function App() {
   return (
     <Router>
       <Header />
-      <main className='py-3'>
+      <main className="py-3">
         <Container>
           <Routes>
-            <Route path='/' element={<HomeScreen />} />
+            <Route path="/" element={<HomeScreen />} />
           </Routes>
         </Container>
       </main>
@@ -733,26 +740,30 @@ export default App;
 This is one of the **biggest changes** from React Router 5 → 6.
 
 ## Why you don’t need `exact` anymore:
+
 - In **React Router 5**, you had to use `exact` for the root path `/` to prevent it from matching EVERY route (like `/about`, `/product`, etc.).
 - In **React Router 6**, **all routes match exactly by default**.
 
 Your current code:
+
 ```jsx
-<Route path='/' element={<HomeScreen />} />
+<Route path="/" element={<HomeScreen />} />
 ```
+
 This will **only match the homepage** (`/`), and nothing else. Perfect as-is.
 
 ---
 
 ## When would you use partial matching?
+
 Only if you want **nested routes** (like `/products/123`), you use a trailing `*` wildcard:
+
 ```jsx
 // This matches /products + /products/123 + /products/edit
 <Route path="/products/*" element={<Products />} />
 ```
 
 But for your simple root route — **no `exact` required**.
-
 
 4. add src/screens/ProductScreen.jsx for product pages for the time being
 
@@ -779,11 +790,11 @@ function App() {
   return (
     <Router>
       <Header />
-      <main className='py-3'>
+      <main className="py-3">
         <Container>
           <Routes>
-            <Route path='/' element={<HomeScreen />} />
-            <Route path='/product/:id' element={<ProductScreen />} />
+            <Route path="/" element={<HomeScreen />} />
+            <Route path="/product/:id" element={<ProductScreen />} />
           </Routes>
         </Container>
       </main>
@@ -805,26 +816,26 @@ import Rating from "./Rating";
 import { Link } from "react-router-dom";
 const Product = ({ product }) => {
   return (
-    <Card className='my-3 p-3 rounded'>
+    <Card className="my-3 p-3 rounded">
       <Link to={`/product/${product._id}`}>
         <Card.Img src={product.image} />
       </Link>
       <Card.Body>
         <Link to={`/product/${product._id}`}>
-          <Card.Title as='div'>
+          <Card.Title as="div">
             <strong>{product.name}</strong>
           </Card.Title>
         </Link>
-        <Card.Text as='div'>
-          <div className='my-3'>
+        <Card.Text as="div">
+          <div className="my-3">
             <Rating
               value={product.rating}
               text={`${product.numReviews} reviews`}
-              color='#f8e825'
+              color="#f8e825"
             />
           </div>
         </Card.Text>
-        <Card.Title as='h3'>${product.price}</Card.Title>
+        <Card.Title as="h3">${product.price}</Card.Title>
       </Card.Body>
     </Card>
   );
@@ -841,22 +852,24 @@ import { LinkContainer } from "react-router-bootstrap";
 const Header = () => {
   return (
     <header>
-      <Navbar bg='dark' variant='dark' expand='lg' collapseOnSelect>
+      <Navbar bg="dark" variant="dark" expand="lg" collapseOnSelect>
         <Container>
-          <LinkContainer to='/'>  // add wrapper for the link
+          <LinkContainer to="/">
+            {" "}
+            // add wrapper for the link
             <Navbar.Brand>ProShop</Navbar.Brand>
           </LinkContainer>
-          <Navbar.Toggle aria-controls='basic-navbar-nav' />
-          <Navbar.Collapse id='basic-navbar-nav'>
-            <Nav className='mr-auto'>
-              <LinkContainer to='/cart'>
+          <Navbar.Toggle aria-controls="basic-navbar-nav" />
+          <Navbar.Collapse id="basic-navbar-nav">
+            <Nav className="mr-auto">
+              <LinkContainer to="/cart">
                 <Nav.Link>
-                  <i className='fas fa-shopping-cart'></i> Cart
+                  <i className="fas fa-shopping-cart"></i> Cart
                 </Nav.Link>
               </LinkContainer>
-              <LinkContainer to='/login'>
+              <LinkContainer to="/login">
                 <Nav.Link>
-                  <i className='fas fa-user'></i> Login
+                  <i className="fas fa-user"></i> Login
                 </Nav.Link>
               </LinkContainer>
             </Nav>
@@ -881,7 +894,7 @@ import Rating from "../components/Rating";
 import products from "../products";
 const ProductScreen = () => {
   const { id } = useParams();
-  const product = products.find((p) => p._id === id);   // from the route params find the id and get the product name
+  const product = products.find((p) => p._id === id); // from the route params find the id and get the product name
   return <div>{product.name}</div>;
 };
 
@@ -890,7 +903,7 @@ export default ProductScreen;
 
 2. refactor the product page to add the product details
 
-```jsx  productscreen.jsx
+```jsx productscreen.jsx
 import { Link, useParams } from "react-router-dom";
 import { Row, Col, Image, ListGroup, Card, Button } from "react-bootstrap";
 import Rating from "../components/Rating";
@@ -901,7 +914,7 @@ const ProductScreen = () => {
   const product = products.find((p) => p._id === id);
   return (
     <div>
-      <Link to='/' className='btn btn-light my-3'>
+      <Link to="/" className="btn btn-light my-3">
         Go Back
       </Link>
 
@@ -911,7 +924,7 @@ const ProductScreen = () => {
         </Col>
 
         <Col md={3}>
-          <ListGroup variant='flush'>
+          <ListGroup variant="flush">
             <ListGroup.Item>
               <h3>{product.name}</h3>
             </ListGroup.Item>
@@ -932,7 +945,7 @@ const ProductScreen = () => {
 
         <Col md={3}>
           <Card>
-            <ListGroup variant='flush'>
+            <ListGroup variant="flush">
               <ListGroup.Item>
                 <Row>
                   <Col>Price:</Col>
@@ -951,9 +964,9 @@ const ProductScreen = () => {
               </ListGroup.Item>
               <ListGroup.Item>
                 <Button
-                  className='w-100 py-2'
-                  type='button'
-                  disabled={product.countInStock === 0}  // disabled if out of stock
+                  className="w-100 py-2"
+                  type="button"
+                  disabled={product.countInStock === 0} // disabled if out of stock
                 >
                   Add to Cart
                 </Button>
@@ -1358,7 +1371,7 @@ const HomeScreen = () => {
       setProducts(data);
     }
     fetchProducts();
-  }, []);   // first time loaded thaen update the component
+  }, []); // first time loaded thaen update the component
   return (
     <div>
       <h1>Latest Products</h1>
@@ -1601,7 +1614,7 @@ const ProductScreen = () => {
   }, []);
   return (
     <div>
-      <Link to='/' className='btn btn-light my-3'>
+      <Link to="/" className="btn btn-light my-3">
         Go Back
       </Link>
 
@@ -1611,7 +1624,7 @@ const ProductScreen = () => {
         </Col>
 
         <Col md={3}>
-          <ListGroup variant='flush'>
+          <ListGroup variant="flush">
             <ListGroup.Item>
               <h3>{product.name}</h3>
             </ListGroup.Item>
@@ -1632,7 +1645,7 @@ const ProductScreen = () => {
 
         <Col md={3}>
           <Card>
-            <ListGroup variant='flush'>
+            <ListGroup variant="flush">
               <ListGroup.Item>
                 <Row>
                   <Col>Price:</Col>
@@ -1651,8 +1664,8 @@ const ProductScreen = () => {
               </ListGroup.Item>
               <ListGroup.Item>
                 <Button
-                  className='w-100 py-2'
-                  type='button'
+                  className="w-100 py-2"
+                  type="button"
                   disabled={product.countInStock === 0}
                 >
                   Add to Cart
@@ -1957,6 +1970,7 @@ def product_list(request):
     serializer = ProductSerializer(products, many=True)  # Use many=True for lists
     return Response(serializer.data)
 ```
+
 ```text
 Django Model (database row)
        ↓
@@ -1966,6 +1980,7 @@ serializer.data (the final JSON structure)
        ↓
 Response(serializer.data) (send it to React)
 ```
+
 #### 2.2 What Happens Here:
 
 - `ProductSerializer(product)` takes the Python `Product` object and converts it to a dictionary (e.g., `{'id': 1, 'name': 'Laptop', 'price': '999.99'}`).
@@ -2050,17 +2065,20 @@ class ProductSerializer(serializers.ModelSerializer):
 ```
 
 # 1. The Shortest Answer
+
 **`Meta = Metadata`**
 It’s a **configuration class** that tells the serializer:
-*   **Which model to convert**
-*   **Which fields to include**
-*   **Extra rules** (like read-only)
+
+- **Which model to convert**
+- **Which fields to include**
+- **Extra rules** (like read-only)
 
 It’s **not code that runs** — it’s just **settings/instructions** for DRF.
 
 ---
 
 # 2. Your Code Explained Line by Line
+
 ```python
 class ProductSerializer(serializers.ModelSerializer):
     # THIS IS THE CONFIG MENU
@@ -2071,34 +2089,40 @@ class ProductSerializer(serializers.ModelSerializer):
 ```
 
 ### **1. model = Product**
-*   **Meaning**: *“Hey serializer, translate the **Product** database table.”*
-*   It links your serializer to your Django model (`name`, `price`, etc.).
 
-### **2. fields = '__all__'**
-*   **Meaning**: *“Take **every column** from the Product model and turn it into JSON.”*
-*   This includes: `id`, `name`, `price`, `description`, `rating`, etc.
-*   *(Alternative: you can list specific fields like `fields = ['name', 'price']`)*
+- **Meaning**: _“Hey serializer, translate the **Product** database table.”_
+- It links your serializer to your Django model (`name`, `price`, etc.).
+
+### **2. fields = '**all**'**
+
+- **Meaning**: _“Take **every column** from the Product model and turn it into JSON.”_
+- This includes: `id`, `name`, `price`, `description`, `rating`, etc.
+- _(Alternative: you can list specific fields like `fields = ['name', 'price']`)_
 
 ### **3. read_only_fields = ['id', 'rating']**
-*   **Meaning**: *“These fields are **read-only**.”*
-*   **React can receive them** (GET request).
-*   **React CANNOT send/modify them** (POST/PUT request).
-*   Perfect for:
-    *   `id` (auto-generated by DB)
-    *   `rating` (calculated by backend, not user-editable)
+
+- **Meaning**: _“These fields are **read-only**.”_
+- **React can receive them** (GET request).
+- **React CANNOT send/modify them** (POST/PUT request).
+- Perfect for:
+  - `id` (auto-generated by DB)
+  - `rating` (calculated by backend, not user-editable)
 
 ---
 
 # 3. Analogy: Restaurant Menu
+
 Think of the **Serializer** as a **Chef**.
 The **`Meta` class** is the **Recipe Card** telling him:
-*   **model = Product**: Use **chicken** (ingredient)
-*   **fields = '__all__**: Use **all parts** of the chicken
-*   **read_only_fields**: **Don’t cook the bones** (leave them out)
+
+- **model = Product**: Use **chicken** (ingredient)
+- **fields = '**all\***\*: Use **all parts\*\* of the chicken
+- **read_only_fields**: **Don’t cook the bones** (leave them out)
 
 ---
 
 # 4. Why `Meta` is Used (Technical Reason)
+
 The `ProductSerializer` class **inherits** power from `serializers.ModelSerializer`.
 The `Meta` class is the **standard way** to pass custom settings to that parent class.
 It keeps your code clean.
@@ -2106,7 +2130,9 @@ It keeps your code clean.
 ---
 
 # 5. What `serializer.data` Looks Like (Because of Meta)
+
 Because you set `fields = '__all__'`, `serializer.data` will contain **everything**:
+
 ```python
 {
   "id": 1,          // read-only
@@ -2120,9 +2146,11 @@ Because you set `fields = '__all__'`, `serializer.data` will contain **everythin
 ---
 
 # Ultimate Summary
+
 **`class Meta:` is just a SETTINGS MENU for your Serializer.**
 
 It tells DRF:
+
 1. **What model** to translate
 2. **What fields** to include
 3. **What rules** to apply
@@ -2195,8 +2223,8 @@ def getProduct(request,pk):
 ```
 
 3. after finished the process then build the database and create the data record from product.js file
-4. for testing purpose, go makemigrations and migrate and input some data into sqlite3, 
-5. testing the `api/products/1/` 
+4. for testing purpose, go makemigrations and migrate and input some data into sqlite3,
+5. testing the `api/products/1/`
 
 # Step 17 : fronend redux
 
@@ -2432,18 +2460,23 @@ React 19 + Django app, `redux-thunk` is the standard way to manage async API cal
 ## **Redux Thunk = a wrapper that lets you write ASYNC functions in Redux actions**
 
 # Normal Redux = ONLY sync (can’t do API calls)
+
 Normal Redux **action creators must return plain objects** immediately:
+
 ```javascript
 // NORMAL ACTION (only sync, no API, no delay)
 const setProducts = (data) => ({
-  type: 'SET_PRODUCTS',
-  payload: data
+  type: "SET_PRODUCTS",
+  payload: data,
 });
 ```
+
 ❌ **CANNOT do `fetch` / axios / async / await here**
 
 # Redux Thunk = lets you return an ASYNC FUNCTION
+
 Thunk lets your action **return a function instead of an object** — so you can:
+
 - Fetch data from Django DRF API
 - Use `async/await`
 - Delay dispatch
@@ -2453,17 +2486,18 @@ Thunk lets your action **return a function instead of an object** — so you can
 // ASYNC ACTION (THUNK POWER)
 export const fetchProducts = () => async (dispatch) => {
   // 1. Call your Django API
-  const { data } = await axios.get('/api/products/');
+  const { data } = await axios.get("/api/products/");
 
   // 2. Send data to Reducer
   dispatch({
-    type: 'PRODUCT_LIST_SUCCESS',
-    payload: data
+    type: "PRODUCT_LIST_SUCCESS",
+    payload: data,
   });
 };
 ```
 
 ### What thunk does:
+
 It **wraps** the async function and lets Redux understand it.
 What this replaces:
 ✅ redux@4.2.1 → replaced by RTK
@@ -2472,8 +2506,9 @@ What this replaces:
 ✅ react-redux@9.1.0 → you still need this (keep it)
 
 2. create store.js
+
 ```js
-import { configureStore } from '@reduxjs/toolkit';
+import { configureStore } from "@reduxjs/toolkit";
 
 export const store = configureStore({
   reducer: {},
@@ -2484,6 +2519,7 @@ export default store;
 ```
 
 3. insert Provider in the index.js
+
 ```js
 import ReactDOM from "react-dom/client";
 import { Provider } from "react-redux";
@@ -2497,132 +2533,148 @@ const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <Provider store={store}>
     <App />
-  </Provider>
+  </Provider>,
 );
 
 reportWebVitals();
-
 ```
 
 # Step 18 : reducers
 
 1. src/reducers/productReducers.js
-```js
-export const productReducer = (state ={ products:[]}, action) => {
-    switch (action.type) {
-        case "PRODUCT_LIST_REQUEST":
-            return {loading: true, products: []};
-        case "PRODUCT_LIST_SUCCESS":
-            return {loading: false, products: action.payload};
-        case "PRODUCT_LIST_FAIL":
-            return {loading: false, error: action.payload};
-        default:
-            return state;
-    }
-};
 
+```js
+export const productReducer = (state = { products: [] }, action) => {
+  switch (action.type) {
+    case "PRODUCT_LIST_REQUEST":
+      return { loading: true, products: [] };
+    case "PRODUCT_LIST_SUCCESS":
+      return { loading: false, products: action.payload };
+    case "PRODUCT_LIST_FAIL":
+      return { loading: false, error: action.payload };
+    default:
+      return state;
+  }
+};
 ```
 
 2. insert productReducer in store.js
+
 ```js
-import { configureStore } from '@reduxjs/toolkit';
+import { configureStore } from "@reduxjs/toolkit";
 import { productReducer } from "./reducers/productReducers"; // import
 export const store = configureStore({
   reducer: {
-      productList: productReducer,
+    productList: productReducer,
   },
   // ✅ Thunk + DevTools ARE AUTO INCLUDED — NO SETUP NEEDED!
 });
 
 export default store;
-
 ```
+
 3. in ther browser check the product list is loaded under dev-tools
 4. refactor the constants to external file, create constants/productConstants.js
+
 ```js
 export const PRODUCT_LIST_REQUEST = "PRODUCT_LIST_REQUEST";
 export const PRODUCT_LIST_SUCCESS = "PRODUCT_LIST_SUCCESS";
 export const PRODUCT_LIST_FAIL = "PRODUCT_LIST_FAIL";
 ```
+
 5. create actions/productActions.js
+
 ```js
-import {PRODUCT_LIST_REQUEST, PRODUCT_LIST_SUCCESS, PRODUCT_LIST_FAIL} from "../constants/productConstants";
+import {
+  PRODUCT_LIST_REQUEST,
+  PRODUCT_LIST_SUCCESS,
+  PRODUCT_LIST_FAIL,
+} from "../constants/productConstants";
 import axios from "axios";
 export const listProducts = () => async (dispatch) => {
-    try {
-            dispatch({ type: PRODUCT_LIST_REQUEST }); 
-            const { data } = await axios.get("/api/products");
-            dispatch({ type: PRODUCT_LIST_SUCCESS, payload: data });
-    } catch (error) {
-            dispatch({ type: PRODUCT_LIST_FAIL, 
-            payload: error.response && error.response.data.message ? error.response.data.message : error.message });
-    }
-}
+  try {
+    dispatch({ type: PRODUCT_LIST_REQUEST });
+    const { data } = await axios.get("/api/products");
+    dispatch({ type: PRODUCT_LIST_SUCCESS, payload: data });
+  } catch (error) {
+    dispatch({
+      type: PRODUCT_LIST_FAIL,
+      payload:
+        error.response && error.response.data.message
+          ? error.response.data.message
+          : error.message,
+    });
+  }
+};
 ```
 
-## Redux Action = The TRIGGER that tells the Reducer WHAT to do.**
+## Redux Action = The TRIGGER that tells the Reducer WHAT to do.\*\*
+
 ## **Redux Reducer = The WORKER that actually CHANGES the state.**
 
-
 # Let’s break down your code to PROVE you’re right
+
 ## 1. Your **Action** (`listProducts`)
+
 It’s just a **plan / selection / command** — it does NOT change state directly.
 It only:
+
 - sends `type` to tell reducer what to do
 - sends `payload` data to reducer
 
 ```javascript
 export const listProducts = () => async (dispatch) => {
-    try {
-        // 👇 SEND COMMAND: "START loading"
-        dispatch({ type: PRODUCT_LIST_REQUEST }); 
+  try {
+    // 👇 SEND COMMAND: "START loading"
+    dispatch({ type: PRODUCT_LIST_REQUEST });
 
-        const { data } = await axios.get("/api/products");
+    const { data } = await axios.get("/api/products");
 
-        // 👇 SEND COMMAND: "SUCCESS → save data"
-        dispatch({ type: PRODUCT_LIST_SUCCESS, payload: data });
-    } catch (error) {
-        // 👇 SEND COMMAND: "FAIL → show error"
-        dispatch({ type: PRODUCT_LIST_FAIL, payload: error.message });
-    }
+    // 👇 SEND COMMAND: "SUCCESS → save data"
+    dispatch({ type: PRODUCT_LIST_SUCCESS, payload: data });
+  } catch (error) {
+    // 👇 SEND COMMAND: "FAIL → show error"
+    dispatch({ type: PRODUCT_LIST_FAIL, payload: error.message });
+  }
 };
 ```
 
 ---
 
 ## 2. Your **Reducer**
+
 It **listens for the action’s command** and **updates the state** accordingly.
 
 ```javascript
 export const productReducer = (state = { products: [] }, action) => {
-    switch (action.type) {
+  switch (action.type) {
+    // 👇 WHEN action says "REQUEST"
+    case PRODUCT_LIST_REQUEST:
+      return { loading: true, products: [] };
 
-        // 👇 WHEN action says "REQUEST"
-        case PRODUCT_LIST_REQUEST:
-            return { loading: true, products: [] };
+    // 👇 WHEN action says "SUCCESS"
+    case PRODUCT_LIST_SUCCESS:
+      return { loading: false, products: action.payload };
 
-        // 👇 WHEN action says "SUCCESS"
-        case PRODUCT_LIST_SUCCESS:
-            return { loading: false, products: action.payload };
+    // 👇 WHEN action says "FAIL"
+    case PRODUCT_LIST_FAIL:
+      return { loading: false, error: action.payload };
 
-        // 👇 WHEN action says "FAIL"
-        case PRODUCT_LIST_FAIL:
-            return { loading: false, error: action.payload };
-
-        default:
-            return state;
-    }
+    default:
+      return state;
+  }
 };
 ```
 
-
 # The Full Cycle (You now master Redux!)
+
 1. **Component** calls `dispatch(listProducts())`
 2. **Action** runs → does API call → **dispatches a TYPE**
 3. **Reducer** sees the TYPE → **updates state**
 4. **Component** auto-receives new state via `useSelector`
 
-6. refactor the homeScreen to add redux
+5. refactor the homeScreen to add redux
+
 ```js
 import { Row, Col } from "react-bootstrap";
 import Product from "../components/Product";
@@ -2631,35 +2683,41 @@ import { useDispatch, useSelector } from "react-redux";
 import { listProducts } from "../actions/productActions";
 const HomeScreen = () => {
   const dispatch = useDispatch();
-  const { error, loading, products } = useSelector((state) => state.productList);
+  const { error, loading, products } = useSelector(
+    (state) => state.productList,
+  );
   useEffect(() => {
     dispatch(listProducts());
   }, [dispatch]);
   return (
     <div>
       <h1>Latest Products</h1>
-      {loading ? <h2>Loading...</h2> : error ? <h2>{error}</h2> : 
-      <Row>
-        {products.map((product) => (
-          <Col key={product._id} sm={12} md={6} lg={4} xl={3}>
-            <Product product={product} />
-          </Col>
-        ))}
-      </Row>}
+      {loading ? (
+        <h2>Loading...</h2>
+      ) : error ? (
+        <h2>{error}</h2>
+      ) : (
+        <Row>
+          {products.map((product) => (
+            <Col key={product._id} sm={12} md={6} lg={4} xl={3}>
+              <Product product={product} />
+            </Col>
+          ))}
+        </Row>
+      )}
     </div>
   );
 };
 
 export default HomeScreen;
-
 ```
 
-# simple UML flow diagram (text + visual)** that shows the **FULL GLOBAL PICTURE** of how Redux works with your `HomeScreen` — exactly matching your code.
-
+# simple UML flow diagram (text + visual)** that shows the **FULL GLOBAL PICTURE\*\* of how Redux works with your `HomeScreen` — exactly matching your code.
 
 ---
 
 # 🌍 Global Redux Flow UML (For Your HomeScreen + Django API)
+
 ```
 ┌─────────────────┐      ┌─────────────────┐      ┌────────────────────┐
 │                 │      │                 │      │                    │
@@ -2707,11 +2765,14 @@ export default HomeScreen;
 ---
 
 # 📌 Step-by-Step Flow (Matching Your Code)
+
 ### 1. **HomeScreen starts**
+
 - Calls `useDispatch()`
 - Runs `useEffect(() => dispatch(listProducts()), [dispatch])`
 
 ### 2. **Action `listProducts()` runs**
+
 - Does `axios.get("/api/products")` → calls your **Django backend**
 - Sends 1 of 3 action types to reducer:
   - `PRODUCT_LIST_REQUEST` (loading)
@@ -2719,21 +2780,24 @@ export default HomeScreen;
   - `PRODUCT_LIST_FAIL` (error)
 
 ### 3. **productReducer receives action**
+
 - Updates Redux store state:
   - `loading: true/false`
   - `products: [...]`
   - `error: "..."`
 
 ### 4. **useSelector reads new state**
+
 - `const { error, loading, products } = useSelector(...)`
 
 ### 5. **HomeScreen renders UI**
+
 - Loading → show spinner
 - Error → show message
 - Success → show products from Django API
 
-
 # Component Relationship Diagram
+
 ```
 ┌─────────────────────────────────────────────────────────────────┐
 │                       [ Frontend React App ]                     │
@@ -2779,22 +2843,27 @@ export default HomeScreen;
 ---
 
 # Layer-by-Layer Explanation (Super Clear)
+
 ## 1. Top-Level Wrappers
+
 - `<BrowserRouter>`: handles URL routing
 - `<Provider store={store}>`: injects Redux into **all components**
 
 ## 2. Page Component: `HomeScreen`
+
 - Uses `useDispatch` to **trigger the Redux action**
 - Uses `useSelector` to **read state from Redux**
 - Uses `useEffect` to **fetch data on mount**
 - Renders a list of `<Product>` components
 
 ## 3. UI Component: `Product`
+
 - Dumb/presentational component
 - Only receives `product` as prop and displays it
 - No logic, no Redux
 
 ## 4. Redux Flow
+
 - `HomeScreen` → dispatch `listProducts()`
 - Action calls **Django API**
 - Action dispatches `REQUEST/SUCCESS/FAIL`
@@ -2803,9 +2872,9 @@ export default HomeScreen;
 - UI re-renders
 
 ## 5. Backend
+
 - Django + DRF serves JSON at `/api/products`
 - No templates, only API
-
 
 ## **useSelector = 从 Redux 全局仓库里，“挑出”你要的数据，自动给组件用。**
 
@@ -2814,6 +2883,7 @@ export default HomeScreen;
 ---
 
 # 第 1 步：Redux 有一个 **全局大仓库（Store）**
+
 里面存着所有页面共享的数据，像一个巨大的对象：
 
 ```javascript
@@ -2832,9 +2902,11 @@ state = {
 ---
 
 # 第 2 步：useSelector 帮你 **“挑选”数据**
+
 你写：
+
 ```javascript
-const { loading, products, error } = useSelector( state => state.productList )
+const { loading, products, error } = useSelector((state) => state.productList);
 ```
 
 这句话的意思是：
@@ -2846,14 +2918,17 @@ useSelector 会进入仓库，找到 `state.productList`，把它取出来给你
 ---
 
 # 第 3 步：数据变化 → 组件 **自动重新渲染**
+
 这是 useSelector **最神奇的地方**：
 
 ### **只要你挑的数据变了，组件自动刷新！**
+
 不需要你手动监听、不需要 setState、不需要刷新页面。
 
 ---
 
 # 用生活例子理解（秒懂）
+
 - Redux Store = **家里的冰箱**
 - useSelector = **你打开冰箱，拿你要的饮料**
 - 饮料变了 → **你杯子里的饮料自动更新**
@@ -2869,10 +2944,11 @@ useSelector（伸手拿）
 ---
 
 # 为什么你的 HomeScreen 能显示产品？
+
 因为：
 
 ```javascript
-const { loading, products, error } = useSelector(state => state.productList)
+const { loading, products, error } = useSelector((state) => state.productList);
 ```
 
 意思就是：
@@ -2887,18 +2963,21 @@ const { loading, products, error } = useSelector(state => state.productList)
 ---
 
 # 超级重点（你必须知道）
+
 ## **useSelector 不会改变仓库里的数据！**
+
 它 **只读**！
 要改数据必须用：
+
 ```javascript
-dispatch(动作)
+dispatch(动作);
 ```
 
-
 7. refactor the loading and error message to bootstrap components
-components/Loader.jsx
+   components/Loader.jsx
+
 ```jsx
-import {Spinner} from "react-bootstrap";
+import { Spinner } from "react-bootstrap";
 
 const Loader = () => {
   return (
@@ -2918,22 +2997,21 @@ const Loader = () => {
 };
 
 export default Loader;
-
 ```
+
 components/Message.jsx
+
 ```jsx
-import {Alert} from 'react-bootstrap';
+import { Alert } from "react-bootstrap";
 const Message = ({ variant = "info", children }) => {
-  return (
-    <Alert variant={variant}>
-      {children}
-    </Alert>
-  );
+  return <Alert variant={variant}>{children}</Alert>;
 };
 
 export default Message;
 ```
+
 8. refactor th homescreen
+
 ```jsx
 import { Row, Col } from "react-bootstrap";
 import Product from "../components/Product";
@@ -2944,33 +3022,39 @@ import Loader from "../components/Loader";
 import Message from "../components/Message";
 const HomeScreen = () => {
   const dispatch = useDispatch();
-  const { error, loading, products } = useSelector((state) => state.productList);
+  const { error, loading, products } = useSelector(
+    (state) => state.productList,
+  );
   useEffect(() => {
     dispatch(listProducts());
   }, [dispatch]);
   return (
     <div>
       <h1>Latest Products</h1>
-      {loading ? <Loader /> : error ? <Message variant="danger">{error}</Message> : 
-      <Row>
-        {products.map((product) => (
-          <Col key={product._id} sm={12} md={6} lg={4} xl={3}>
-            <Product product={product} />
-          </Col>
-        ))}
-      </Row>}
+      {loading ? (
+        <Loader />
+      ) : error ? (
+        <Message variant="danger">{error}</Message>
+      ) : (
+        <Row>
+          {products.map((product) => (
+            <Col key={product._id} sm={12} md={6} lg={4} xl={3}>
+              <Product product={product} />
+            </Col>
+          ))}
+        </Row>
+      )}
     </div>
   );
 };
 
 export default HomeScreen;
-
-
 ```
 
 # Step 18b : add in data
 
 1. update constants/productConstants.js
+
 ```js
 export const PRODUCT_LIST_REQUEST = "PRODUCT_LIST_REQUEST";
 export const PRODUCT_LIST_SUCCESS = "PRODUCT_LIST_SUCCESS";
@@ -2979,87 +3063,117 @@ export const PRODUCT_LIST_FAIL = "PRODUCT_LIST_FAIL";
 export const PRODUCT_DETAILS_REQUEST = "PRODUCT_DETAILS_REQUEST";
 export const PRODUCT_DETAILS_SUCCESS = "PRODUCT_DETAILS_SUCCESS";
 export const PRODUCT_DETAILS_FAIL = "PRODUCT_DETAILS_FAIL";
-
 ```
 
 2. update reducers/productReducers.js
+
 ```js
-import {PRODUCT_LIST_REQUEST, PRODUCT_LIST_SUCCESS, PRODUCT_LIST_FAIL, PRODUCT_DETAILS_REQUEST, PRODUCT_DETAILS_SUCCESS, PRODUCT_DETAILS_FAIL} from "../constants/productConstants";
-export const productReducer = (state ={ products:[]}, action) => {
-    switch (action.type) {
-        case PRODUCT_LIST_REQUEST:
-            return {loading: true, products: []};
-        case PRODUCT_LIST_SUCCESS:
-            return {loading: false, products: action.payload};
-        case PRODUCT_LIST_FAIL:
-            return {loading: false, error: action.payload};
-        default:
-            return state;
-    }
+import {
+  PRODUCT_LIST_REQUEST,
+  PRODUCT_LIST_SUCCESS,
+  PRODUCT_LIST_FAIL,
+  PRODUCT_DETAILS_REQUEST,
+  PRODUCT_DETAILS_SUCCESS,
+  PRODUCT_DETAILS_FAIL,
+} from "../constants/productConstants";
+export const productReducer = (state = { products: [] }, action) => {
+  switch (action.type) {
+    case PRODUCT_LIST_REQUEST:
+      return { loading: true, products: [] };
+    case PRODUCT_LIST_SUCCESS:
+      return { loading: false, products: action.payload };
+    case PRODUCT_LIST_FAIL:
+      return { loading: false, error: action.payload };
+    default:
+      return state;
+  }
 };
 
-export const productDetailsReducer = (state ={ product: {reviews: []}}, action) => {
-    switch (action.type) {
-        case PRODUCT_DETAILS_REQUEST:
-            return {loading: true, ...state};
-        case PRODUCT_DETAILS_SUCCESS:
-            return {loading: false, product: action.payload};
-        case PRODUCT_DETAILS_FAIL:
-            return {loading: false, error: action.payload};
-        default:
-            return state;
-    }
+export const productDetailsReducer = (
+  state = { product: { reviews: [] } },
+  action,
+) => {
+  switch (action.type) {
+    case PRODUCT_DETAILS_REQUEST:
+      return { loading: true, ...state };
+    case PRODUCT_DETAILS_SUCCESS:
+      return { loading: false, product: action.payload };
+    case PRODUCT_DETAILS_FAIL:
+      return { loading: false, error: action.payload };
+    default:
+      return state;
+  }
 };
-
 ```
 
 3. update the store.js for the new reducers
+
 ```js
-import { configureStore } from '@reduxjs/toolkit';
-import { productReducer, productDetailsReducer} from "./reducers/productReducers"; // import
+import { configureStore } from "@reduxjs/toolkit";
+import {
+  productReducer,
+  productDetailsReducer,
+} from "./reducers/productReducers"; // import
 export const store = configureStore({
   reducer: {
-      productList: productReducer,
-      productDetails: productDetailsReducer,
+    productList: productReducer,
+    productDetails: productDetailsReducer,
   },
   // ✅ Thunk + DevTools ARE AUTO INCLUDED — NO SETUP NEEDED!
 });
 
 export default store;
-
 ```
 
 4. update actions/productActions.js
+
 ```js
-import {PRODUCT_LIST_REQUEST, PRODUCT_LIST_SUCCESS, PRODUCT_LIST_FAIL, PRODUCT_DETAILS_REQUEST, PRODUCT_DETAILS_SUCCESS, PRODUCT_DETAILS_FAIL} from "../constants/productConstants";
+import {
+  PRODUCT_LIST_REQUEST,
+  PRODUCT_LIST_SUCCESS,
+  PRODUCT_LIST_FAIL,
+  PRODUCT_DETAILS_REQUEST,
+  PRODUCT_DETAILS_SUCCESS,
+  PRODUCT_DETAILS_FAIL,
+} from "../constants/productConstants";
 import axios from "axios";
 export const listProducts = () => async (dispatch) => {
-    try {
-            dispatch({ type: PRODUCT_LIST_REQUEST }); 
-            const { data } = await axios.get("/api/products");
-            dispatch({ type: PRODUCT_LIST_SUCCESS, payload: data });
-    } catch (error) {
-            dispatch({ type: PRODUCT_LIST_FAIL, 
-            payload: error.response && error.response.data.message ? error.response.data.message : error.message });
-    }
-}
+  try {
+    dispatch({ type: PRODUCT_LIST_REQUEST });
+    const { data } = await axios.get("/api/products");
+    dispatch({ type: PRODUCT_LIST_SUCCESS, payload: data });
+  } catch (error) {
+    dispatch({
+      type: PRODUCT_LIST_FAIL,
+      payload:
+        error.response && error.response.data.message
+          ? error.response.data.message
+          : error.message,
+    });
+  }
+};
 
 export const listProductDetails = (id) => async (dispatch) => {
-    try {
-            dispatch({ type: PRODUCT_DETAILS_REQUEST }); 
-            const { data } = await axios.get(`/api/products/${id}`);
-            dispatch({ type: PRODUCT_DETAILS_SUCCESS, payload: data });
-    } catch (error) {
-            dispatch({ type: PRODUCT_DETAILS_FAIL, 
-            payload: error.response && error.response.data.message ? error.response.data.message : error.message });
-    }
-}
-
+  try {
+    dispatch({ type: PRODUCT_DETAILS_REQUEST });
+    const { data } = await axios.get(`/api/products/${id}`);
+    dispatch({ type: PRODUCT_DETAILS_SUCCESS, payload: data });
+  } catch (error) {
+    dispatch({
+      type: PRODUCT_DETAILS_FAIL,
+      payload:
+        error.response && error.response.data.message
+          ? error.response.data.message
+          : error.message,
+    });
+  }
+};
 ```
 
 5. update Productscreens.jsx
+
 ```jsx
-import {  useEffect } from "react";
+import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useParams } from "react-router-dom";
 import { Row, Col, Image, ListGroup, Card, Button } from "react-bootstrap";
@@ -3079,91 +3193,99 @@ const ProductScreen = () => {
   }, [dispatch, id]);
   return (
     <div>
-      <Link to="/" className="btn btn-light my-3"> Go Back
+      <Link to="/" className="btn btn-light my-3">
+        {" "}
+        Go Back
       </Link>
-      {
-        loading ? (
-          <Loader />
-        ) : error ? (
-          <Message variant="danger">{error}</Message>
-        ) : (
-      <Row>
-        <Col md={6}>
-          <Image src={product.image} alt={product.name} fluid />
-        </Col>
+      {loading ? (
+        <Loader />
+      ) : error ? (
+        <Message variant="danger">{error}</Message>
+      ) : (
+        <Row>
+          <Col md={6}>
+            <Image src={product.image} alt={product.name} fluid />
+          </Col>
 
-        <Col md={3}>
-          <ListGroup variant="flush">
-            <ListGroup.Item>
-              <h3>{product.name}</h3>
-            </ListGroup.Item>
-
-            <ListGroup.Item>
-              <Rating
-                value={product.rating}
-                text={`${product.numReviews} reviews`}
-                color={"#f8e825"}
-              />
-            </ListGroup.Item>
-
-            <ListGroup.Item>Price: ${product.price}</ListGroup.Item>
-
-            <ListGroup.Item>Description: {product.description} </ListGroup.Item>
-          </ListGroup>
-        </Col>
-
-        <Col md={3}>
-          <Card>
+          <Col md={3}>
             <ListGroup variant="flush">
               <ListGroup.Item>
-                <Row>
-                  <Col>Price:</Col>
-                  <Col>
-                    <strong>${product.price}</strong>
-                  </Col>
-                </Row>
+                <h3>{product.name}</h3>
               </ListGroup.Item>
+
               <ListGroup.Item>
-                <Row>
-                  <Col>Status:</Col>
-                  <Col>
-                    ${product.countInStock > 0 ? "In Stock" : "Out of Stock"}
-                  </Col>
-                </Row>
+                <Rating
+                  value={product.rating}
+                  text={`${product.numReviews} reviews`}
+                  color={"#f8e825"}
+                />
               </ListGroup.Item>
+
+              <ListGroup.Item>Price: ${product.price}</ListGroup.Item>
+
               <ListGroup.Item>
-                <Button
-                  className="w-100 py-2"
-                  type="button"
-                  disabled={product.countInStock === 0}
-                >
-                  Add to Cart
-                </Button>
+                Description: {product.description}{" "}
               </ListGroup.Item>
             </ListGroup>
-          </Card>
-        </Col>
-      </Row>
-         
-        )
-      }
-       
+          </Col>
+
+          <Col md={3}>
+            <Card>
+              <ListGroup variant="flush">
+                <ListGroup.Item>
+                  <Row>
+                    <Col>Price:</Col>
+                    <Col>
+                      <strong>${product.price}</strong>
+                    </Col>
+                  </Row>
+                </ListGroup.Item>
+                <ListGroup.Item>
+                  <Row>
+                    <Col>Status:</Col>
+                    <Col>
+                      ${product.countInStock > 0 ? "In Stock" : "Out of Stock"}
+                    </Col>
+                  </Row>
+                </ListGroup.Item>
+                <ListGroup.Item>
+                  <Button
+                    className="w-100 py-2"
+                    type="button"
+                    disabled={product.countInStock === 0}
+                  >
+                    Add to Cart
+                  </Button>
+                </ListGroup.Item>
+              </ListGroup>
+            </Card>
+          </Col>
+        </Row>
+      )}
     </div>
   );
 };
 
 export default ProductScreen;
-
 ```
 
 # step 18c : add qty
 
 1. update productScreen.jsx, addding qty as dropdown menu and then add event handler to add to cart
+
 ```jsx
-import {  useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useParams } from "react-router-dom";
-import { Row, Col, Image, ListGroup, Card, Button, Form } from "react-bootstrap";
+import {
+  Row,
+  Col,
+  Image,
+  ListGroup,
+  Card,
+  Button,
+  Form,
+} from "react-bootstrap";
 import Rating from "../components/Rating";
 import { listProductDetails } from "../actions/productActions";
 import Loader from "../components/Loader";
@@ -3171,7 +3293,7 @@ import Message from "../components/Message";
 // import products from "../products";
 const ProductScreen = () => {
   const { id } = useParams();
-  const [qty,setQty] = useState(1);
+  const [qty, setQty] = useState(1);
   const dispatch = useDispatch();
   const productDetails = useSelector((state) => state.productDetails);
   const { loading, error, product } = productDetails;
@@ -3181,112 +3303,121 @@ const ProductScreen = () => {
   }, [dispatch, id]);
   const addToCartHandler = () => {
     console.log("Add to cart", id, qty);
-  }
+  };
   return (
     <div>
-      <Link to="/" className="btn btn-light my-3"> Go Back
+      <Link to="/" className="btn btn-light my-3">
+        {" "}
+        Go Back
       </Link>
-      {
-        loading ? (
-          <Loader />
-        ) : error ? (
-          <Message variant="danger">{error}</Message>
-        ) : (
-      <Row>
-        <Col md={6}>
-          <Image src={product.image} alt={product.name} fluid />
-        </Col>
+      {loading ? (
+        <Loader />
+      ) : error ? (
+        <Message variant="danger">{error}</Message>
+      ) : (
+        <Row>
+          <Col md={6}>
+            <Image src={product.image} alt={product.name} fluid />
+          </Col>
 
-        <Col md={3}>
-          <ListGroup variant="flush">
-            <ListGroup.Item>
-              <h3>{product.name}</h3>
-            </ListGroup.Item>
-
-            <ListGroup.Item>
-              <Rating
-                value={product.rating}
-                text={`${product.numReviews} reviews`}
-                color={"#f8e825"}
-              />
-            </ListGroup.Item>
-
-            <ListGroup.Item>Price: ${product.price}</ListGroup.Item>
-
-            <ListGroup.Item>Description: {product.description} </ListGroup.Item>
-          </ListGroup>
-        </Col>
-
-        <Col md={3}>
-          <Card>
+          <Col md={3}>
             <ListGroup variant="flush">
               <ListGroup.Item>
-                <Row>
-                  <Col>Price:</Col>
-                  <Col>
-                    <strong>${product.price}</strong>
-                  </Col>
-                </Row>
+                <h3>{product.name}</h3>
               </ListGroup.Item>
+
               <ListGroup.Item>
-                <Row>
-                  <Col>Status:</Col>
-                  <Col>
-                    ${product.countInStock > 0 ? "In Stock" : "Out of Stock"}
-                  </Col>
-                </Row>
+                <Rating
+                  value={product.rating}
+                  text={`${product.numReviews} reviews`}
+                  color={"#f8e825"}
+                />
               </ListGroup.Item>
-              {product.countInStock > 0 && (
+
+              <ListGroup.Item>Price: ${product.price}</ListGroup.Item>
+
+              <ListGroup.Item>
+                Description: {product.description}{" "}
+              </ListGroup.Item>
+            </ListGroup>
+          </Col>
+
+          <Col md={3}>
+            <Card>
+              <ListGroup variant="flush">
                 <ListGroup.Item>
                   <Row>
-                    <Col>Qty</Col>
-                    <Col xs="auto" className="my-1">
-                      <Form.Control
-                        as="select"
-                        value={qty}
-                        onChange={(e) => setQty(e.target.value)}
-                      >
-                        {[...Array(product.countInStock).keys()].map((x) => (
-                          <option key={x + 1} value={x + 1}>
-                            {x + 1}
-                          </option>
-                        ))}
-                      </Form.Control>
+                    <Col>Price:</Col>
+                    <Col>
+                      <strong>${product.price}</strong>
                     </Col>
                   </Row>
                 </ListGroup.Item>
-              )}
-              <ListGroup.Item>
-                <Button onClick={addToCartHandler}
-                  className="w-100 py-2"
-                  type="button"
-                  disabled={product.countInStock === 0}
-                >
-                  Add to Cart
-                </Button>
-              </ListGroup.Item>
-            </ListGroup>
-          </Card>
-        </Col>
-      </Row>
-         
-        )
-      }
-       
+                <ListGroup.Item>
+                  <Row>
+                    <Col>Status:</Col>
+                    <Col>
+                      ${product.countInStock > 0 ? "In Stock" : "Out of Stock"}
+                    </Col>
+                  </Row>
+                </ListGroup.Item>
+                {product.countInStock > 0 && (
+                  <ListGroup.Item>
+                    <Row>
+                      <Col>Qty</Col>
+                      <Col xs="auto" className="my-1">
+                        <Form.Control
+                          as="select"
+                          value={qty}
+                          onChange={(e) => setQty(e.target.value)}
+                        >
+                          {[...Array(product.countInStock).keys()].map((x) => (
+                            <option key={x + 1} value={x + 1}>
+                              {x + 1}
+                            </option>
+                          ))}
+                        </Form.Control>
+                      </Col>
+                    </Row>
+                  </ListGroup.Item>
+                )}
+                <ListGroup.Item>
+                  <Button
+                    onClick={addToCartHandler}
+                    className="w-100 py-2"
+                    type="button"
+                    disabled={product.countInStock === 0}
+                  >
+                    Add to Cart
+                  </Button>
+                </ListGroup.Item>
+              </ListGroup>
+            </Card>
+          </Col>
+        </Row>
+      )}
     </div>
   );
 };
 
 export default ProductScreen;
-
 ```
 
 2. after testing the event handler is getting back to console, refacotor for add to cart
+
 ```js
-import {  useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useParams, useNavigate } from "react-router-dom";
-import { Row, Col, Image, ListGroup, Card, Button, Form } from "react-bootstrap";
+import {
+  Row,
+  Col,
+  Image,
+  ListGroup,
+  Card,
+  Button,
+  Form,
+} from "react-bootstrap";
 import Rating from "../components/Rating";
 import { listProductDetails } from "../actions/productActions";
 import Loader from "../components/Loader";
@@ -3294,8 +3425,8 @@ import Message from "../components/Message";
 // import products from "../products";
 const ProductScreen = () => {
   const { id } = useParams();
-  const navigate = useNavigate(); 
-  const [qty,setQty] = useState(1);
+  const navigate = useNavigate();
+  const [qty, setQty] = useState(1);
   const dispatch = useDispatch();
   const productDetails = useSelector((state) => state.productDetails);
   const { loading, error, product } = productDetails;
@@ -3306,118 +3437,118 @@ const ProductScreen = () => {
   const addToCartHandler = () => {
     // console.log("Add to cart", id, qty);
     navigate(`/cart/${id}?qty=${qty}`); // re-route to cart with id and qty
-  }
+  };
   return (
     <div>
-      <Link to="/" className="btn btn-light my-3"> Go Back
+      <Link to="/" className="btn btn-light my-3">
+        {" "}
+        Go Back
       </Link>
-      {
-        loading ? (
-          <Loader />
-        ) : error ? (
-          <Message variant="danger">{error}</Message>
-        ) : (
-      <Row>
-        <Col md={6}>
-          <Image src={product.image} alt={product.name} fluid />
-        </Col>
+      {loading ? (
+        <Loader />
+      ) : error ? (
+        <Message variant="danger">{error}</Message>
+      ) : (
+        <Row>
+          <Col md={6}>
+            <Image src={product.image} alt={product.name} fluid />
+          </Col>
 
-        <Col md={3}>
-          <ListGroup variant="flush">
-            <ListGroup.Item>
-              <h3>{product.name}</h3>
-            </ListGroup.Item>
-
-            <ListGroup.Item>
-              <Rating
-                value={product.rating}
-                text={`${product.numReviews} reviews`}
-                color={"#f8e825"}
-              />
-            </ListGroup.Item>
-
-            <ListGroup.Item>Price: ${product.price}</ListGroup.Item>
-
-            <ListGroup.Item>Description: {product.description} </ListGroup.Item>
-          </ListGroup>
-        </Col>
-
-        <Col md={3}>
-          <Card>
+          <Col md={3}>
             <ListGroup variant="flush">
               <ListGroup.Item>
-                <Row>
-                  <Col>Price:</Col>
-                  <Col>
-                    <strong>${product.price}</strong>
-                  </Col>
-                </Row>
+                <h3>{product.name}</h3>
               </ListGroup.Item>
+
               <ListGroup.Item>
-                <Row>
-                  <Col>Status:</Col>
-                  <Col>
-                    ${product.countInStock > 0 ? "In Stock" : "Out of Stock"}
-                  </Col>
-                </Row>
+                <Rating
+                  value={product.rating}
+                  text={`${product.numReviews} reviews`}
+                  color={"#f8e825"}
+                />
               </ListGroup.Item>
-              {product.countInStock > 0 && (
+
+              <ListGroup.Item>Price: ${product.price}</ListGroup.Item>
+
+              <ListGroup.Item>
+                Description: {product.description}{" "}
+              </ListGroup.Item>
+            </ListGroup>
+          </Col>
+
+          <Col md={3}>
+            <Card>
+              <ListGroup variant="flush">
                 <ListGroup.Item>
                   <Row>
-                    <Col>Qty</Col>
-                    <Col xs="auto" className="my-1">
-                      <Form.Control
-                        as="select"
-                        value={qty}
-                        onChange={(e) => setQty(e.target.value)}
-                      >
-                        {[...Array(product.countInStock).keys()].map((x) => (
-                          <option key={x + 1} value={x + 1}>
-                            {x + 1}
-                          </option>
-                        ))}
-                      </Form.Control>
+                    <Col>Price:</Col>
+                    <Col>
+                      <strong>${product.price}</strong>
                     </Col>
                   </Row>
                 </ListGroup.Item>
-              )}
-              <ListGroup.Item>
-                <Button onClick={addToCartHandler}
-                  className="w-100 py-2"
-                  type="button"
-                  disabled={product.countInStock === 0}
-                >
-                  Add to Cart
-                </Button>
-              </ListGroup.Item>
-            </ListGroup>
-          </Card>
-        </Col>
-      </Row>
-         
-        )
-      }
-       
+                <ListGroup.Item>
+                  <Row>
+                    <Col>Status:</Col>
+                    <Col>
+                      ${product.countInStock > 0 ? "In Stock" : "Out of Stock"}
+                    </Col>
+                  </Row>
+                </ListGroup.Item>
+                {product.countInStock > 0 && (
+                  <ListGroup.Item>
+                    <Row>
+                      <Col>Qty</Col>
+                      <Col xs="auto" className="my-1">
+                        <Form.Control
+                          as="select"
+                          value={qty}
+                          onChange={(e) => setQty(e.target.value)}
+                        >
+                          {[...Array(product.countInStock).keys()].map((x) => (
+                            <option key={x + 1} value={x + 1}>
+                              {x + 1}
+                            </option>
+                          ))}
+                        </Form.Control>
+                      </Col>
+                    </Row>
+                  </ListGroup.Item>
+                )}
+                <ListGroup.Item>
+                  <Button
+                    onClick={addToCartHandler}
+                    className="w-100 py-2"
+                    type="button"
+                    disabled={product.countInStock === 0}
+                  >
+                    Add to Cart
+                  </Button>
+                </ListGroup.Item>
+              </ListGroup>
+            </Card>
+          </Col>
+        </Row>
+      )}
     </div>
   );
 };
 
 export default ProductScreen;
-
 ```
 
 3. add screens/cartScreen.jsx as template for the time being
+
 ```jsx
-
 const CartScreen = () => {
-  return (
-    <div>CartScreen</div>
-  )
-}
+  return <div>CartScreen</div>;
+};
 
-export default CartScreen
+export default CartScreen;
 ```
+
 4. update App.js for cartScreen
+
 ```jsx
 import { Container } from "react-bootstrap";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
@@ -3435,7 +3566,8 @@ function App() {
           <Routes>
             <Route path="/" element={<HomeScreen />} />
             <Route path="/product/:id" element={<ProductScreen />} />
-            <Route path="/cart/:id?" element={<CartScreen />} />  // set the id as optional
+            <Route path="/cart/:id?" element={<CartScreen />} /> // set the id
+            as optional
           </Routes>
         </Container>
       </main>
@@ -3445,14 +3577,17 @@ function App() {
 }
 
 export default App;
-
 ```
+
 5. workon cart reducer cycle, add constants/cartConstants.js
+
 ```js
 export const CART_ADD_ITEM = "CART_ADD_ITEM";
 export const CART_REMOVE_ITEM = "CART_REMOVE_ITEM";
 ```
+
 6. add reducers/cartReducer.js
+
 ```js
 import { CART_ADD_ITEM, CART_REMOVE_ITEM } from "../constants/cartConstants";
 
@@ -3465,7 +3600,7 @@ export const cartReducer = (state = { cartItems: [] }, action) => {
         return {
           ...state,
           cartItems: state.cartItems.map((x) =>
-            x.product === existItem.product ? item : x
+            x.product === existItem.product ? item : x,
           ),
         };
       } else {
@@ -3482,12 +3617,13 @@ export const cartReducer = (state = { cartItems: [] }, action) => {
     default:
       return state;
   }
-}
+};
 ```
 
 ## **这个 Reducer 负责管理购物车：添加商品、更新数量、删除商品。**
 
 ---
+
 ```javascript
 // 导入动作类型
 import { CART_ADD_ITEM, CART_REMOVE_ITEM } from "../constants/cartConstants";
@@ -3496,7 +3632,6 @@ import { CART_ADD_ITEM, CART_REMOVE_ITEM } from "../constants/cartConstants";
 // state = { cartItems: [] } → 默认状态：购物车是空数组
 export const cartReducer = (state = { cartItems: [] }, action) => {
   switch (action.type) {
-
     // ==========================================
     // 【1】添加商品到购物车（核心逻辑）
     // ==========================================
@@ -3511,14 +3646,14 @@ export const cartReducer = (state = { cartItems: [] }, action) => {
       // 如果商品已存在 → 更新数量
       if (existItem) {
         return {
-          ...state,           // 保留原来的 state 不变
+          ...state, // 保留原来的 state 不变
           cartItems: state.cartItems.map((x) =>
             // 如果找到相同商品 → 替换成新的 item（数量更新）
             // 其他商品保持不变
-            x.product === existItem.product ? item : x
+            x.product === existItem.product ? item : x,
           ),
         };
-      } 
+      }
 
       // 如果商品不存在 → 直接追加到数组末尾
       else {
@@ -3547,27 +3682,31 @@ export const cartReducer = (state = { cartItems: [] }, action) => {
 ```
 
 7. register reducer inside store.js
+
 ```js
-import { configureStore } from '@reduxjs/toolkit';
-import { productReducer, productDetailsReducer} from "./reducers/productReducers"; // import
-import {cartReducer} from "./reducers/cartReducers";
+import { configureStore } from "@reduxjs/toolkit";
+import {
+  productReducer,
+  productDetailsReducer,
+} from "./reducers/productReducers"; // import
+import { cartReducer } from "./reducers/cartReducers";
 export const store = configureStore({
   reducer: {
-      productList: productReducer,
-      productDetails: productDetailsReducer,
-      cart: cartReducer,
+    productList: productReducer,
+    productDetails: productDetailsReducer,
+    cart: cartReducer,
   },
   // ✅ Thunk + DevTools ARE AUTO INCLUDED — NO SETUP NEEDED!
 });
 
 export default store;
-
 ```
 
 8. add actions/cartActions.js, save the cart data into localStorage
+
 ```js
 import axios from "axios";
-import { CART_ADD_ITEM ,CART_REMOVE_ITEM} from "../constants/cartConstants";
+import { CART_ADD_ITEM, CART_REMOVE_ITEM } from "../constants/cartConstants";
 
 export const addToCart = (id, qty) => async (dispatch, getState) => {
   const { data } = await axios.get(`/api/products/${id}/`);
@@ -3587,26 +3726,30 @@ export const addToCart = (id, qty) => async (dispatch, getState) => {
 
 export const removeFromCart = (id) => (dispatch, getState) => {
   dispatch({
-    type: CART_REMOVE_ITEM,                   
-    payload: id,                        
-  });                                       
-  localStorage.setItem("cartItems", JSON.stringify(getState().cart.cartItems));                     
-};      
+    type: CART_REMOVE_ITEM,
+    payload: id,
+  });
+  localStorage.setItem("cartItems", JSON.stringify(getState().cart.cartItems));
+};
 ```
 
-# **Super Clear Answer: Where does `getState` come from?**  
+# **Super Clear Answer: Where does `getState` come from?**
+
 I’ll explain this **100% clearly, simply, and visually** — you’ll know forever.
 
 ---
 
 # **Shortest Answer**
-## **`getState` is automatically given to you by Redux Thunk**  
+
+## **`getState` is automatically given to you by Redux Thunk**
+
 It is **built into the Redux async action function**  
 You **did NOT create it** — Redux Thunk **passes it to you automatically**.
 
 ---
 
 # Let’s look at your action:
+
 ```javascript
 export const addToCart = (id, qty) => async (dispatch, getState) => {
 ```
@@ -3616,19 +3759,23 @@ This is a **Redux Thunk async action**.
 When you write a thunk action (a function that returns a function),  
 **Redux Thunk will automatically pass 2 parameters to you**:
 
-1. **`dispatch`** → to send actions to reducer  
+1. **`dispatch`** → to send actions to reducer
 2. **`getState`** → to **read the current Redux store state**
 
 ---
 
 # So:
-### `dispatch` = send data to reducer  
-### `getState` = read current data from store  
+
+### `dispatch` = send data to reducer
+
+### `getState` = read current data from store
 
 ---
 
 # What does `getState()` return?
+
 It returns the **full Redux store state object**:
+
 ```javascript
 {
   productList: { ... },
@@ -3639,26 +3786,29 @@ It returns the **full Redux store state object**:
 ```
 
 So when you write:
+
 ```javascript
-getState().cart.cartItems
+getState().cart.cartItems;
 ```
+
 You are saying:
+
 > **“Give me the current cart items from the Redux store.”**
 
 ---
 
 # Why you need it:
+
 You use it to **save cart to localStorage**:
+
 ```javascript
-localStorage.setItem(
-  "cartItems",
-  JSON.stringify(getState().cart.cartItems)
-);
+localStorage.setItem("cartItems", JSON.stringify(getState().cart.cartItems));
 ```
 
 This makes the cart **persist even after refreshing the page**.
 
 # Visual Flow
+
 ```
 You dispatch addToCart()
         ↓
@@ -3674,13 +3824,17 @@ Save to localStorage
 ```
 
 9. back to the store.js
-```js
-import { configureStore } from '@reduxjs/toolkit';
-import { productReducer, productDetailsReducer} from "./reducers/productReducers"; // import
-import {cartReducer} from "./reducers/cartReducers";
 
-const cartItemsFromStorage = localStorage.getItem('cartItems')
-  ? JSON.parse(localStorage.getItem('cartItems'))
+```js
+import { configureStore } from "@reduxjs/toolkit";
+import {
+  productReducer,
+  productDetailsReducer,
+} from "./reducers/productReducers"; // import
+import { cartReducer } from "./reducers/cartReducers";
+
+const cartItemsFromStorage = localStorage.getItem("cartItems")
+  ? JSON.parse(localStorage.getItem("cartItems"))
   : [];
 
 // 👇 初始化 Redux 状态
@@ -3692,63 +3846,74 @@ const preloadedState = {
 
 export const store = configureStore({
   reducer: {
-      productList: productReducer,
-      productDetails: productDetailsReducer,
-      cart: cartReducer,
+    productList: productReducer,
+    productDetails: productDetailsReducer,
+    cart: cartReducer,
   },
   // ✅ Thunk + DevTools ARE AUTO INCLUDED — NO SETUP NEEDED!
-  preloadedState : preloadedState
+  preloadedState: preloadedState,
 });
 
 export default store;
-
 ```
+
 10. update cartscreen.js, functional part
+
 ```jsx
-import {Row, Col, Form, Button, ListGroup, Card, Image} from "react-bootstrap";
-import {Message} from "../components/Message";
+import {
+  Row,
+  Col,
+  Form,
+  Button,
+  ListGroup,
+  Card,
+  Image,
+} from "react-bootstrap";
+import { Message } from "../components/Message";
 import { useEffect } from "react";
-import {addToCart} from "../actions/cartActions";
+import { addToCart } from "../actions/cartActions";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useParams, useNavigate, useLocation } from "react-router-dom";
-const CartScreen = ( ) => {
-    const {id} = useParams();
-    const navigate = useNavigate();
-    const dispatch = useDispatch();
-    const location = useLocation();
-    const qty = loaction.search ? Number(loaction.search.split("=")[1]) : 1;
-    const cart = useSelector((state) => state.cart);
-    const {cartItems} = cart;
-    useEffect(() => {
-        if(id){
-            dispatch(addToCart(id, qty));
-        }
-    }, [dispatch, id, qty]);
-  return (
-    <div>CartScreen</div>
-  )
-}
+const CartScreen = () => {
+  const { id } = useParams();
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const location = useLocation();
+  const qty = loaction.search ? Number(loaction.search.split("=")[1]) : 1;
+  const cart = useSelector((state) => state.cart);
+  const { cartItems } = cart;
+  useEffect(() => {
+    if (id) {
+      dispatch(addToCart(id, qty));
+    }
+  }, [dispatch, id, qty]);
+  return <div>CartScreen</div>;
+};
 
-export default CartScreen
+export default CartScreen;
 ```
 
 ### **useLocation = 拿 URL 地址栏的数据**
 
 # 1. 什么是 `useLocation()`？
+
 **它只和 URL 有关！**
 
 例子：
 你跳转到：
+
 ```
 /cart/66123?qty=2
 ```
 
 `useLocation()` 会给你：
+
 - **pathname**: `/cart/66123`
 - **search**: `?qty=2`
 - **hash**: ...
 
 # 3. 你的购物车真正的流程（超级清晰）
+
 ```
 1. 商品页点击 ADD TO CART
    ↓
@@ -3764,125 +3929,139 @@ export default CartScreen
    ↓
 7. store.js 从 localStorage 读取初始状态
 ```
+
 11. add the UI part + event handlers
+
 ```jsx
-import {Row, Col, Form, Button, ListGroup, Card, Image} from "react-bootstrap";
+import {
+  Row,
+  Col,
+  Form,
+  Button,
+  ListGroup,
+  Card,
+  Image,
+} from "react-bootstrap";
 import Message from "../components/Message";
 import { useEffect } from "react";
-import {addToCart, removeFromCart} from "../actions/cartActions";
+import { addToCart, removeFromCart } from "../actions/cartActions";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useParams, useNavigate, useLocation } from "react-router-dom";
 const CartScreen = () => {
-    const {id} = useParams();
-    const navigate = useNavigate();
-    const dispatch = useDispatch();
-    const location = useLocation();
-    const qty = location.search ? Number(location.search.split("=")[1]) : 1;
-    const cart = useSelector((state) => state.cart);
-    const {cartItems} = cart;
-    useEffect(() => {
-        if(id){
-            dispatch(addToCart(id, qty));
-        }
-    }, [dispatch, id, qty]);
-    const removeFromCartHandler = (id) => {
-        dispatch(removeFromCart(id))
+  const { id } = useParams();
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const location = useLocation();
+  const qty = location.search ? Number(location.search.split("=")[1]) : 1;
+  const cart = useSelector((state) => state.cart);
+  const { cartItems } = cart;
+  useEffect(() => {
+    if (id) {
+      dispatch(addToCart(id, qty));
     }
+  }, [dispatch, id, qty]);
+  const removeFromCartHandler = (id) => {
+    dispatch(removeFromCart(id));
+  };
 
-    const checkoutHandler = () => {
-        navigate('/login?redirect=shipping')
-    }
+  const checkoutHandler = () => {
+    navigate("/login?redirect=shipping");
+  };
 
   return (
-  <Row>
-            <Col md={8}>
-                <h1>Shopping Cart</h1>
-                {cartItems.length === 0 ? (
-                    <Message variant='info'>
-                        Your cart is empty <Link to='/'>Go Back</Link>
-                    </Message>
-                ) : (
-                        <ListGroup variant='flush'>
-                            {cartItems.map(item => (
-                                <ListGroup.Item key={item.product}>
-                                    <Row>
-                                        <Col md={2}>
-                                            <Image src={item.image} alt={item.name} fluid rounded />
-                                        </Col>
-                                        <Col md={3}>
-                                            <Link to={`/product/${item.product}`}>{item.name}</Link>
-                                        </Col>
+    <Row>
+      <Col md={8}>
+        <h1>Shopping Cart</h1>
+        {cartItems.length === 0 ? (
+          <Message variant="info">
+            Your cart is empty <Link to="/">Go Back</Link>
+          </Message>
+        ) : (
+          <ListGroup variant="flush">
+            {cartItems.map((item) => (
+              <ListGroup.Item key={item.product}>
+                <Row>
+                  <Col md={2}>
+                    <Image src={item.image} alt={item.name} fluid rounded />
+                  </Col>
+                  <Col md={3}>
+                    <Link to={`/product/${item.product}`}>{item.name}</Link>
+                  </Col>
 
-                                        <Col md={2}>
-                                            ${item.price}
-                                        </Col>
+                  <Col md={2}>${item.price}</Col>
 
-                                        <Col md={3}>
-                                            <Form.Control
-                                                as="select"
-                                                value={item.qty}
-                                                onChange={(e) => dispatch(addToCart(item.product, Number(e.target.value)))}
-                                            >
-                                                {
+                  <Col md={3}>
+                    <Form.Control
+                      as="select"
+                      value={item.qty}
+                      onChange={(e) =>
+                        dispatch(
+                          addToCart(item.product, Number(e.target.value)),
+                        )
+                      }
+                    >
+                      {[...Array(item.countInStock).keys()].map((x) => (
+                        <option key={x + 1} value={x + 1}>
+                          {x + 1}
+                        </option>
+                      ))}
+                    </Form.Control>
+                  </Col>
 
-                                                    [...Array(item.countInStock).keys()].map((x) => (
-                                                        <option key={x + 1} value={x + 1}>
-                                                            {x + 1}
-                                                        </option>
-                                                    ))
-                                                }
+                  <Col md={1}>
+                    <Button
+                      type="button"
+                      variant="light"
+                      onClick={() => removeFromCartHandler(item.product)}
+                    >
+                      <i className="fas fa-trash"></i>
+                    </Button>
+                  </Col>
+                </Row>
+              </ListGroup.Item>
+            ))}
+          </ListGroup>
+        )}
+      </Col>
 
-                                            </Form.Control>
-                                        </Col>
+      <Col md={4}>
+        <Card>
+          <ListGroup variant="flush">
+            <ListGroup.Item>
+              <h2>
+                Subtotal ({cartItems.reduce((acc, item) => acc + item.qty, 0)})
+                items
+              </h2>
+              $
+              {cartItems
+                .reduce((acc, item) => acc + item.qty * item.price, 0)
+                .toFixed(2)}
+            </ListGroup.Item>
+          </ListGroup>
 
-                                        <Col md={1}>
-                                            <Button
-                                                type='button'
-                                                variant='light'
-                                                onClick={() => removeFromCartHandler(item.product)}
-                                            >
-                                                <i className='fas fa-trash'></i>
-                                            </Button>
-                                        </Col>
-                                    </Row>
-                                </ListGroup.Item>
-                            ))}
-                        </ListGroup>
-                    )}
-            </Col>
+          <ListGroup.Item>
+            <Button
+              type="button"
+              className="w-100 py-2"
+              disabled={cartItems.length === 0}
+              onClick={checkoutHandler}
+            >
+              Proceed To Checkout
+            </Button>
+          </ListGroup.Item>
+        </Card>
+      </Col>
+    </Row>
+  );
+};
 
-            <Col md={4}>
-                <Card>
-                    <ListGroup variant='flush'>
-                        <ListGroup.Item>
-                            <h2>Subtotal ({cartItems.reduce((acc, item) => acc + item.qty, 0)}) items</h2>
-                            ${cartItems.reduce((acc, item) => acc + item.qty * item.price, 0).toFixed(2)}
-                        </ListGroup.Item>
-                    </ListGroup>
-
-                    <ListGroup.Item>
-                        <Button
-                            type='button'
-                            className='w-100 py-2'
-                            disabled={cartItems.length === 0}
-                            onClick={checkoutHandler}
-                        >
-                            Proceed To Checkout
-                        </Button>
-                    </ListGroup.Item>
-
-
-                </Card>
-            </Col>
-        </Row>
-  )
-}
-
-export default CartScreen
+export default CartScreen;
 ```
+
 variant="flush" = 让 ListGroup 去掉默认边框、圆角、内边距，变成 “贴边、无边框” 的纯线条列表。
 
 12. minor update of index.css
+
 ```css
 main {
   min-height: 100vh;
@@ -3896,13 +4075,11 @@ h2 {
   padding: 0.5rem 0;
 }
 h3 {
-  
   padding: 1rem 0;
 }
 .rating span {
   margin: 0.1rem;
 }
-
 ```
 
 # Step 19 postman for authentication
@@ -3914,28 +4091,34 @@ h3 {
 # **Django REST Framework 认证方式：最全、最直白、最实用对比（电商/React 项目专用）**
 
 # **1. TokenAuthentication（最简单的 Token）**
+
 你最常见的：`Authorization: Token 93as93ksd32...`
 
 ### ✅ 优点
+
 - 超级简单，5 分钟集成
 - 适合小型项目、练习项目
 - 前后端分离支持
 
 ### ❌ 缺点
+
 - **Token 永久有效，除非手动删除**（不安全）
 - 无自动过期
 - 无刷新机制
 - 不适合大型、正式电商项目
 
 ### 🎯 适合谁？
+
 **初学、小项目、课程作业**
 
 ---
 
 # **2. JWT Authentication（最流行！Json Web Token）**
+
 分两种：`Simple JWT` / `JWT`
 
 ### ✅ 优点
+
 - **有过期时间（安全）**
 - **有 Refresh Token（刷新机制）**
 - 无状态，不占服务器存储
@@ -3943,44 +4126,54 @@ h3 {
 - **你的 React + Django 电商项目 最适合这个！**
 
 ### ❌ 缺点
+
 - 不能手动作废（除非用黑名单）
 - 比 Token 复杂一点点
 
 ### 🎯 适合谁？
+
 **90% 的正式前后端项目 → 包括你！**
 
 ---
 
 # **3. SessionAuthentication（浏览器 Cookie 认证）**
+
 Django 传统登录，用 cookie + session
 
 ### ✅ 优点
+
 - 安全
 - Django 自带
 - 适合模板项目（不前后端分离）
 
 ### ❌ 缺点
+
 - **前后端分离跨域问题巨多**
 - 不适合纯前端 React 项目
 - 移动端不友好
 
 ### 🎯 适合谁？
+
 **不适合你！** 只适合 Django 模板渲染。
 
 ---
 
 # **4. BasicAuthentication（基础认证）**
+
 直接把用户名密码 base64 编码放请求头
 
 ### ✅ 优点
+
 - 测试用很方便
 
 ### ❌ 缺点
+
 - **超级不安全**
 - 不能用于生产
 - 几乎不用
 
 ### 🎯 适合谁？
+
 **只用于本地测试**
 
 ---
@@ -3988,27 +4181,33 @@ Django 传统登录，用 cookie + session
 # **5. OAuth2 认证（第三方登录：Google / GitHub / 微信）**
 
 ### ✅ 优点
+
 - 用户登录方便
 - 大厂标准
 
 ### ❌ 缺点
+
 - 复杂
 - 需要第三方平台
 - 小型项目没必要
 
 ### 🎯 适合谁？
+
 **需要第三方登录的大型应用**
 
 ---
 
 # **6. Knox / DRF Token 增强版**
+
 比默认 Token 更安全，支持过期
 
 ### ✅ 优点
+
 - 比默认 Token 安全
 - 服务器存储 Token
 
 ### ❌ 缺点
+
 - 不如 JWT 流行
 
 ---
@@ -4016,9 +4215,11 @@ Django 传统登录，用 cookie + session
 ---
 
 # **🔥 终极结论：你的项目应该用哪个？**
+
 ## **你的项目：React + Django 电商 → 必须用 JWT（Simple JWT）**
 
 ### 为什么？
+
 1. **前后端分离最佳方案**
 2. **有过期时间，安全**
 3. **有刷新机制**
@@ -4028,17 +4229,19 @@ Django 传统登录，用 cookie + session
 ---
 
 # **最直白总结表（你存这张表就够）**
-| 认证方式 | 安全性 | 难度 | 前后端分离 | 适合你的项目？ |
-|---------|--------|------|------------|----------------|
-| Token | ⭐⭐ | 简单 | ✅ | ❌ 不推荐 |
-| **JWT** | ⭐⭐⭐⭐⭐ | 中等 | ✅ ✅ ✅ | **✅ 最佳选择** |
-| Session | ⭐⭐⭐⭐ | 简单 | ❌ | ❌ 不适合 |
-| Basic | ⭐ | 最简单 | ✅ | ❌ 测试用 |
-| OAuth2 | ⭐⭐⭐⭐⭐ | 难 | ✅ | ❌ 复杂 |
+
+| 认证方式 | 安全性     | 难度   | 前后端分离 | 适合你的项目？  |
+| -------- | ---------- | ------ | ---------- | --------------- |
+| Token    | ⭐⭐       | 简单   | ✅         | ❌ 不推荐       |
+| **JWT**  | ⭐⭐⭐⭐⭐ | 中等   | ✅ ✅ ✅   | **✅ 最佳选择** |
+| Session  | ⭐⭐⭐⭐   | 简单   | ❌         | ❌ 不适合       |
+| Basic    | ⭐         | 最简单 | ✅         | ❌ 测试用       |
+| OAuth2   | ⭐⭐⭐⭐⭐ | 难     | ✅         | ❌ 复杂         |
 
 1. `pip install djangorestframework-simplejwt`
 2. https://django-rest-framework-simplejwt.readthedocs.io/en/latest/getting_started.html
 3. follow the doc, add a section into settings.py
+
 ```py
 from pathlib import Path
 
@@ -4141,6 +4344,7 @@ CORS_ALLOW_ALL_ORIGINS=True
 ```
 
 4. base/urls.py
+
 ```py
 from django.urls import path
 from . import views
@@ -4152,9 +4356,11 @@ urlpatterns = [
     path("products/<str:pk>/", views.getProduct, name="product"),
 ]
 ```
+
 5. testing the urls
 6. want to change the token time by addition all the parameters into settings.py
 7. https://django-rest-framework-simplejwt.readthedocs.io/en/latest/settings.html
+
 ```py settings.py
 from pathlib import Path
 from datetime import timedelta
@@ -4304,6 +4510,7 @@ CORS_ALLOW_ALL_ORIGINS=True
 
 8. add more user info inside the token https://django-rest-framework-simplejwt.readthedocs.io/en/latest/customizing_token_claims.html
 9. base/views.py, copy 2 classes into views.py
+
 ```py views.py
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
@@ -4353,7 +4560,9 @@ def getProduct(request,pk):
     serializer = ProductSerializer(product, many=False)
     return Response(serializer.data)
 ```
+
 10. update the urls.py, using the new views
+
 ```py
 from django.urls import path
 from . import views
@@ -4365,8 +4574,10 @@ urlpatterns = [
     path("products/<str:pk>/", views.getProduct, name="product"),
 ]
 ```
+
 11. copy the access token and paste into jwt.io to decode the token
 12. refactor the validation of the token
+
 ```py
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
@@ -4412,25 +4623,29 @@ def getProduct(request,pk):
     return Response(serializer.data)
 ```
 
-
 This is **customizing SimpleJWT login** to **return more user info** (like `username` + `email`) **when you log in**.
 
 ## **1. Default SimpleJWT Login Response (NORMAL)**
+
 By default, when you log in, SimpleJWT only returns:
+
 ```json
 {
   "access": "eyJblabla...",
   "refresh": "eyJblabla..."
 }
 ```
+
 ❌ **No username, no email — only tokens.**
 
 ---
 
 ## **2. Your Code: CUSTOMIZE the Response**
+
 You are **extending the default JWT response** to add **user data**.
 
 ### Step 1: Custom Serializer
+
 ```python
 class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
     def validate(self, attrs):
@@ -4446,6 +4661,7 @@ class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
 ```
 
 ### Step 2: Custom View
+
 ```python
 class MyTokenObtainPairView(TokenObtainPairView):
     serializer_class = MyTokenObtainPairSerializer
@@ -4454,7 +4670,9 @@ class MyTokenObtainPairView(TokenObtainPairView):
 ---
 
 ## **3. What happens NOW when you log in?**
+
 You get **tokens + user info**:
+
 ```json
 {
   "access": "eyJblabla...",
@@ -4463,6 +4681,7 @@ You get **tokens + user info**:
   "email": "john@example.com"
 }
 ```
+
 ✅ **Perfect for your React frontend!**
 
 ---
@@ -4470,11 +4689,13 @@ You get **tokens + user info**:
 # **What does each part mean?**
 
 ### **1. `super().validate(attrs)`**
+
 - Runs the **original SimpleJWT validation**
 - Checks if username + password are correct
 - Returns the default token response: `{access: ..., refresh: ...}`
 
 ### **2. `self.user`**
+
 - After successful validation, SimpleJWT sets `self.user`
 - This is the **actual logged-in User object**
 - So you can grab:
@@ -4485,9 +4706,11 @@ You get **tokens + user info**:
   - etc.
 
 ### **3. Add fields to `data`**
+
 You just **add new keys** to the response.
 
 ### **4. `MyTokenObtainPairView`**
+
 - This is the login API endpoint
 - It uses **your custom serializer** instead of the default one
 - So your API now returns extra user fields
@@ -4495,7 +4718,9 @@ You just **add new keys** to the response.
 ---
 
 # **Why you need this (for React)**
+
 When a user logs in:
+
 1. You get the **token** (for authentication)
 2. You get **user info** (to show in Navbar: Welcome, john_doe!)
 3. No need for a SECOND API call to fetch user profile
@@ -4508,8 +4733,10 @@ class MyTokenObtainPairView(TokenObtainPairView):
 ```
 
 ## **Shortest Answer:**
+
 ### **This line tells Django:**
-> *“Use MY CUSTOM serializer instead of the default one for the login/token endpoint.”*
+
+> _“Use MY CUSTOM serializer instead of the default one for the login/token endpoint.”_
 
 It **does NOT create tokens** — it just **swaps the serializer**.
 
@@ -4518,7 +4745,9 @@ It **does NOT create tokens** — it just **swaps the serializer**.
 # Let’s go step by step
 
 ## 1. What is `TokenObtainPairView`?
+
 It’s the **built-in SimpleJWT view** that does 2 things:
+
 1. Accept username + password
 2. Return `access` and `refresh` tokens
 
@@ -4527,7 +4756,9 @@ It’s the **login API view**.
 ---
 
 ## 2. What does `MyTokenObtainPairView(TokenObtainPairView)` mean?
+
 It means:
+
 ### **“Make a NEW view that is IDENTICAL to TokenObtainPairView — but I will change one thing.”**
 
 This is called **inheriting / extending** the original view.
@@ -4535,26 +4766,32 @@ This is called **inheriting / extending** the original view.
 ---
 
 ## 3. What is `serializer_class = ...`?
+
 Every DRF view uses a **serializer** to:
+
 - Validate input (username/password)
 - Format output (the JSON response)
 
 By default:
+
 ```python
 serializer_class = TokenObtainPairSerializer
 ```
 
 **You override it:**
+
 ```python
 serializer_class = MyTokenObtainPairSerializer
 ```
 
 ### So now:
+
 The login view will use **your custom serializer** instead of the original.
 
 ---
 
 # What does your serializer do again?
+
 ```python
 class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
     def validate(self, attrs):
@@ -4565,6 +4802,7 @@ class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
 ```
 
 ### This serializer:
+
 1. **Validates login** (username & password)
 2. **Generates tokens** (the default behavior)
 3. **Adds extra fields** to the response
@@ -4573,6 +4811,7 @@ class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
 ---
 
 # #1 Full Flow (Exact Behavior)
+
 1. User sends username + password → `MyTokenObtainPairView`
 2. View uses **your serializer**
 3. Serializer:
@@ -4584,7 +4823,9 @@ class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
 ---
 
 # #2 Does it “get token value pair and serialize”?
+
 ### **YES — exactly!**
+
 But more precisely:
 
 1. It **generates the token pair** (via `super().validate()`)
@@ -4594,6 +4835,7 @@ But more precisely:
 # step 21 user serializer
 
 1. update base/serializers.py
+
 ```py
 from rest_framework import serializers
 from django.contrib.auth.models import User
@@ -4609,6 +4851,7 @@ class ProductSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 ```
+
 2. update view.py
 
 ```py
@@ -4664,6 +4907,7 @@ def getProduct(request,pk):
 ```
 
 3. update urls.py
+
 ```py
 from django.urls import path
 from . import views
@@ -4679,19 +4923,25 @@ urlpatterns = [
 ```
 
 # **最短结论：**
+
 ### **`request.user` = 当前**已经登录的用户对象**（Django User 模型）**
+
 ### 它**不是 ID，不是字符串，不是 token**
+
 ### 它是**完整的用户数据 + 方法**
 
 ---
 
 # **里面到底有什么？（全部字段）**
+
 当你用 **JWT 认证** 访问这个 API 时：
+
 ```python
 user = request.user
 ```
 
 `user` 里面包含 **Django User 模型的所有内容**：
+
 ```python
 user.id
 user.username  # 用户名
@@ -4711,11 +4961,13 @@ user.last_login # 最后登录
 ---
 
 # **它是怎么来的？（关键！）**
+
 你不需要传用户 ID  
 你不需要传用户名  
 **只需要传 JWT token**
 
 流程：
+
 1. React 发送请求 → Header 带 `Bearer <token>`
 2. SimpleJWT 认证类 **自动验证 token**
 3. 验证成功 → **把对应的用户放进 `request.user`**
@@ -4724,6 +4976,7 @@ user.last_login # 最后登录
 ---
 
 # **你的代码做了什么？**
+
 ```python
 @api_view(['GET'])
 def getUserProfile(request):
@@ -4733,6 +4986,7 @@ def getUserProfile(request):
 ```
 
 ### 返回结果示例：
+
 ```json
 {
   "id": 5,
@@ -4746,11 +5000,15 @@ def getUserProfile(request):
 ---
 
 # **最重要的 3 个事实（你必须记住）**
+
 ## 1. **`request.user` 永远是当前登录的用户**
+
 ## 2. **只有认证通过后才存在**（否则是匿名用户）
+
 ## 3. **它是 ORM 对象，你可以直接存、改、查**
 
 例如：
+
 ```python
 # 改邮箱
 request.user.email = "new@example.com"
@@ -4764,22 +5022,27 @@ request.user.save()
 ---
 
 # **超级白话总结**
+
 ### **`request.user` = 你登录后的“用户本人”**
+
 ### 谁发了有效的 Token，谁就是 `request.user`
 
 This is the **most important insight** for DRF + JWT authentication.
 
 ### 1. Normal Django (HTML/templates):
+
 **`request.user` = Session/Cookie Login User**
-*(Comes from browser cookie)*
+_(Comes from browser cookie)_
 
 ### 2. DRF with `@api_view` + JWT:
+
 **`request.user` = Token User**
-*(Comes from the `Authorization: Bearer <token>` header)*
+_(Comes from the `Authorization: Bearer <token>` header)_
 
 ---
 
 # **What This Really Means (The Magic)**
+
 When you use **SimpleJWT** with your API:
 
 1. The front-end (React) sends a request with a **Token**
@@ -4790,18 +5053,20 @@ When you use **SimpleJWT** with your API:
 6. **Your View/Function runs**
 
 ### So:
+
 **You don’t need to send `user_id` or `username`**
 **The Token itself tells the backend WHO IS MAKING THE REQUEST.**
 
 ---
 
 # **Proof in Your Code**
+
 ```python
 # This works BECAUSE JWT set request.user for you
 @api_view(['GET'])
 def getUserProfile(request):
     # 👇 This user is EXTRACTED FROM THE TOKEN, NOT from a form/URL
-    user = request.user 
+    user = request.user
     serializer = UserSerializer(user)
     return Response(serializer.data)
 ```
@@ -4809,17 +5074,22 @@ def getUserProfile(request):
 ---
 
 # **Final, Super-Clear Rule**
+
 ## **In your API (@api_view):**
+
 ### **`request.user` = The user identified by the JWT Token**
+
 ### **Whoever owns the Token is the `request.user`**
 
-## **Once you set up DRF + JWT:
+## \*\*Once you set up DRF + JWT:
+
 Django **NO LONGER checks sessions/cookies** for your API views.
-It **ONLY checks the Token** in the request header.**
+It **ONLY checks the Token** in the request header.\*\*
 
 ---
 
 # Here’s the proof (from your `settings.py`)
+
 ```python
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
@@ -4829,12 +5099,15 @@ REST_FRAMEWORK = {
 ```
 
 ### This setting tells Django REST Framework:
-### **“For ALL API requests — ONLY use JWT auth.
-### DO NOT use Session Auth. DO NOT look for cookies.”**
+
+### \*\*“For ALL API requests — ONLY use JWT auth.
+
+### DO NOT use Session Auth. DO NOT look for cookies.”\*\*
 
 ---
 
 # So the flow is now **exclusively token-based**:
+
 1. React sends:
    ```
    Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
@@ -4849,20 +5122,26 @@ REST_FRAMEWORK = {
 ---
 
 # **What if you still have login via Django Admin?**
+
 The Django Admin (`/admin/`) still uses sessions.
+
 ### **BUT YOUR API (@api_view) DOES NOT. It’s fully separated.**
 
 ---
 
 # **Your Final Understanding Is Perfect:**
+
 ### Normal Django → checks session/cookie
+
 ### DRF API + JWT → **only checks token**
+
 ### `request.user` → comes **from token, not session**
 
 4. in order to test the login, we need postman, not browser
-testing is good under postman
+   testing is good under postman
 
 5. refactor the serilaizer for custom user name
+
 ```py
 from rest_framework import serializers
 from django.contrib.auth.models import User
@@ -4891,7 +5170,9 @@ class ProductSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 ```
+
 6. refactor the serilaizer add refresh token
+
 ```py
 from rest_framework import serializers
 from django.contrib.auth.models import User
@@ -4931,35 +5212,42 @@ class ProductSerializer(serializers.ModelSerializer):
 ```
 
 ## **Access Token = Short‑lived → For accessing APIs**
+
 ## **Refresh Token = Long‑lived → For getting NEW Access Tokens**
 
 ## **Why two?**
-### **FOR SECURITY.**  
+
+### **FOR SECURITY.**
+
 If you only had **one token**, and it got stolen – hackers can use it **forever**.  
-With two tokens:  
-- **Access Token expires fast** (30 mins) → stolen token is useless quickly.  
+With two tokens:
+
+- **Access Token expires fast** (30 mins) → stolen token is useless quickly.
 - **Refresh Token stays safe** (only used to get new access tokens).
 
 ---
 
 # **2. Analogy: Hotel Key Card (You’ll Remember Forever)**
+
 Think of your app like a **hotel**:
 
-- **Access Token** = 🚪 **Room Key**  
-  - Opens your room, buys food, uses facilities  
-  - **Expires in 1-2 hours**  
+- **Access Token** = 🚪 **Room Key**
+  - Opens your room, buys food, uses facilities
+  - **Expires in 1-2 hours**
   - If lost → only usable for a short time
 
-- **Refresh Token** = 📝 **Hotel Reception Card**  
-  - **Only used to get a NEW room key**  
-  - Valid for **1 day or more**  
-  - Never used to open rooms directly  
+- **Refresh Token** = 📝 **Hotel Reception Card**
+  - **Only used to get a NEW room key**
+  - Valid for **1 day or more**
+  - Never used to open rooms directly
   - If lost → can’t enter rooms, only get new keys (easily revoked)
 
 ---
 
 # **3. Real Technical Explanation**
+
 ## **Access Token**
+
 - **Lifetime**: 30 minutes (short)
 - **Sent with EVERY API request**
 - Used to authenticate you for:
@@ -4969,6 +5257,7 @@ Think of your app like a **hotel**:
 - **If stolen**: Only usable for 30 mins → very secure
 
 ## **Refresh Token**
+
 - **Lifetime**: 1 day or 7 days (long)
 - **ONLY sent to ONE endpoint**:
   - `/api/token/refresh/`
@@ -4979,12 +5268,15 @@ Think of your app like a **hotel**:
 ---
 
 # **4. Why We CANNOT Use Only One Token**
+
 If you use **one long-lived token**:
+
 - If a hacker steals it → they can **use your account forever**
 - **No way to automatically expire it**
 - **HIGH RISK** (especially for e-commerce with payments)
 
 With **two tokens**:
+
 - Access token expires fast → limited damage
 - Refresh token is rarely used → safer
 - You can **rotate & blacklist** refresh tokens
@@ -4992,23 +5284,29 @@ With **two tokens**:
 ---
 
 # **5. How They Work Together (Your React + Django Flow)**
-### Step 1: User logs in  
+
+### Step 1: User logs in
+
 → Get **Access + Refresh Token**
 
 ### Step 2: Use Access Token for requests
+
 ```
 GET /api/profile
 Authorization: Bearer ACCESS_TOKEN
 ```
 
 ### Step 3: After 30 mins → Access Token EXPIRES
+
 → API returns `401 Unauthorized`
 
 ### Step 4: Auto login with Refresh Token
+
 ```
 POST /api/token/refresh/
 refresh: REFRESH_TOKEN
 ```
+
 → Get **NEW Access Token**
 
 ### Step 5: Continue using app – **user never logs out**
@@ -5016,6 +5314,7 @@ refresh: REFRESH_TOKEN
 ---
 
 # **6. SimpleJWT Default Settings (Your Settings)**
+
 ```python
 SIMPLE_JWT = {
     "ACCESS_TOKEN_LIFETIME": timedelta(minutes=30),  # SHORT
@@ -5026,15 +5325,18 @@ SIMPLE_JWT = {
 ---
 
 # **7. Final Summary (Must Memorize)**
-| Token | Purpose | Lives | Sent where | Risk |
-|---|---|---|---|---|
-| **Access Token** | Access APIs | 30 mins | Every request | Low (expires fast) |
-| **Refresh Token** | Get new Access Token | 1 day | Only 1 endpoint | Very low |
+
+| Token             | Purpose              | Lives   | Sent where      | Risk               |
+| ----------------- | -------------------- | ------- | --------------- | ------------------ |
+| **Access Token**  | Access APIs          | 30 mins | Every request   | Low (expires fast) |
+| **Refresh Token** | Get new Access Token | 1 day   | Only 1 endpoint | Very low           |
 
 ## **Why two tokens?**
+
 ### **MAXIMUM SECURITY for your e-commerce app.**
 
 7. because we add som many fields, we refactor the views.py to loop the serializer with token
+
 ```py
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
@@ -5150,9 +5452,10 @@ def getProduct(request,pk):
     return Response(serializer.data)
 ```
 
-
 ## Step 22 regidter user
+
 1. refactor view.py
+
 ```py
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
@@ -5189,7 +5492,7 @@ def registerUser(request):
         return Response(serializer.data)
     except:
         message = {'detail': 'User with this email already exists'}
-        return Response(message, status=status.HTTP_400_BAD_REQUEST)    
+        return Response(message, status=status.HTTP_400_BAD_REQUEST)
 
 
 @api_view(['GET'])
@@ -5218,7 +5521,9 @@ def getProduct(request,pk):
     return Response(serializer.data)
 
 ```
+
 2. update urls.py
+
 ```py
 from django.urls import path
 from . import views
@@ -5233,21 +5538,26 @@ urlpatterns = [
 ]
 
 ```
+
 ## step 23 django signals
+
 1. a demo of how to link 2 data fields together. Now, username is using email, if email is changed, username is also changed, so we use django signals to handle this
 
-
 ## **Django Signals = 触发器 / 事件监听**
+
 ### **当某个事情发生时 → 自动执行一段代码**
+
 在 Django 里：
+
 - **用户保存（save）时**
 - **用户删除（delete）时**
 - **订单创建时**
-→ **自动跑你写的函数**
+  → **自动跑你写的函数**
 
 这就是 **Signals（信号）**。
 
 # **Django 有哪些自带信号？**
+
 最常用的 4 个：
 
 1. **post_save** → 对象**保存后**触发
@@ -5258,15 +5568,18 @@ urlpatterns = [
 ---
 
 # **实际例子：用户注册 → 自动创建用户资料**
+
 你一定用得上！
 
 ## 场景：
+
 当 **User 表创建新用户**
 → **自动创建 Profile 资料表**
 
 不用手动写代码，信号自动执行！
 
 ## 代码长这样：
+
 ```python
 from django.db.models.signals import post_save
 from django.contrib.auth.models import User
@@ -5283,6 +5596,7 @@ def create_profile(sender, instance, created, **kwargs):
 ```
 
 ## 解释每个参数：
+
 - **sender** → 谁发送的信号（这里是 User）
 - **instance** → 刚刚被保存的那个用户对象
 - **created** → 是否是新创建的（True/False）
@@ -5292,33 +5606,40 @@ def create_profile(sender, instance, created, **kwargs):
 # **信号到底怎么工作？（流程）**
 
 ## 1. 发生动作
+
 ```
 user = User.objects.create_user(...)
 user.save()
 ```
 
 ## 2. Django 自动发出信号
+
 ```
 post_save 信号发出！
 ```
 
 ## 3. 你的 @receiver 收到信号
+
 ```
 @receiver(post_save, sender=User)
 ```
 
 ## 4. 自动执行函数
+
 ```
 Profile.objects.create(user=instance)
 ```
 
 ## 5. 完成！
+
 你**完全没有手动调用**这个函数，它**自动跑了**。
 
 ---
 
 # **你什么时候会用到信号？**
+
 这些场景 **100% 用信号**：
+
 - 用户注册 → 创建用户资料
 - 用户下单 → 减库存
 - 用户评论 → 发通知
@@ -5330,17 +5651,18 @@ Profile.objects.create(user=instance)
 # **优点 vs 缺点**
 
 ## 优点
+
 ✅ 代码解耦
 ✅ 自动执行，不用手动调用
 ✅ 逻辑清晰
 
 ## 缺点
+
 ⚠️ 太多信号会让流程变复杂
 ⚠️ 不容易调试
 
-
-
 2. create signals.py
+
 ```py
 from django.db.models.signals import pre_save
 from django.contrib.auth.models import User
@@ -5348,13 +5670,14 @@ from django.contrib.auth.models import User
 def updateUser(sender,instance, **kwargs):
     user = instance
     if user.email != '':
-        user.username = user.email  
+        user.username = user.email
 pre_save.connect(updateUser, sender=User)
 
 
 ```
 
 3. update the base/app.py
+
 ```py
 from django.apps import AppConfig
 
@@ -5366,7 +5689,9 @@ class BaseConfig(AppConfig):
 ```
 
 ## step 24 refactor base into sub-folders
+
 1. refactor config/urls.py
+
 ```py
 
 from django.contrib import admin
@@ -5379,12 +5704,14 @@ urlpatterns = [
     path('api/users', include('base.urls.user_urls')),
     path('api/orders', include('base.urls.order_urls')),
     path('admin/', admin.site.urls),
-    
+
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 ```
+
 2. create views folder under base and create 3 files, products.py, users.py, orders.py, copy users part into users.py update the . to base.
+
 ```py users.py
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
@@ -5427,7 +5754,7 @@ def registerUser(request):
         return Response(serializer.data)
     except:
         message = {'detail': 'User with this email already exists'}
-        return Response(message, status=status.HTTP_400_BAD_REQUEST)    
+        return Response(message, status=status.HTTP_400_BAD_REQUEST)
 
 
 @api_view(['GET'])
@@ -5447,6 +5774,7 @@ def getUsers(request):
 ```
 
 3. update products.py
+
 ```py products.py
 
 from rest_framework.decorators import api_view
@@ -5468,8 +5796,10 @@ def getProduct(request,pk):
     return Response(serializer.data)
 
 ```
+
 4. delete the base/views.py
 5. create a urls.py folder under base, create 3 files, product_urls.py, user_urls.py, order_urls.py, copy users part into users.py update the . to base.
+
 ```py user_urls.py
 from django.urls import path
 from base.views import user_views as views
@@ -5486,7 +5816,9 @@ urlpatterns = [
 ]
 
 ```
+
 6. product_urls.py
+
 ```py
 from django.urls import path
 from base.views import product_views as views
@@ -5495,10 +5827,11 @@ urlpatterns = [
 
     path('', views.getProducts, name="products"),
     path('<str:pk>/', views.getProduct, name="product"),
-   
+
 ]
 
 ```
+
 7. delete base/urls.py
 
 ## step 25 frontend user auth
@@ -5509,6 +5842,7 @@ urlpatterns = [
 # **Super Clear Answer: `message` vs `detail` in Your API Error**
 
 ### **`message` = default JavaScript/Axios error**
+
 ### **`detail` = DJANGO REST FRAMEWORK’S standard error field**
 
 Your backend **always sends errors in a field called `detail`**, not `message`.
@@ -5519,12 +5853,15 @@ That’s why you **must use `error.response.data.detail`** in your frontend.
 # #2 Let’s Visualize This
 
 ## When Django throws an error (like 401, 404, 400)
+
 It **always returns JSON like this**: (cross check with postman )
+
 ```json
 {
   "detail": "Not found"
 }
 ```
+
 ```json
 {
   "detail": "Authentication credentials were not provided"
@@ -5536,7 +5873,9 @@ It **always returns JSON like this**: (cross check with postman )
 ---
 
 ## If you use `error.response.data.message`
+
 You’re looking for a field that **does NOT exist**:
+
 ```json
 {
   "message": "This does NOT exist in Django → YOU GET UNDEFINED"
@@ -5548,10 +5887,11 @@ You’re looking for a field that **does NOT exist**:
 ---
 
 # #3 Full Explanation of Your Code
+
 ```javascript
 payload: error.response && error.response.data.detail
-? error.response.data.detail
-: error.message
+  ? error.response.data.detail
+  : error.message;
 ```
 
 ### This code is **SAFE & SMART** — it does 2 things:
@@ -5567,17 +5907,23 @@ payload: error.response && error.response.data.detail
 # #4 Real Examples
 
 ## Case 1: Django returns 404 Not Found
+
 Backend sends:
+
 ```json
 { "detail": "Product not found" }
 ```
+
 Frontend uses:
+
 ```javascript
 error.response.data.detail → "Product not found" ✅
 ```
 
 ## Case 2: Internet is broken
+
 Axios auto-generates:
+
 ```javascript
 error.message → "Network Error" ✅
 ```
@@ -5585,6 +5931,7 @@ error.message → "Network Error" ✅
 ---
 
 # #5 Final Refactored Code (Clean & Correct)
+
 Your code is **already perfect** — just clean it up a bit:
 
 ```javascript
@@ -5626,61 +5973,62 @@ export const listProductDetails = (id) => async (dispatch) => {
 ```
 
 ### I used modern optional chaining:
+
 `error.response?.data?.detail`
 = same logic, cleaner code
 
-
 3. create constnants/userConstants.js
-```js
-export const USER_LOGIN_REQUEST = 'USER_LOGIN_REQUEST'
-export const USER_LOGIN_SUCCESS = 'USER_LOGIN_SUCCESS'
-export const USER_LOGIN_FAIL = 'USER_LOGIN_FAIL'
 
-export const USER_LOGOUT = 'USER_LOGOUT'
+```js
+export const USER_LOGIN_REQUEST = "USER_LOGIN_REQUEST";
+export const USER_LOGIN_SUCCESS = "USER_LOGIN_SUCCESS";
+export const USER_LOGIN_FAIL = "USER_LOGIN_FAIL";
+
+export const USER_LOGOUT = "USER_LOGOUT";
 ```
 
 4. create reducers/userReducers.js
+
 ```js
 import {
-    USER_LOGIN_REQUEST,
-    USER_LOGIN_SUCCESS,
-    USER_LOGIN_FAIL,
-
-    USER_LOGOUT,
-
-
-} from '../constants/userConstants'
-
+  USER_LOGIN_REQUEST,
+  USER_LOGIN_SUCCESS,
+  USER_LOGIN_FAIL,
+  USER_LOGOUT,
+} from "../constants/userConstants";
 
 export const userLoginReducer = (state = {}, action) => {
-    switch (action.type) {
-        case USER_LOGIN_REQUEST:
-            return { loading: true }
+  switch (action.type) {
+    case USER_LOGIN_REQUEST:
+      return { loading: true };
 
-        case USER_LOGIN_SUCCESS:
-            return { loading: false, userInfo: action.payload }
+    case USER_LOGIN_SUCCESS:
+      return { loading: false, userInfo: action.payload };
 
-        case USER_LOGIN_FAIL:
-            return { loading: false, error: action.payload }
+    case USER_LOGIN_FAIL:
+      return { loading: false, error: action.payload };
 
-        case USER_LOGOUT:
-            return {}
+    case USER_LOGOUT:
+      return {};
 
-        default:
-            return state
-    }
-}
-
-
+    default:
+      return state;
+  }
+};
 ```
+
 5. register the reducers inside store.js
+
 ```js
-import { configureStore } from '@reduxjs/toolkit';
-import { productReducer, productDetailsReducer} from "./reducers/productReducers"; // import
-import {cartReducer} from "./reducers/cartReducers";
-import { userLoginReducer } from './reducers/userReducers';
-const cartItemsFromStorage = localStorage.getItem('cartItems')
-  ? JSON.parse(localStorage.getItem('cartItems'))
+import { configureStore } from "@reduxjs/toolkit";
+import {
+  productReducer,
+  productDetailsReducer,
+} from "./reducers/productReducers"; // import
+import { cartReducer } from "./reducers/cartReducers";
+import { userLoginReducer } from "./reducers/userReducers";
+const cartItemsFromStorage = localStorage.getItem("cartItems")
+  ? JSON.parse(localStorage.getItem("cartItems"))
   : [];
 
 // 👇 初始化 Redux 状态
@@ -5692,81 +6040,81 @@ const preloadedState = {
 
 export const store = configureStore({
   reducer: {
-      productList: productReducer,
-      productDetails: productDetailsReducer,
-      cart: cartReducer,
-      userLogin: userLoginReducer,
-
+    productList: productReducer,
+    productDetails: productDetailsReducer,
+    cart: cartReducer,
+    userLogin: userLoginReducer,
   },
   // ✅ Thunk + DevTools ARE AUTO INCLUDED — NO SETUP NEEDED!
-  preloadedState : preloadedState
+  preloadedState: preloadedState,
 });
 
 export default store;
-
 ```
+
 6. create actions/userActions.js
+
 ```js
-import axios from 'axios'
+import axios from "axios";
 import {
-    USER_LOGIN_REQUEST,
-    USER_LOGIN_SUCCESS,
-    USER_LOGIN_FAIL,
-
-    USER_LOGOUT,
-
-} from '../constants/userConstants'
-
+  USER_LOGIN_REQUEST,
+  USER_LOGIN_SUCCESS,
+  USER_LOGIN_FAIL,
+  USER_LOGOUT,
+} from "../constants/userConstants";
 
 export const login = (email, password) => async (dispatch) => {
-    try {
-        dispatch({
-            type: USER_LOGIN_REQUEST
-        })
+  try {
+    dispatch({
+      type: USER_LOGIN_REQUEST,
+    });
 
-        const config = {
-            headers: {
-                'Content-type': 'application/json'
-            }
-        }
+    const config = {
+      headers: {
+        "Content-type": "application/json",
+      },
+    };
 
-        const { data } = await axios.post(
-            '/api/users/login/',
-            { 'username': email, 'password': password },
-            config
-        )
+    const { data } = await axios.post(
+      "/api/users/login/",
+      { username: email, password: password },
+      config,
+    );
 
-        dispatch({
-            type: USER_LOGIN_SUCCESS,
-            payload: data
-        })
+    dispatch({
+      type: USER_LOGIN_SUCCESS,
+      payload: data,
+    });
 
-        localStorage.setItem('userInfo', JSON.stringify(data))   // add into localStorage
-
-    } catch (error) {
-        dispatch({
-            type: USER_LOGIN_FAIL,
-            payload: error.response && error.response.data.detail
-                ? error.response.data.detail
-                : error.message,
-        })
-    }
-}
-
-
+    localStorage.setItem("userInfo", JSON.stringify(data)); // add into localStorage
+  } catch (error) {
+    dispatch({
+      type: USER_LOGIN_FAIL,
+      payload:
+        error.response && error.response.data.detail
+          ? error.response.data.detail
+          : error.message,
+    });
+  }
+};
 ```
-7. back to the store add the localStorage data check
-```js store.js
-import { configureStore } from '@reduxjs/toolkit';
-import { productReducer, productDetailsReducer} from "./reducers/productReducers"; // import
-import {cartReducer} from "./reducers/cartReducers";
-import { userLoginReducer } from './reducers/userReducers';
 
-const cartItemsFromStorage = localStorage.getItem('cartItems')
-  ? JSON.parse(localStorage.getItem('cartItems'))
+7. back to the store add the localStorage data check
+
+```js store.js
+import { configureStore } from "@reduxjs/toolkit";
+import {
+  productReducer,
+  productDetailsReducer,
+} from "./reducers/productReducers"; // import
+import { cartReducer } from "./reducers/cartReducers";
+import { userLoginReducer } from "./reducers/userReducers";
+
+const cartItemsFromStorage = localStorage.getItem("cartItems")
+  ? JSON.parse(localStorage.getItem("cartItems"))
   : [];
-const userInfoFromStorage = localStorage.getItem('userInfo')  // check the localStorage
-  ? JSON.parse(localStorage.getItem('userInfo'))
+const userInfoFromStorage = localStorage.getItem("userInfo") // check the localStorage
+  ? JSON.parse(localStorage.getItem("userInfo"))
   : null;
 // 👇 初始化 Redux 状态
 const preloadedState = {
@@ -5775,132 +6123,129 @@ const preloadedState = {
   },
   userLogin: {
     userInfo: userInfoFromStorage, // 给 userLogin reducer 赋值
-  }
+  },
 };
 
 export const store = configureStore({
   reducer: {
-      productList: productReducer,
-      productDetails: productDetailsReducer,
-      cart: cartReducer,
-      userLogin: userLoginReducer,
-
+    productList: productReducer,
+    productDetails: productDetailsReducer,
+    cart: cartReducer,
+    userLogin: userLoginReducer,
   },
   // ✅ Thunk + DevTools ARE AUTO INCLUDED — NO SETUP NEEDED!
-  preloadedState : preloadedState
+  preloadedState: preloadedState,
 });
 
 export default store;
-
 ```
 
 8. components/formContainer.jsx
+
 ```jsx
-import React from 'react'
-import { Container, Row, Col } from 'react-bootstrap'
+import React from "react";
+import { Container, Row, Col } from "react-bootstrap";
 
 function FormContainer({ children }) {
-    return (
-        <Container>
-            <Row className="justify-content-md-center">
-                <Col xs={12} md={6}>
-                    {children}
-                </Col>
-            </Row>
-        </Container>
-    )
+  return (
+    <Container>
+      <Row className="justify-content-md-center">
+        <Col xs={12} md={6}>
+          {children}
+        </Col>
+      </Row>
+    </Container>
+  );
 }
 
-export default FormContainer
+export default FormContainer;
 ```
+
 9.  create screens/loginScreen.jsx, declare variables, create jsx then add the useeffect
+
 ```jsx
-import React, { useState, useEffect } from 'react'
-import { Link, useNavigate, useLocation } from 'react-router-dom'
-import { Form, Button, Row, Col } from 'react-bootstrap'
-import { useDispatch, useSelector } from 'react-redux'
-import Loader from '../components/Loader'
-import Message from '../components/Message'
-import FormContainer from '../components/FormContainer'
-import { login } from '../actions/userActions'
+import React, { useState, useEffect } from "react";
+import { Link, useNavigate, useLocation } from "react-router-dom";
+import { Form, Button, Row, Col } from "react-bootstrap";
+import { useDispatch, useSelector } from "react-redux";
+import Loader from "../components/Loader";
+import Message from "../components/Message";
+import FormContainer from "../components/FormContainer";
+import { login } from "../actions/userActions";
 
 function LoginScreen() {
-    const navigate = useNavigate();
-    const location = useLocation();
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
+  const navigate = useNavigate();
+  const location = useLocation();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
-    const dispatch = useDispatch();
+  const dispatch = useDispatch();
 
-    const redirect = location.search ? location.search.split('=')[1] : '/';  // this is a bug need to fix below, else error in shipping
-    const redirect = new URLSearchParams(location.search).get('redirect') || '/';
+  const redirect = location.search ? location.search.split("=")[1] : "/"; // this is a bug need to fix below, else error in shipping
+  const redirect = new URLSearchParams(location.search).get("redirect") || "/";
 
-    const userLogin = useSelector(state => state.userLogin);
-    const { error, loading, userInfo } = userLogin;
+  const userLogin = useSelector((state) => state.userLogin);
+  const { error, loading, userInfo } = userLogin;
 
-    useEffect(() => {
-        if (userInfo) {
-            navigate(redirect)
-        }
-    }, [navigate, userInfo, redirect])
-
-    const submitHandler = (e) => {
-        e.preventDefault()
-        dispatch(login(email, password))
+  useEffect(() => {
+    if (userInfo) {
+      navigate(redirect);
     }
+  }, [navigate, userInfo, redirect]);
 
-    return (
-        <FormContainer>
-            <h1>Sign In</h1>
-            {error && <Message variant='danger'>{error}</Message>}
-            {loading && <Loader />}
-            <Form onSubmit={submitHandler}>
+  const submitHandler = (e) => {
+    e.preventDefault();
+    dispatch(login(email, password));
+  };
 
-                <Form.Group controlId='email' className='mb-3'>
-                    <Form.Label>Email Address</Form.Label>
-                    <Form.Control
-                        type='email'
-                        placeholder='Enter Email'
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                    >
-                    </Form.Control>
-                </Form.Group>
+  return (
+    <FormContainer>
+      <h1>Sign In</h1>
+      {error && <Message variant="danger">{error}</Message>}
+      {loading && <Loader />}
+      <Form onSubmit={submitHandler}>
+        <Form.Group controlId="email" className="mb-3">
+          <Form.Label>Email Address</Form.Label>
+          <Form.Control
+            type="email"
+            placeholder="Enter Email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+          ></Form.Control>
+        </Form.Group>
 
+        <Form.Group controlId="password" className="mb-4">
+          <Form.Label>Password</Form.Label>
+          <Form.Control
+            type="password"
+            placeholder="Enter Password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+          ></Form.Control>
+        </Form.Group>
 
-                <Form.Group controlId='password' className='mb-4'>
-                    <Form.Label>Password</Form.Label>
-                    <Form.Control
-                        type='password'
-                        placeholder='Enter Password'
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                    >
-                    </Form.Control>
-                </Form.Group>
+        <Button type="submit" variant="primary">
+          Sign In
+        </Button>
+      </Form>
 
-                <Button type='submit' variant='primary'>
-                    Sign In
-                </Button>
-            </Form>
-
-            <Row className='py-3'>
-                <Col>
-                    New Customer? <Link
-                        to={redirect ? `/register?redirect=${redirect}` : '/register'}>
-                        Register
-                        </Link>
-                </Col>
-            </Row>
-
-        </FormContainer>
-    )
+      <Row className="py-3">
+        <Col>
+          New Customer?{" "}
+          <Link to={redirect ? `/register?redirect=${redirect}` : "/register"}>
+            Register
+          </Link>
+        </Col>
+      </Row>
+    </FormContainer>
+  );
 }
 
-export default LoginScreen
+export default LoginScreen;
 ```
 
 10. app.js add the loginscreen
+
 ```js
 import { Container } from "react-bootstrap";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
@@ -5930,23 +6275,23 @@ function App() {
 }
 
 export default App;
-
 ```
-
 
 ## step 26 user in navbar and logout
+
 1. add dispatch inside the header.jsx
+
 ```jsx
 import { Container, Navbar, Nav, NavDropdown } from "react-bootstrap";
 import { LinkContainer } from "react-router-bootstrap";
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch, useSelector } from "react-redux";
 const Header = () => {
-   const userLogin = useSelector(state => state.userLogin)
-    const { userInfo } = userLogin
-    const dispatch = useDispatch()
-   const logoutHandler = () => {
-        console.log('logout')
-    }
+  const userLogin = useSelector((state) => state.userLogin);
+  const { userInfo } = userLogin;
+  const dispatch = useDispatch();
+  const logoutHandler = () => {
+    console.log("logout");
+  };
 
   return (
     <header>
@@ -5964,17 +6309,21 @@ const Header = () => {
                 </Nav.Link>
               </LinkContainer>
               {userInfo ? (
-                <NavDropdown title={userInfo.name} id='username'>
-                    <LinkContainer to='/profile'>
-                        <NavDropdown.Item>Profile</NavDropdown.Item>
-                    </LinkContainer>
-                    <NavDropdown.Item onClick={logoutHandler} >Logout</NavDropdown.Item>
+                <NavDropdown title={userInfo.name} id="username">
+                  <LinkContainer to="/profile">
+                    <NavDropdown.Item>Profile</NavDropdown.Item>
+                  </LinkContainer>
+                  <NavDropdown.Item onClick={logoutHandler}>
+                    Logout
+                  </NavDropdown.Item>
                 </NavDropdown>
               ) : (
-                    <LinkContainer to='/login'>
-                        <Nav.Link><i className="fas fa-user"></i>Login</Nav.Link>
-                    </LinkContainer>
-                )}
+                <LinkContainer to="/login">
+                  <Nav.Link>
+                    <i className="fas fa-user"></i>Login
+                  </Nav.Link>
+                </LinkContainer>
+              )}
             </Nav>
           </Navbar.Collapse>
         </Container>
@@ -5984,76 +6333,74 @@ const Header = () => {
 };
 
 export default Header;
-
 ```
+
 2. for the logout, add the logout inside userAction.js
+
 ```js
-import axios from 'axios'
+import axios from "axios";
 import {
-    USER_LOGIN_REQUEST,
-    USER_LOGIN_SUCCESS,
-    USER_LOGIN_FAIL,
-
-    USER_LOGOUT,
-
-} from '../constants/userConstants'
-
+  USER_LOGIN_REQUEST,
+  USER_LOGIN_SUCCESS,
+  USER_LOGIN_FAIL,
+  USER_LOGOUT,
+} from "../constants/userConstants";
 
 export const login = (email, password) => async (dispatch) => {
-    try {
-        dispatch({
-            type: USER_LOGIN_REQUEST
-        })
+  try {
+    dispatch({
+      type: USER_LOGIN_REQUEST,
+    });
 
-        const config = {
-            headers: {
-                'Content-type': 'application/json'
-            }
-        }
+    const config = {
+      headers: {
+        "Content-type": "application/json",
+      },
+    };
 
-        const { data } = await axios.post(
-            '/api/users/login/',
-            { 'username': email, 'password': password },
-            config
-        )
+    const { data } = await axios.post(
+      "/api/users/login/",
+      { username: email, password: password },
+      config,
+    );
 
-        dispatch({
-            type: USER_LOGIN_SUCCESS,
-            payload: data
-        })
+    dispatch({
+      type: USER_LOGIN_SUCCESS,
+      payload: data,
+    });
 
-        localStorage.setItem('userInfo', JSON.stringify(data))
-
-    } catch (error) {
-        dispatch({
-            type: USER_LOGIN_FAIL,
-            payload: error.response && error.response.data.detail
-                ? error.response.data.detail
-                : error.message,
-        })
-    }
-}
+    localStorage.setItem("userInfo", JSON.stringify(data));
+  } catch (error) {
+    dispatch({
+      type: USER_LOGIN_FAIL,
+      payload:
+        error.response && error.response.data.detail
+          ? error.response.data.detail
+          : error.message,
+    });
+  }
+};
 
 export const logout = () => (dispatch) => {
-    localStorage.removeItem('userInfo')
-    dispatch({ type: USER_LOGOUT })
-   
-}
-
+  localStorage.removeItem("userInfo");
+  dispatch({ type: USER_LOGOUT });
+};
 ```
+
 3. back to Header.jsx
+
 ```jsx
 import { Container, Navbar, Nav, NavDropdown } from "react-bootstrap";
 import { LinkContainer } from "react-router-bootstrap";
-import { useDispatch, useSelector } from 'react-redux';
-import { logout } from '../actions/userActions'
+import { useDispatch, useSelector } from "react-redux";
+import { logout } from "../actions/userActions";
 const Header = () => {
-   const userLogin = useSelector(state => state.userLogin)
-    const { userInfo } = userLogin
-    const dispatch = useDispatch()
-   const logoutHandler = () => {
-        dispatch(logout())
-    }
+  const userLogin = useSelector((state) => state.userLogin);
+  const { userInfo } = userLogin;
+  const dispatch = useDispatch();
+  const logoutHandler = () => {
+    dispatch(logout());
+  };
 
   return (
     <header>
@@ -6071,17 +6418,21 @@ const Header = () => {
                 </Nav.Link>
               </LinkContainer>
               {userInfo ? (
-                <NavDropdown title={userInfo.name} id='username'>
-                    <LinkContainer to='/profile'>
-                        <NavDropdown.Item>Profile</NavDropdown.Item>
-                    </LinkContainer>
-                    <NavDropdown.Item onClick={logoutHandler} >Logout</NavDropdown.Item>
+                <NavDropdown title={userInfo.name} id="username">
+                  <LinkContainer to="/profile">
+                    <NavDropdown.Item>Profile</NavDropdown.Item>
+                  </LinkContainer>
+                  <NavDropdown.Item onClick={logoutHandler}>
+                    Logout
+                  </NavDropdown.Item>
                 </NavDropdown>
               ) : (
-                    <LinkContainer to='/login'>
-                        <Nav.Link><i className="fas fa-user"></i>Login</Nav.Link>
-                    </LinkContainer>
-                )}
+                <LinkContainer to="/login">
+                  <Nav.Link>
+                    <i className="fas fa-user"></i>Login
+                  </Nav.Link>
+                </LinkContainer>
+              )}
             </Nav>
           </Navbar.Collapse>
         </Container>
@@ -6091,89 +6442,91 @@ const Header = () => {
 };
 
 export default Header;
-
 ```
 
 ## step 27 register page
+
 1. add constants inside userConstants for register
+
 ```js
-export const USER_LOGIN_REQUEST = 'USER_LOGIN_REQUEST'
-export const USER_LOGIN_SUCCESS = 'USER_LOGIN_SUCCESS'
-export const USER_LOGIN_FAIL = 'USER_LOGIN_FAIL'
+export const USER_LOGIN_REQUEST = "USER_LOGIN_REQUEST";
+export const USER_LOGIN_SUCCESS = "USER_LOGIN_SUCCESS";
+export const USER_LOGIN_FAIL = "USER_LOGIN_FAIL";
 
-export const USER_LOGOUT = 'USER_LOGOUT'
+export const USER_LOGOUT = "USER_LOGOUT";
 
-export const USER_REGISTER_REQUEST = 'USER_REGISTER_REQUEST'
-export const USER_REGISTER_SUCCESS = 'USER_REGISTER_SUCCESS'
-export const USER_REGISTER_FAIL = 'USER_REGISTER_FAIL'
-
+export const USER_REGISTER_REQUEST = "USER_REGISTER_REQUEST";
+export const USER_REGISTER_SUCCESS = "USER_REGISTER_SUCCESS";
+export const USER_REGISTER_FAIL = "USER_REGISTER_FAIL";
 ```
+
 2. update reducers/userReducers.js
+
 ```js
 import {
-    USER_LOGIN_REQUEST,
-    USER_LOGIN_SUCCESS,
-    USER_LOGIN_FAIL,
-
-    USER_LOGOUT,
-    USER_REGISTER_REQUEST,
-    USER_REGISTER_SUCCESS,
-    USER_REGISTER_FAIL,
-
-} from '../constants/userConstants'
-
+  USER_LOGIN_REQUEST,
+  USER_LOGIN_SUCCESS,
+  USER_LOGIN_FAIL,
+  USER_LOGOUT,
+  USER_REGISTER_REQUEST,
+  USER_REGISTER_SUCCESS,
+  USER_REGISTER_FAIL,
+} from "../constants/userConstants";
 
 export const userLoginReducer = (state = {}, action) => {
-    switch (action.type) {
-        case USER_LOGIN_REQUEST:
-            return { loading: true }
+  switch (action.type) {
+    case USER_LOGIN_REQUEST:
+      return { loading: true };
 
-        case USER_LOGIN_SUCCESS:
-            return { loading: false, userInfo: action.payload }
+    case USER_LOGIN_SUCCESS:
+      return { loading: false, userInfo: action.payload };
 
-        case USER_LOGIN_FAIL:
-            return { loading: false, error: action.payload }
+    case USER_LOGIN_FAIL:
+      return { loading: false, error: action.payload };
 
-        case USER_LOGOUT:
-            return {}
+    case USER_LOGOUT:
+      return {};
 
-        default:
-            return state
-    }
-}
+    default:
+      return state;
+  }
+};
 export const userRegisterReducer = (state = {}, action) => {
-    switch (action.type) {
-        case USER_REGISTER_REQUEST:
-            return { loading: true }
+  switch (action.type) {
+    case USER_REGISTER_REQUEST:
+      return { loading: true };
 
-        case USER_REGISTER_SUCCESS:
-            return { loading: false, userInfo: action.payload }
+    case USER_REGISTER_SUCCESS:
+      return { loading: false, userInfo: action.payload };
 
-        case USER_REGISTER_FAIL:
-            return { loading: false, error: action.payload }
+    case USER_REGISTER_FAIL:
+      return { loading: false, error: action.payload };
 
-        case USER_LOGOUT:
-            return {}
+    case USER_LOGOUT:
+      return {};
 
-        default:
-            return state
-    }
-}
-
-
+    default:
+      return state;
+  }
+};
 ```
-3. update store.js
-```js
-import { configureStore } from '@reduxjs/toolkit';
-import { productReducer, productDetailsReducer} from "./reducers/productReducers"; // import
-import {cartReducer} from "./reducers/cartReducers";
-import { userLoginReducer, userRegisterReducer } from './reducers/userReducers';
 
-const cartItemsFromStorage = localStorage.getItem('cartItems')
-  ? JSON.parse(localStorage.getItem('cartItems'))
+3. update store.js
+
+```js
+import { configureStore } from "@reduxjs/toolkit";
+import {
+  productReducer,
+  productDetailsReducer,
+} from "./reducers/productReducers"; // import
+import { cartReducer } from "./reducers/cartReducers";
+import { userLoginReducer, userRegisterReducer } from "./reducers/userReducers";
+
+const cartItemsFromStorage = localStorage.getItem("cartItems")
+  ? JSON.parse(localStorage.getItem("cartItems"))
   : [];
-const userInfoFromStorage = localStorage.getItem('userInfo')
-  ? JSON.parse(localStorage.getItem('userInfo'))
+const userInfoFromStorage = localStorage.getItem("userInfo")
+  ? JSON.parse(localStorage.getItem("userInfo"))
   : null;
 // 👇 初始化 Redux 状态
 const preloadedState = {
@@ -6183,242 +6536,235 @@ const preloadedState = {
   userLogin: {
     userInfo: userInfoFromStorage, // 给 userLogin reducer 赋值
   },
-  
 };
 
 export const store = configureStore({
   reducer: {
-      productList: productReducer,
-      productDetails: productDetailsReducer,
-      cart: cartReducer,
-      userLogin: userLoginReducer,
-      userRegister: userRegisterReducer,
-
+    productList: productReducer,
+    productDetails: productDetailsReducer,
+    cart: cartReducer,
+    userLogin: userLoginReducer,
+    userRegister: userRegisterReducer,
   },
   // ✅ Thunk + DevTools ARE AUTO INCLUDED — NO SETUP NEEDED!
-  preloadedState : preloadedState
+  preloadedState: preloadedState,
 });
 
 export default store;
-
 ```
+
 4. update actions/userActions.js
+
 ```js
-import axios from 'axios'
+import axios from "axios";
 import {
-    USER_LOGIN_REQUEST,
-    USER_LOGIN_SUCCESS,
-    USER_LOGIN_FAIL,
-
-    USER_LOGOUT,
-    USER_REGISTER_REQUEST,
-    USER_REGISTER_SUCCESS,
-    USER_REGISTER_FAIL,
-} from '../constants/userConstants'
-
+  USER_LOGIN_REQUEST,
+  USER_LOGIN_SUCCESS,
+  USER_LOGIN_FAIL,
+  USER_LOGOUT,
+  USER_REGISTER_REQUEST,
+  USER_REGISTER_SUCCESS,
+  USER_REGISTER_FAIL,
+} from "../constants/userConstants";
 
 export const login = (email, password) => async (dispatch) => {
-    try {
-        dispatch({
-            type: USER_LOGIN_REQUEST
-        })
+  try {
+    dispatch({
+      type: USER_LOGIN_REQUEST,
+    });
 
-        const config = {
-            headers: {
-                'Content-type': 'application/json'
-            }
-        }
+    const config = {
+      headers: {
+        "Content-type": "application/json",
+      },
+    };
 
-        const { data } = await axios.post(
-            '/api/users/login/',
-            { 'username': email, 'password': password },
-            config
-        )
+    const { data } = await axios.post(
+      "/api/users/login/",
+      { username: email, password: password },
+      config,
+    );
 
-        dispatch({
-            type: USER_LOGIN_SUCCESS,
-            payload: data
-        })
+    dispatch({
+      type: USER_LOGIN_SUCCESS,
+      payload: data,
+    });
 
-        localStorage.setItem('userInfo', JSON.stringify(data))
-
-    } catch (error) {
-        dispatch({
-            type: USER_LOGIN_FAIL,
-            payload: error.response && error.response.data.detail
-                ? error.response.data.detail
-                : error.message,
-        })
-    }
-}
+    localStorage.setItem("userInfo", JSON.stringify(data));
+  } catch (error) {
+    dispatch({
+      type: USER_LOGIN_FAIL,
+      payload:
+        error.response && error.response.data.detail
+          ? error.response.data.detail
+          : error.message,
+    });
+  }
+};
 
 export const logout = () => (dispatch) => {
-    localStorage.removeItem('userInfo')
-    dispatch({ type: USER_LOGOUT })
-   
-}
+  localStorage.removeItem("userInfo");
+  dispatch({ type: USER_LOGOUT });
+};
 
 export const register = (name, email, password) => async (dispatch) => {
-    try {
-        dispatch({
-            type: USER_REGISTER_REQUEST
-        })
+  try {
+    dispatch({
+      type: USER_REGISTER_REQUEST,
+    });
 
-        const config = {
-            headers: {
-                'Content-type': 'application/json'
-            }
-        }
+    const config = {
+      headers: {
+        "Content-type": "application/json",
+      },
+    };
 
-        const { data } = await axios.post(
-            '/api/users/register/',
-            { 'name': name, 'email': email, 'password': password },
-            config
-        )
+    const { data } = await axios.post(
+      "/api/users/register/",
+      { name: name, email: email, password: password },
+      config,
+    );
 
-        dispatch({
-            type: USER_REGISTER_SUCCESS,
-            payload: data
-        })
-// after register, then go to login
-        dispatch({
-            type: USER_LOGIN_SUCCESS,
-            payload: data
-        })
+    dispatch({
+      type: USER_REGISTER_SUCCESS,
+      payload: data,
+    });
+    // after register, then go to login
+    dispatch({
+      type: USER_LOGIN_SUCCESS,
+      payload: data,
+    });
 
-        localStorage.setItem('userInfo', JSON.stringify(data))
-
-    } catch (error) {
-        dispatch({
-            type: USER_REGISTER_FAIL,
-            payload: error.response && error.response.data.detail
-                ? error.response.data.detail
-                : error.message,
-        })
-    }
-}
+    localStorage.setItem("userInfo", JSON.stringify(data));
+  } catch (error) {
+    dispatch({
+      type: USER_REGISTER_FAIL,
+      payload:
+        error.response && error.response.data.detail
+          ? error.response.data.detail
+          : error.message,
+    });
+  }
+};
 ```
+
 5. create registerscreens.jsx
+
 ```jsx
-import React, { useState, useEffect } from 'react'
-import { Link, useNavigate, useLocation } from 'react-router-dom'
-import { Form, Button, Row, Col } from 'react-bootstrap'
-import { useDispatch, useSelector } from 'react-redux'
-import Loader from '../components/Loader'
-import Message from '../components/Message'
-import FormContainer from '../components/FormContainer'
-import { register } from '../actions/userActions'
+import React, { useState, useEffect } from "react";
+import { Link, useNavigate, useLocation } from "react-router-dom";
+import { Form, Button, Row, Col } from "react-bootstrap";
+import { useDispatch, useSelector } from "react-redux";
+import Loader from "../components/Loader";
+import Message from "../components/Message";
+import FormContainer from "../components/FormContainer";
+import { register } from "../actions/userActions";
 
 function RegisterScreen() {
-    const location = useLocation()
-    const navigate = useNavigate()
-    const [name, setName] = useState('')
-    const [email, setEmail] = useState('')
-    const [password, setPassword] = useState('')
-    const [confirmPassword, setConfirmPassword] = useState('')
-    const [message, setMessage] = useState('')
+  const location = useLocation();
+  const navigate = useNavigate();
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [message, setMessage] = useState("");
 
-    const dispatch = useDispatch()
+  const dispatch = useDispatch();
 
-    const redirect = location.search ? location.search.split('=')[1] : '/'
+  const redirect = location.search ? location.search.split("=")[1] : "/";
 
-    const userRegister = useSelector(state => state.userRegister)
-    const { error, loading, userInfo } = userRegister
+  const userRegister = useSelector((state) => state.userRegister);
+  const { error, loading, userInfo } = userRegister;
 
-    useEffect(() => {
-        if (userInfo) {
-            navigate(redirect)
-        }
-    }, [navigate, userInfo, redirect])
-
-    const submitHandler = (e) => {
-        e.preventDefault()
-
-        if (password != confirmPassword) {
-            setMessage('Passwords do not match')
-        } else {
-            dispatch(register(name, email, password))
-        }
-
+  useEffect(() => {
+    if (userInfo) {
+      navigate(redirect);
     }
+  }, [navigate, userInfo, redirect]);
 
-    return (
-        <FormContainer>
-            <h1>Sign In</h1>
-            {message && <Message variant='danger'>{message}</Message>}
-            {error && <Message variant='danger'>{error}</Message>}
-            {loading && <Loader />}
-            <Form onSubmit={submitHandler}>
+  const submitHandler = (e) => {
+    e.preventDefault();
 
-                <Form.Group controlId='name'>
-                    <Form.Label>Name</Form.Label>
-                    <Form.Control
-                        required
-                        type='name'
-                        placeholder='Enter name'
-                        value={name}
-                        onChange={(e) => setName(e.target.value)}
-                    >
-                    </Form.Control>
-                </Form.Group>
+    if (password != confirmPassword) {
+      setMessage("Passwords do not match");
+    } else {
+      dispatch(register(name, email, password));
+    }
+  };
 
-                <Form.Group controlId='email'>
-                    <Form.Label>Email Address</Form.Label>
-                    <Form.Control
-                        required
-                        type='email'
-                        placeholder='Enter Email'
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                    >
-                    </Form.Control>
-                </Form.Group>
+  return (
+    <FormContainer>
+      <h1>Sign In</h1>
+      {message && <Message variant="danger">{message}</Message>}
+      {error && <Message variant="danger">{error}</Message>}
+      {loading && <Loader />}
+      <Form onSubmit={submitHandler}>
+        <Form.Group controlId="name">
+          <Form.Label>Name</Form.Label>
+          <Form.Control
+            required
+            type="name"
+            placeholder="Enter name"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+          ></Form.Control>
+        </Form.Group>
 
-                <Form.Group controlId='password'>
-                    <Form.Label>Password</Form.Label>
-                    <Form.Control
-                        required
-                        type='password'
-                        placeholder='Enter Password'
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                    >
-                    </Form.Control>
-                </Form.Group>
+        <Form.Group controlId="email">
+          <Form.Label>Email Address</Form.Label>
+          <Form.Control
+            required
+            type="email"
+            placeholder="Enter Email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+          ></Form.Control>
+        </Form.Group>
 
-                <Form.Group controlId='passwordConfirm'>
-                    <Form.Label>Confirm Password</Form.Label>
-                    <Form.Control
-                        required
-                        type='password'
-                        placeholder='Confirm Password'
-                        value={confirmPassword}
-                        onChange={(e) => setConfirmPassword(e.target.value)}
-                    >
-                    </Form.Control>
-                </Form.Group>
+        <Form.Group controlId="password">
+          <Form.Label>Password</Form.Label>
+          <Form.Control
+            required
+            type="password"
+            placeholder="Enter Password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+          ></Form.Control>
+        </Form.Group>
 
-                <Button type='submit' variant='primary'>
-                    Register
-                </Button>
+        <Form.Group controlId="passwordConfirm">
+          <Form.Label>Confirm Password</Form.Label>
+          <Form.Control
+            required
+            type="password"
+            placeholder="Confirm Password"
+            value={confirmPassword}
+            onChange={(e) => setConfirmPassword(e.target.value)}
+          ></Form.Control>
+        </Form.Group>
 
-            </Form>
+        <Button type="submit" variant="primary">
+          Register
+        </Button>
+      </Form>
 
-            <Row className='py-3'>
-                <Col>
-                    Have an Account? <Link
-                        to={redirect ? `/login?redirect=${redirect}` : '/login'}>
-                        Sign In
-                        </Link>
-                </Col>
-            </Row>
-        </FormContainer >
-    )
+      <Row className="py-3">
+        <Col>
+          Have an Account?{" "}
+          <Link to={redirect ? `/login?redirect=${redirect}` : "/login"}>
+            Sign In
+          </Link>
+        </Col>
+      </Row>
+    </FormContainer>
+  );
 }
 
-export default RegisterScreen
+export default RegisterScreen;
 ```
+
 6. update app.js
+
 ```js
 import { Container } from "react-bootstrap";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
@@ -6438,7 +6784,7 @@ function App() {
           <Routes>
             <Route path="/" element={<HomeScreen />} />
             <Route path="/login" element={<LoginScreen />} />
-             <Route path="/register" element={<RegisterScreen />} />
+            <Route path="/register" element={<RegisterScreen />} />
             <Route path="/product/:id" element={<ProductScreen />} />
             <Route path="/cart/:id?" element={<CartScreen />} />
           </Routes>
@@ -6450,11 +6796,12 @@ function App() {
 }
 
 export default App;
-
 ```
 
 ## step 28 update user profile
+
 1. backto backend, we will add feature for user to edit their own profile, update user_views.py
+
 ```py
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
@@ -6497,7 +6844,7 @@ def registerUser(request):
         return Response(serializer.data)
     except:
         message = {'detail': 'User with this email already exists'}
-        return Response(message, status=status.HTTP_400_BAD_REQUEST)    
+        return Response(message, status=status.HTTP_400_BAD_REQUEST)
 
 @api_view(['PUT'])
 @permission_classes([IsAuthenticated])
@@ -6532,7 +6879,9 @@ def getUsers(request):
     return Response(serializer.data)
 
 ```
+
 2. update user_urls.py
+
 ```py
 from django.urls import path
 from base.views import user_views as views
@@ -6549,115 +6898,124 @@ urlpatterns = [
     path('', views.getUsers, name="users"),
 ]
 ```
+
 3. goto postman for testing the put, by edit the name
 
 ## step 29 user profile frontend
-1. update constants/userConstants  
+
+1. update constants/userConstants
+
 ```js
-export const USER_LOGIN_REQUEST = 'USER_LOGIN_REQUEST'
-export const USER_LOGIN_SUCCESS = 'USER_LOGIN_SUCCESS'
-export const USER_LOGIN_FAIL = 'USER_LOGIN_FAIL'
+export const USER_LOGIN_REQUEST = "USER_LOGIN_REQUEST";
+export const USER_LOGIN_SUCCESS = "USER_LOGIN_SUCCESS";
+export const USER_LOGIN_FAIL = "USER_LOGIN_FAIL";
 
-export const USER_LOGOUT = 'USER_LOGOUT'
+export const USER_LOGOUT = "USER_LOGOUT";
 
-export const USER_REGISTER_REQUEST = 'USER_REGISTER_REQUEST'
-export const USER_REGISTER_SUCCESS = 'USER_REGISTER_SUCCESS'
-export const USER_REGISTER_FAIL = 'USER_REGISTER_FAIL'
+export const USER_REGISTER_REQUEST = "USER_REGISTER_REQUEST";
+export const USER_REGISTER_SUCCESS = "USER_REGISTER_SUCCESS";
+export const USER_REGISTER_FAIL = "USER_REGISTER_FAIL";
 
-export const USER_DETAILS_REQUEST = 'USER_DETAILS_REQUEST'
-export const USER_DETAILS_SUCCESS = 'USER_DETAILS_SUCCESS'
-export const USER_DETAILS_FAIL = 'USER_DETAILS_FAIL'
-export const USER_DETAILS_RESET = 'USER_DETAILS_RESET'
+export const USER_DETAILS_REQUEST = "USER_DETAILS_REQUEST";
+export const USER_DETAILS_SUCCESS = "USER_DETAILS_SUCCESS";
+export const USER_DETAILS_FAIL = "USER_DETAILS_FAIL";
+export const USER_DETAILS_RESET = "USER_DETAILS_RESET";
 ```
+
 2. update userReducer.js
+
 ```js
 import {
-    USER_LOGIN_REQUEST,
-    USER_LOGIN_SUCCESS,
-    USER_LOGIN_FAIL,
-
-    USER_LOGOUT,
-    USER_REGISTER_REQUEST,
-    USER_REGISTER_SUCCESS,
-    USER_REGISTER_FAIL,
-    USER_DETAILS_REQUEST,
-    USER_DETAILS_SUCCESS,
-    USER_DETAILS_FAIL,
-    USER_DETAILS_RESET,
-
-} from '../constants/userConstants'
-
+  USER_LOGIN_REQUEST,
+  USER_LOGIN_SUCCESS,
+  USER_LOGIN_FAIL,
+  USER_LOGOUT,
+  USER_REGISTER_REQUEST,
+  USER_REGISTER_SUCCESS,
+  USER_REGISTER_FAIL,
+  USER_DETAILS_REQUEST,
+  USER_DETAILS_SUCCESS,
+  USER_DETAILS_FAIL,
+  USER_DETAILS_RESET,
+} from "../constants/userConstants";
 
 export const userLoginReducer = (state = {}, action) => {
-    switch (action.type) {
-        case USER_LOGIN_REQUEST:
-            return { loading: true }
+  switch (action.type) {
+    case USER_LOGIN_REQUEST:
+      return { loading: true };
 
-        case USER_LOGIN_SUCCESS:
-            return { loading: false, userInfo: action.payload }
+    case USER_LOGIN_SUCCESS:
+      return { loading: false, userInfo: action.payload };
 
-        case USER_LOGIN_FAIL:
-            return { loading: false, error: action.payload }
+    case USER_LOGIN_FAIL:
+      return { loading: false, error: action.payload };
 
-        case USER_LOGOUT:
-            return {}
+    case USER_LOGOUT:
+      return {};
 
-        default:
-            return state
-    }
-}
+    default:
+      return state;
+  }
+};
 export const userRegisterReducer = (state = {}, action) => {
-    switch (action.type) {
-        case USER_REGISTER_REQUEST:
-            return { loading: true }
+  switch (action.type) {
+    case USER_REGISTER_REQUEST:
+      return { loading: true };
 
-        case USER_REGISTER_SUCCESS:
-            return { loading: false, userInfo: action.payload }
+    case USER_REGISTER_SUCCESS:
+      return { loading: false, userInfo: action.payload };
 
-        case USER_REGISTER_FAIL:
-            return { loading: false, error: action.payload }
+    case USER_REGISTER_FAIL:
+      return { loading: false, error: action.payload };
 
-        case USER_LOGOUT:
-            return {}
+    case USER_LOGOUT:
+      return {};
 
-        default:
-            return state
-    }
-}
+    default:
+      return state;
+  }
+};
 
 export const userDetailsReducer = (state = { user: {} }, action) => {
-    switch (action.type) {
-        case USER_DETAILS_REQUEST:
-            return { ...state, loading: true }
+  switch (action.type) {
+    case USER_DETAILS_REQUEST:
+      return { ...state, loading: true };
 
-        case USER_DETAILS_SUCCESS:
-            return { loading: false, user: action.payload }
+    case USER_DETAILS_SUCCESS:
+      return { loading: false, user: action.payload };
 
-        case USER_DETAILS_FAIL:
-            return { loading: false, error: action.payload }
+    case USER_DETAILS_FAIL:
+      return { loading: false, error: action.payload };
 
-        case USER_DETAILS_RESET:
-            return { user: {} }
+    case USER_DETAILS_RESET:
+      return { user: {} };
 
-
-        default:
-            return state
-    }
-}
-
+    default:
+      return state;
+  }
+};
 ```
-3. update store.js
-```js
-import { configureStore } from '@reduxjs/toolkit';
-import { productReducer, productDetailsReducer} from "./reducers/productReducers"; // import
-import {cartReducer} from "./reducers/cartReducers";
-import { userLoginReducer, userRegisterReducer, userDetailsReducer } from './reducers/userReducers';
 
-const cartItemsFromStorage = localStorage.getItem('cartItems')
-  ? JSON.parse(localStorage.getItem('cartItems'))
+3. update store.js
+
+```js
+import { configureStore } from "@reduxjs/toolkit";
+import {
+  productReducer,
+  productDetailsReducer,
+} from "./reducers/productReducers"; // import
+import { cartReducer } from "./reducers/cartReducers";
+import {
+  userLoginReducer,
+  userRegisterReducer,
+  userDetailsReducer,
+} from "./reducers/userReducers";
+
+const cartItemsFromStorage = localStorage.getItem("cartItems")
+  ? JSON.parse(localStorage.getItem("cartItems"))
   : [];
-const userInfoFromStorage = localStorage.getItem('userInfo')
-  ? JSON.parse(localStorage.getItem('userInfo'))
+const userInfoFromStorage = localStorage.getItem("userInfo")
+  ? JSON.parse(localStorage.getItem("userInfo"))
   : null;
 // 👇 初始化 Redux 状态
 const preloadedState = {
@@ -6667,295 +7025,275 @@ const preloadedState = {
   userLogin: {
     userInfo: userInfoFromStorage, // 给 userLogin reducer 赋值
   },
-  
 };
 
 export const store = configureStore({
   reducer: {
-      productList: productReducer,
-      productDetails: productDetailsReducer,
-      cart: cartReducer,
-      userLogin: userLoginReducer,
-      userRegister: userRegisterReducer,
-      userDetails: userDetailsReducer,
-
+    productList: productReducer,
+    productDetails: productDetailsReducer,
+    cart: cartReducer,
+    userLogin: userLoginReducer,
+    userRegister: userRegisterReducer,
+    userDetails: userDetailsReducer,
   },
   // ✅ Thunk + DevTools ARE AUTO INCLUDED — NO SETUP NEEDED!
-  preloadedState : preloadedState
+  preloadedState: preloadedState,
 });
 
 export default store;
-
 ```
+
 4. update userActions.js
+
 ```js
-import axios from 'axios'
+import axios from "axios";
 import {
-    USER_LOGIN_REQUEST,
-    USER_LOGIN_SUCCESS,
-    USER_LOGIN_FAIL,
-
-    USER_LOGOUT,
-    USER_REGISTER_REQUEST,
-    USER_REGISTER_SUCCESS,
-    USER_REGISTER_FAIL,
-
-    USER_DETAILS_REQUEST,
-    USER_DETAILS_SUCCESS,
-    USER_DETAILS_FAIL,
-    USER_DETAILS_RESET,
-
-} from '../constants/userConstants'
-
+  USER_LOGIN_REQUEST,
+  USER_LOGIN_SUCCESS,
+  USER_LOGIN_FAIL,
+  USER_LOGOUT,
+  USER_REGISTER_REQUEST,
+  USER_REGISTER_SUCCESS,
+  USER_REGISTER_FAIL,
+  USER_DETAILS_REQUEST,
+  USER_DETAILS_SUCCESS,
+  USER_DETAILS_FAIL,
+  USER_DETAILS_RESET,
+} from "../constants/userConstants";
 
 export const login = (email, password) => async (dispatch) => {
-    try {
-        dispatch({
-            type: USER_LOGIN_REQUEST
-        })
+  try {
+    dispatch({
+      type: USER_LOGIN_REQUEST,
+    });
 
-        const config = {
-            headers: {
-                'Content-type': 'application/json'
-            }
-        }
+    const config = {
+      headers: {
+        "Content-type": "application/json",
+      },
+    };
 
-        const { data } = await axios.post(
-            '/api/users/login/',
-            { 'username': email, 'password': password },
-            config
-        )
+    const { data } = await axios.post(
+      "/api/users/login/",
+      { username: email, password: password },
+      config,
+    );
 
-        dispatch({
-            type: USER_LOGIN_SUCCESS,
-            payload: data
-        })
+    dispatch({
+      type: USER_LOGIN_SUCCESS,
+      payload: data,
+    });
 
-        localStorage.setItem('userInfo', JSON.stringify(data))
-
-    } catch (error) {
-        dispatch({
-            type: USER_LOGIN_FAIL,
-            payload: error.response && error.response.data.detail
-                ? error.response.data.detail
-                : error.message,
-        })
-    }
-}
+    localStorage.setItem("userInfo", JSON.stringify(data));
+  } catch (error) {
+    dispatch({
+      type: USER_LOGIN_FAIL,
+      payload:
+        error.response && error.response.data.detail
+          ? error.response.data.detail
+          : error.message,
+    });
+  }
+};
 
 export const logout = () => (dispatch) => {
-    localStorage.removeItem('userInfo')
-    dispatch({ type: USER_LOGOUT })
-   
-}
+  localStorage.removeItem("userInfo");
+  dispatch({ type: USER_LOGOUT });
+};
 
 export const register = (name, email, password) => async (dispatch) => {
-    try {
-        dispatch({
-            type: USER_REGISTER_REQUEST
-        })
+  try {
+    dispatch({
+      type: USER_REGISTER_REQUEST,
+    });
 
-        const config = {
-            headers: {
-                'Content-type': 'application/json'
-            }
-        }
+    const config = {
+      headers: {
+        "Content-type": "application/json",
+      },
+    };
 
-        const { data } = await axios.post(
-            '/api/users/register/',
-            { 'name': name, 'email': email, 'password': password },
-            config
-        )
+    const { data } = await axios.post(
+      "/api/users/register/",
+      { name: name, email: email, password: password },
+      config,
+    );
 
-        dispatch({
-            type: USER_REGISTER_SUCCESS,
-            payload: data
-        })
+    dispatch({
+      type: USER_REGISTER_SUCCESS,
+      payload: data,
+    });
 
-        dispatch({
-            type: USER_LOGIN_SUCCESS,
-            payload: data
-        })
+    dispatch({
+      type: USER_LOGIN_SUCCESS,
+      payload: data,
+    });
 
-        localStorage.setItem('userInfo', JSON.stringify(data))
-
-    } catch (error) {
-        dispatch({
-            type: USER_REGISTER_FAIL,
-            payload: error.response && error.response.data.detail
-                ? error.response.data.detail
-                : error.message,
-        })
-    }
-}
+    localStorage.setItem("userInfo", JSON.stringify(data));
+  } catch (error) {
+    dispatch({
+      type: USER_REGISTER_FAIL,
+      payload:
+        error.response && error.response.data.detail
+          ? error.response.data.detail
+          : error.message,
+    });
+  }
+};
 
 export const getUserDetails = (id) => async (dispatch, getState) => {
-    try {
-        dispatch({
-            type: USER_DETAILS_REQUEST
-        })
+  try {
+    dispatch({
+      type: USER_DETAILS_REQUEST,
+    });
 
-        const {
-            userLogin: { userInfo },
-        } = getState()
+    const {
+      userLogin: { userInfo },
+    } = getState();
 
-        const config = {
-            headers: {
-                'Content-type': 'application/json',
-                Authorization: `Bearer ${userInfo.token}`  // need to add access token
-            }
-        }
+    const config = {
+      headers: {
+        "Content-type": "application/json",
+        Authorization: `Bearer ${userInfo.token}`, // need to add access token
+      },
+    };
 
-        const { data } = await axios.get(
-            `/api/users/${id}/`,
-            config
-        )
+    const { data } = await axios.get(`/api/users/${id}/`, config);
 
-        dispatch({
-            type: USER_DETAILS_SUCCESS,
-            payload: data
-        })
-
-
-    } catch (error) {
-        dispatch({
-            type: USER_DETAILS_FAIL,
-            payload: error.response && error.response.data.detail
-                ? error.response.data.detail
-                : error.message,
-        })
-    }
-}
+    dispatch({
+      type: USER_DETAILS_SUCCESS,
+      payload: data,
+    });
+  } catch (error) {
+    dispatch({
+      type: USER_DETAILS_FAIL,
+      payload:
+        error.response && error.response.data.detail
+          ? error.response.data.detail
+          : error.message,
+    });
+  }
+};
 ```
+
 5. create screens/profilescreen.js
+
 ```js
-import React, { useState, useEffect } from 'react'
-import { useNavigate } from 'react-router-dom'
-import { Form, Button, Row, Col } from 'react-bootstrap'
-import { useDispatch, useSelector } from 'react-redux'
-import Loader from '../components/Loader'
-import Message from '../components/Message'
-import { getUserDetails} from '../actions/userActions'
+import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { Form, Button, Row, Col } from "react-bootstrap";
+import { useDispatch, useSelector } from "react-redux";
+import Loader from "../components/Loader";
+import Message from "../components/Message";
+import { getUserDetails } from "../actions/userActions";
 
 function ProfileScreen() {
-    const navigate = useNavigate()
-    const [name, setName] = useState('')
-    const [email, setEmail] = useState('')
-    const [password, setPassword] = useState('')
-    const [confirmPassword, setConfirmPassword] = useState('')
-    const [message, setMessage] = useState('')
+  const navigate = useNavigate();
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [message, setMessage] = useState("");
 
-    const dispatch = useDispatch()
+  const dispatch = useDispatch();
 
-    const userDetails = useSelector(state => state.userDetails)
-    const { error, loading, user } = userDetails
+  const userDetails = useSelector((state) => state.userDetails);
+  const { error, loading, user } = userDetails;
 
-    const userLogin = useSelector(state => state.userLogin)
-    const { userInfo } = userLogin
+  const userLogin = useSelector((state) => state.userLogin);
+  const { userInfo } = userLogin;
 
-  
-
-
-    useEffect(() => {
-        if (!userInfo) {
-            navigate('/login')
-        } else {
-            if (!user || !user.name ) {
-               
-                dispatch(getUserDetails('profile'))
-            } else {
-                setName(user.name)
-                setEmail(user.email)
-            }
-        }
-    }, [dispatch, navigate, userInfo, user])
-
-    const submitHandler = (e) => {
-        e.preventDefault()
-
-        if (password !== confirmPassword) {
-            setMessage('Passwords do not match')
-        } else {
-            console.log("updating...")
-        }
-
+  useEffect(() => {
+    if (!userInfo) {
+      navigate("/login");
+    } else {
+      if (!user || !user.name) {
+        dispatch(getUserDetails("profile"));
+      } else {
+        setName(user.name);
+        setEmail(user.email);
+      }
     }
-    return (
-        <Row>
-            <Col md={3}>
-                <h2>User Profile</h2>
+  }, [dispatch, navigate, userInfo, user]);
 
-                {message && <Message variant='danger'>{message}</Message>}
-                {error && <Message variant='danger'>{error}</Message>}
-                {loading && <Loader />}
-                <Form onSubmit={submitHandler}>
+  const submitHandler = (e) => {
+    e.preventDefault();
 
-                    <Form.Group controlId='name'>
-                        <Form.Label>Name</Form.Label>
-                        <Form.Control
-                            required
-                            type='name'
-                            placeholder='Enter name'
-                            value={name}
-                            onChange={(e) => setName(e.target.value)}
-                        >
-                        </Form.Control>
-                    </Form.Group>
+    if (password !== confirmPassword) {
+      setMessage("Passwords do not match");
+    } else {
+      console.log("updating...");
+    }
+  };
+  return (
+    <Row>
+      <Col md={3}>
+        <h2>User Profile</h2>
 
-                    <Form.Group controlId='email'>
-                        <Form.Label>Email Address</Form.Label>
-                        <Form.Control
-                            required
-                            type='email'
-                            placeholder='Enter Email'
-                            value={email}
-                            onChange={(e) => setEmail(e.target.value)}
-                        >
-                        </Form.Control>
-                    </Form.Group>
+        {message && <Message variant="danger">{message}</Message>}
+        {error && <Message variant="danger">{error}</Message>}
+        {loading && <Loader />}
+        <Form onSubmit={submitHandler}>
+          <Form.Group controlId="name">
+            <Form.Label>Name</Form.Label>
+            <Form.Control
+              required
+              type="name"
+              placeholder="Enter name"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+            ></Form.Control>
+          </Form.Group>
 
-                    <Form.Group controlId='password'>
-                        <Form.Label>Password</Form.Label>
-                        <Form.Control
+          <Form.Group controlId="email">
+            <Form.Label>Email Address</Form.Label>
+            <Form.Control
+              required
+              type="email"
+              placeholder="Enter Email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+            ></Form.Control>
+          </Form.Group>
 
-                            type='password'
-                            placeholder='Enter Password'
-                            value={password}
-                            onChange={(e) => setPassword(e.target.value)}
-                        >
-                        </Form.Control>
-                    </Form.Group>
+          <Form.Group controlId="password">
+            <Form.Label>Password</Form.Label>
+            <Form.Control
+              type="password"
+              placeholder="Enter Password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+            ></Form.Control>
+          </Form.Group>
 
-                    <Form.Group controlId='passwordConfirm'>
-                        <Form.Label>Confirm Password</Form.Label>
-                        <Form.Control
+          <Form.Group controlId="passwordConfirm">
+            <Form.Label>Confirm Password</Form.Label>
+            <Form.Control
+              type="password"
+              placeholder="Confirm Password"
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+            ></Form.Control>
+          </Form.Group>
 
-                            type='password'
-                            placeholder='Confirm Password'
-                            value={confirmPassword}
-                            onChange={(e) => setConfirmPassword(e.target.value)}
-                        >
-                        </Form.Control>
-                    </Form.Group>
+          <Button type="submit" variant="primary">
+            Update
+          </Button>
+        </Form>
+      </Col>
 
-                    <Button type='submit' variant='primary'>
-                        Update
-                </Button>
-
-                </Form>
-            </Col>
-
-            <Col md={9}>
-                <h2>My Orders</h2>
-           
-            </Col>
-        </Row>
-    )
+      <Col md={9}>
+        <h2>My Orders</h2>
+      </Col>
+    </Row>
+  );
 }
 
-export default ProfileScreen
+export default ProfileScreen;
 ```
+
 6. update the app.js for the profilescreen
+
 ```js
 import { Container } from "react-bootstrap";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
@@ -6976,8 +7314,8 @@ function App() {
           <Routes>
             <Route path="/" element={<HomeScreen />} />
             <Route path="/login" element={<LoginScreen />} />
-             <Route path="/register" element={<RegisterScreen />} />
-              <Route path='/profile' element={<ProfileScreen />} />
+            <Route path="/register" element={<RegisterScreen />} />
+            <Route path="/profile" element={<ProfileScreen />} />
             <Route path="/product/:id" element={<ProductScreen />} />
             <Route path="/cart/:id?" element={<CartScreen />} />
           </Routes>
@@ -6989,9 +7327,10 @@ function App() {
 }
 
 export default App;
-
 ```
+
 7. update user profile, , update constants
+
 ```js
 export const USER_LOGIN_REQUEST = 'USER_LOGIN_REQUEST'
 export const USER_LOGIN_SUCCESS = 'USER_LOGIN_SUCCESS'
@@ -7013,120 +7352,125 @@ export const USER_UPDATE_PROFILE_SUCCESS = 'USER_UPDATE_PROFILE_SUCCESS'
 export const USER_UPDATE_PROFILE_FAIL = 'USER_UPDATE_PROFILE_FAIL'
 export const USER_UPDATE_PROFILE_RESET = 'USER_UPDATE_PROFILE_RESET
 ```
+
 8. update userReducer.js
+
 ```js
 import {
-    USER_LOGIN_REQUEST,
-    USER_LOGIN_SUCCESS,
-    USER_LOGIN_FAIL,
-
-    USER_LOGOUT,
-    USER_REGISTER_REQUEST,
-    USER_REGISTER_SUCCESS,
-    USER_REGISTER_FAIL,
-    USER_DETAILS_REQUEST,
-    USER_DETAILS_SUCCESS,
-    USER_DETAILS_FAIL,
-    USER_DETAILS_RESET,
-
-    USER_UPDATE_PROFILE_REQUEST,
-    USER_UPDATE_PROFILE_SUCCESS,
-    USER_UPDATE_PROFILE_FAIL,
-    USER_UPDATE_PROFILE_RESET,
-
-} from '../constants/userConstants'
-
+  USER_LOGIN_REQUEST,
+  USER_LOGIN_SUCCESS,
+  USER_LOGIN_FAIL,
+  USER_LOGOUT,
+  USER_REGISTER_REQUEST,
+  USER_REGISTER_SUCCESS,
+  USER_REGISTER_FAIL,
+  USER_DETAILS_REQUEST,
+  USER_DETAILS_SUCCESS,
+  USER_DETAILS_FAIL,
+  USER_DETAILS_RESET,
+  USER_UPDATE_PROFILE_REQUEST,
+  USER_UPDATE_PROFILE_SUCCESS,
+  USER_UPDATE_PROFILE_FAIL,
+  USER_UPDATE_PROFILE_RESET,
+} from "../constants/userConstants";
 
 export const userLoginReducer = (state = {}, action) => {
-    switch (action.type) {
-        case USER_LOGIN_REQUEST:
-            return { loading: true }
+  switch (action.type) {
+    case USER_LOGIN_REQUEST:
+      return { loading: true };
 
-        case USER_LOGIN_SUCCESS:
-            return { loading: false, userInfo: action.payload }
+    case USER_LOGIN_SUCCESS:
+      return { loading: false, userInfo: action.payload };
 
-        case USER_LOGIN_FAIL:
-            return { loading: false, error: action.payload }
+    case USER_LOGIN_FAIL:
+      return { loading: false, error: action.payload };
 
-        case USER_LOGOUT:
-            return {}
+    case USER_LOGOUT:
+      return {};
 
-        default:
-            return state
-    }
-}
+    default:
+      return state;
+  }
+};
 export const userRegisterReducer = (state = {}, action) => {
-    switch (action.type) {
-        case USER_REGISTER_REQUEST:
-            return { loading: true }
+  switch (action.type) {
+    case USER_REGISTER_REQUEST:
+      return { loading: true };
 
-        case USER_REGISTER_SUCCESS:
-            return { loading: false, userInfo: action.payload }
+    case USER_REGISTER_SUCCESS:
+      return { loading: false, userInfo: action.payload };
 
-        case USER_REGISTER_FAIL:
-            return { loading: false, error: action.payload }
+    case USER_REGISTER_FAIL:
+      return { loading: false, error: action.payload };
 
-        case USER_LOGOUT:
-            return {}
+    case USER_LOGOUT:
+      return {};
 
-        default:
-            return state
-    }
-}
+    default:
+      return state;
+  }
+};
 
 export const userDetailsReducer = (state = { user: {} }, action) => {
-    switch (action.type) {
-        case USER_DETAILS_REQUEST:
-            return { ...state, loading: true }
+  switch (action.type) {
+    case USER_DETAILS_REQUEST:
+      return { ...state, loading: true };
 
-        case USER_DETAILS_SUCCESS:
-            return { loading: false, user: action.payload }
+    case USER_DETAILS_SUCCESS:
+      return { loading: false, user: action.payload };
 
-        case USER_DETAILS_FAIL:
-            return { loading: false, error: action.payload }
+    case USER_DETAILS_FAIL:
+      return { loading: false, error: action.payload };
 
-        case USER_DETAILS_RESET:
-            return { user: {} }
+    case USER_DETAILS_RESET:
+      return { user: {} };
 
-
-        default:
-            return state
-    }
-}
+    default:
+      return state;
+  }
+};
 
 export const userUpdateProfileReducer = (state = {}, action) => {
-    switch (action.type) {
-        case USER_UPDATE_PROFILE_REQUEST:
-            return { loading: true }
+  switch (action.type) {
+    case USER_UPDATE_PROFILE_REQUEST:
+      return { loading: true };
 
-        case USER_UPDATE_PROFILE_SUCCESS:
-            return { loading: false, success: true, userInfo: action.payload }
+    case USER_UPDATE_PROFILE_SUCCESS:
+      return { loading: false, success: true, userInfo: action.payload };
 
-        case USER_UPDATE_PROFILE_FAIL:
-            return { loading: false, error: action.payload }
+    case USER_UPDATE_PROFILE_FAIL:
+      return { loading: false, error: action.payload };
 
-        case USER_UPDATE_PROFILE_RESET:
-            return {}
+    case USER_UPDATE_PROFILE_RESET:
+      return {};
 
-        default:
-            return state
-    }
-}
-
-
+    default:
+      return state;
+  }
+};
 ```
-9. update store.js
-```js
-import { configureStore } from '@reduxjs/toolkit';
-import { productReducer, productDetailsReducer} from "./reducers/productReducers"; // import
-import {cartReducer} from "./reducers/cartReducers";
-import { userLoginReducer, userRegisterReducer, userDetailsReducer, userUpdateProfileReducer } from './reducers/userReducers';
 
-const cartItemsFromStorage = localStorage.getItem('cartItems')
-  ? JSON.parse(localStorage.getItem('cartItems'))
+9. update store.js
+
+```js
+import { configureStore } from "@reduxjs/toolkit";
+import {
+  productReducer,
+  productDetailsReducer,
+} from "./reducers/productReducers"; // import
+import { cartReducer } from "./reducers/cartReducers";
+import {
+  userLoginReducer,
+  userRegisterReducer,
+  userDetailsReducer,
+  userUpdateProfileReducer,
+} from "./reducers/userReducers";
+
+const cartItemsFromStorage = localStorage.getItem("cartItems")
+  ? JSON.parse(localStorage.getItem("cartItems"))
   : [];
-const userInfoFromStorage = localStorage.getItem('userInfo')
-  ? JSON.parse(localStorage.getItem('userInfo'))
+const userInfoFromStorage = localStorage.getItem("userInfo")
+  ? JSON.parse(localStorage.getItem("userInfo"))
   : null;
 // 👇 初始化 Redux 状态
 const preloadedState = {
@@ -7136,440 +7480,418 @@ const preloadedState = {
   userLogin: {
     userInfo: userInfoFromStorage, // 给 userLogin reducer 赋值
   },
-  
 };
 
 export const store = configureStore({
   reducer: {
-      productList: productReducer,
-      productDetails: productDetailsReducer,
-      cart: cartReducer,
-      userLogin: userLoginReducer,
-      userRegister: userRegisterReducer,
-      userDetails: userDetailsReducer,
-      userUpdateProfile: userUpdateProfileReducer,
+    productList: productReducer,
+    productDetails: productDetailsReducer,
+    cart: cartReducer,
+    userLogin: userLoginReducer,
+    userRegister: userRegisterReducer,
+    userDetails: userDetailsReducer,
+    userUpdateProfile: userUpdateProfileReducer,
   },
   // ✅ Thunk + DevTools ARE AUTO INCLUDED — NO SETUP NEEDED!
-  preloadedState : preloadedState
+  preloadedState: preloadedState,
 });
 
 export default store;
-
 ```
+
 10. update userActions.js
+
 ```js
-import axios from 'axios'
+import axios from "axios";
 import {
-    USER_LOGIN_REQUEST,
-    USER_LOGIN_SUCCESS,
-    USER_LOGIN_FAIL,
-
-    USER_LOGOUT,
-    USER_REGISTER_REQUEST,
-    USER_REGISTER_SUCCESS,
-    USER_REGISTER_FAIL,
-
-    USER_DETAILS_REQUEST,
-    USER_DETAILS_SUCCESS,
-    USER_DETAILS_FAIL,
-    USER_DETAILS_RESET,
-
-    USER_UPDATE_PROFILE_REQUEST,
-    USER_UPDATE_PROFILE_SUCCESS,
-    USER_UPDATE_PROFILE_FAIL,
-    USER_UPDATE_PROFILE_RESET,
-
-} from '../constants/userConstants'
-
+  USER_LOGIN_REQUEST,
+  USER_LOGIN_SUCCESS,
+  USER_LOGIN_FAIL,
+  USER_LOGOUT,
+  USER_REGISTER_REQUEST,
+  USER_REGISTER_SUCCESS,
+  USER_REGISTER_FAIL,
+  USER_DETAILS_REQUEST,
+  USER_DETAILS_SUCCESS,
+  USER_DETAILS_FAIL,
+  USER_DETAILS_RESET,
+  USER_UPDATE_PROFILE_REQUEST,
+  USER_UPDATE_PROFILE_SUCCESS,
+  USER_UPDATE_PROFILE_FAIL,
+  USER_UPDATE_PROFILE_RESET,
+} from "../constants/userConstants";
 
 export const login = (email, password) => async (dispatch) => {
-    try {
-        dispatch({
-            type: USER_LOGIN_REQUEST
-        })
+  try {
+    dispatch({
+      type: USER_LOGIN_REQUEST,
+    });
 
-        const config = {
-            headers: {
-                'Content-type': 'application/json'
-            }
-        }
+    const config = {
+      headers: {
+        "Content-type": "application/json",
+      },
+    };
 
-        const { data } = await axios.post(
-            '/api/users/login/',
-            { 'username': email, 'password': password },
-            config
-        )
+    const { data } = await axios.post(
+      "/api/users/login/",
+      { username: email, password: password },
+      config,
+    );
 
-        dispatch({
-            type: USER_LOGIN_SUCCESS,
-            payload: data
-        })
+    dispatch({
+      type: USER_LOGIN_SUCCESS,
+      payload: data,
+    });
 
-        localStorage.setItem('userInfo', JSON.stringify(data))
-
-    } catch (error) {
-        dispatch({
-            type: USER_LOGIN_FAIL,
-            payload: error.response && error.response.data.detail
-                ? error.response.data.detail
-                : error.message,
-        })
-    }
-}
+    localStorage.setItem("userInfo", JSON.stringify(data));
+  } catch (error) {
+    dispatch({
+      type: USER_LOGIN_FAIL,
+      payload:
+        error.response && error.response.data.detail
+          ? error.response.data.detail
+          : error.message,
+    });
+  }
+};
 
 export const logout = () => (dispatch) => {
-    localStorage.removeItem('userInfo')
-    dispatch({ type: USER_LOGOUT })
-     dispatch({ type: USER_DETAILS_RESET })   // add this reset to clear state
-   
-}
+  localStorage.removeItem("userInfo");
+  dispatch({ type: USER_LOGOUT });
+  dispatch({ type: USER_DETAILS_RESET }); // add this reset to clear state
+};
 
 export const register = (name, email, password) => async (dispatch) => {
-    try {
-        dispatch({
-            type: USER_REGISTER_REQUEST
-        })
+  try {
+    dispatch({
+      type: USER_REGISTER_REQUEST,
+    });
 
-        const config = {
-            headers: {
-                'Content-type': 'application/json'
-            }
-        }
+    const config = {
+      headers: {
+        "Content-type": "application/json",
+      },
+    };
 
-        const { data } = await axios.post(
-            '/api/users/register/',
-            { 'name': name, 'email': email, 'password': password },
-            config
-        )
+    const { data } = await axios.post(
+      "/api/users/register/",
+      { name: name, email: email, password: password },
+      config,
+    );
 
-        dispatch({
-            type: USER_REGISTER_SUCCESS,
-            payload: data
-        })
+    dispatch({
+      type: USER_REGISTER_SUCCESS,
+      payload: data,
+    });
 
-        dispatch({
-            type: USER_LOGIN_SUCCESS,
-            payload: data
-        })
+    dispatch({
+      type: USER_LOGIN_SUCCESS,
+      payload: data,
+    });
 
-        localStorage.setItem('userInfo', JSON.stringify(data))
-
-    } catch (error) {
-        dispatch({
-            type: USER_REGISTER_FAIL,
-            payload: error.response && error.response.data.detail
-                ? error.response.data.detail
-                : error.message,
-        })
-    }
-}
+    localStorage.setItem("userInfo", JSON.stringify(data));
+  } catch (error) {
+    dispatch({
+      type: USER_REGISTER_FAIL,
+      payload:
+        error.response && error.response.data.detail
+          ? error.response.data.detail
+          : error.message,
+    });
+  }
+};
 
 export const getUserDetails = (id) => async (dispatch, getState) => {
-    try {
-        dispatch({
-            type: USER_DETAILS_REQUEST
-        })
+  try {
+    dispatch({
+      type: USER_DETAILS_REQUEST,
+    });
 
-        const {
-            userLogin: { userInfo },
-        } = getState()
+    const {
+      userLogin: { userInfo },
+    } = getState();
 
-        const config = {
-            headers: {
-                'Content-type': 'application/json',
-                Authorization: `Bearer ${userInfo.token}`
-            }
-        }
+    const config = {
+      headers: {
+        "Content-type": "application/json",
+        Authorization: `Bearer ${userInfo.token}`,
+      },
+    };
 
-        const { data } = await axios.get(
-            `/api/users/${id}/`,
-            config
-        )
+    const { data } = await axios.get(`/api/users/${id}/`, config);
 
-        dispatch({
-            type: USER_DETAILS_SUCCESS,
-            payload: data
-        })
-
-
-    } catch (error) {
-        dispatch({
-            type: USER_DETAILS_FAIL,
-            payload: error.response && error.response.data.detail
-                ? error.response.data.detail
-                : error.message,
-        })
-    }
-}
+    dispatch({
+      type: USER_DETAILS_SUCCESS,
+      payload: data,
+    });
+  } catch (error) {
+    dispatch({
+      type: USER_DETAILS_FAIL,
+      payload:
+        error.response && error.response.data.detail
+          ? error.response.data.detail
+          : error.message,
+    });
+  }
+};
 
 export const updateUserProfile = (user) => async (dispatch, getState) => {
-    try {
-        dispatch({
-            type: USER_UPDATE_PROFILE_REQUEST
-        })
+  try {
+    dispatch({
+      type: USER_UPDATE_PROFILE_REQUEST,
+    });
 
-        const {
-            userLogin: { userInfo },
-        } = getState()
+    const {
+      userLogin: { userInfo },
+    } = getState();
 
-        const config = {
-            headers: {
-                'Content-type': 'application/json',
-                Authorization: `Bearer ${userInfo.token}`
-            }
-        }
+    const config = {
+      headers: {
+        "Content-type": "application/json",
+        Authorization: `Bearer ${userInfo.token}`,
+      },
+    };
 
-        const { data } = await axios.put(
-            `/api/users/profile/update/`,
-            user,
-            config
-        )
+    const { data } = await axios.put(
+      `/api/users/profile/update/`,
+      user,
+      config,
+    );
 
-        dispatch({
-            type: USER_UPDATE_PROFILE_SUCCESS,
-            payload: data
-        })
+    dispatch({
+      type: USER_UPDATE_PROFILE_SUCCESS,
+      payload: data,
+    });
 
-        dispatch({
-            type: USER_LOGIN_SUCCESS,
-            payload: data
-        })
+    dispatch({
+      type: USER_LOGIN_SUCCESS,
+      payload: data,
+    });
 
-        localStorage.setItem('userInfo', JSON.stringify(data))
-
-    } catch (error) {
-        dispatch({
-            type: USER_UPDATE_PROFILE_FAIL,
-            payload: error.response && error.response.data.detail
-                ? error.response.data.detail
-                : error.message,
-        })
-    }
-}
-
+    localStorage.setItem("userInfo", JSON.stringify(data));
+  } catch (error) {
+    dispatch({
+      type: USER_UPDATE_PROFILE_FAIL,
+      payload:
+        error.response && error.response.data.detail
+          ? error.response.data.detail
+          : error.message,
+    });
+  }
+};
 ```
+
 11. update profilescreen.jsx
+
 ```jsx
-import React, { useState, useEffect } from 'react'
-import { useNavigate } from 'react-router-dom'
-import { Form, Button, Row, Col } from 'react-bootstrap'
-import { useDispatch, useSelector } from 'react-redux'
-import Loader from '../components/Loader'
-import Message from '../components/Message'
-import { getUserDetails, updateUserProfile } from '../actions/userActions'
-import { USER_UPDATE_PROFILE_RESET } from '../constants/userConstants'
+import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { Form, Button, Row, Col } from "react-bootstrap";
+import { useDispatch, useSelector } from "react-redux";
+import Loader from "../components/Loader";
+import Message from "../components/Message";
+import { getUserDetails, updateUserProfile } from "../actions/userActions";
+import { USER_UPDATE_PROFILE_RESET } from "../constants/userConstants";
 function ProfileScreen() {
-    const navigate = useNavigate()
-    const [name, setName] = useState('')
-    const [email, setEmail] = useState('')
-    const [password, setPassword] = useState('')
-    const [confirmPassword, setConfirmPassword] = useState('')
-    const [message, setMessage] = useState('')
+  const navigate = useNavigate();
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [message, setMessage] = useState("");
 
-    const dispatch = useDispatch()
+  const dispatch = useDispatch();
 
-    const userDetails = useSelector(state => state.userDetails)
-    const { error, loading, user } = userDetails
+  const userDetails = useSelector((state) => state.userDetails);
+  const { error, loading, user } = userDetails;
 
-    const userLogin = useSelector(state => state.userLogin)
-    const { userInfo } = userLogin
+  const userLogin = useSelector((state) => state.userLogin);
+  const { userInfo } = userLogin;
 
-  const userUpdateProfile = useSelector(state => state.userUpdateProfile)
-  const { success } = userUpdateProfile
+  const userUpdateProfile = useSelector((state) => state.userUpdateProfile);
+  const { success } = userUpdateProfile;
 
-
-    useEffect(() => {
-        if (!userInfo) {
-            navigate('/login')
-        } else {
-            if (!user || !user.name || success) {
-               dispatch({ type: USER_UPDATE_PROFILE_RESET })
-                dispatch(getUserDetails('profile'))
-            } else {
-                setName(user.name)
-                setEmail(user.email)
-            }
-        }
-    }, [dispatch, navigate, userInfo, user, success])
-
-    const submitHandler = (e) => {
-        e.preventDefault()
-
-        if (password !== confirmPassword) {
-            setMessage('Passwords do not match')
-        } else {
-           dispatch(updateUserProfile({ id: user._id, name, email, password }))
-           setMessage("")
-        }
-
+  useEffect(() => {
+    if (!userInfo) {
+      navigate("/login");
+    } else {
+      if (!user || !user.name || success) {
+        dispatch({ type: USER_UPDATE_PROFILE_RESET });
+        dispatch(getUserDetails("profile"));
+      } else {
+        setName(user.name);
+        setEmail(user.email);
+      }
     }
-    return (
-        <Row>
-            <Col md={3}>
-                <h2>User Profile</h2>
+  }, [dispatch, navigate, userInfo, user, success]);
 
-                {message && <Message variant='danger'>{message}</Message>}
-                {error && <Message variant='danger'>{error}</Message>}
-                {loading && <Loader />}
-                <Form onSubmit={submitHandler}>
+  const submitHandler = (e) => {
+    e.preventDefault();
 
-                    <Form.Group controlId='name'>
-                        <Form.Label>Name</Form.Label>
-                        <Form.Control
-                            required
-                            type='name'
-                            placeholder='Enter name'
-                            value={name}
-                            onChange={(e) => setName(e.target.value)}
-                        >
-                        </Form.Control>
-                    </Form.Group>
+    if (password !== confirmPassword) {
+      setMessage("Passwords do not match");
+    } else {
+      dispatch(updateUserProfile({ id: user._id, name, email, password }));
+      setMessage("");
+    }
+  };
+  return (
+    <Row>
+      <Col md={3}>
+        <h2>User Profile</h2>
 
-                    <Form.Group controlId='email'>
-                        <Form.Label>Email Address</Form.Label>
-                        <Form.Control
-                            required
-                            type='email'
-                            placeholder='Enter Email'
-                            value={email}
-                            onChange={(e) => setEmail(e.target.value)}
-                        >
-                        </Form.Control>
-                    </Form.Group>
+        {message && <Message variant="danger">{message}</Message>}
+        {error && <Message variant="danger">{error}</Message>}
+        {loading && <Loader />}
+        <Form onSubmit={submitHandler}>
+          <Form.Group controlId="name">
+            <Form.Label>Name</Form.Label>
+            <Form.Control
+              required
+              type="name"
+              placeholder="Enter name"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+            ></Form.Control>
+          </Form.Group>
 
-                    <Form.Group controlId='password'>
-                        <Form.Label>Password</Form.Label>
-                        <Form.Control
+          <Form.Group controlId="email">
+            <Form.Label>Email Address</Form.Label>
+            <Form.Control
+              required
+              type="email"
+              placeholder="Enter Email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+            ></Form.Control>
+          </Form.Group>
 
-                            type='password'
-                            placeholder='Enter Password'
-                            value={password}
-                            onChange={(e) => setPassword(e.target.value)}
-                        >
-                        </Form.Control>
-                    </Form.Group>
+          <Form.Group controlId="password">
+            <Form.Label>Password</Form.Label>
+            <Form.Control
+              type="password"
+              placeholder="Enter Password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+            ></Form.Control>
+          </Form.Group>
 
-                    <Form.Group controlId='passwordConfirm'>
-                        <Form.Label>Confirm Password</Form.Label>
-                        <Form.Control
+          <Form.Group controlId="passwordConfirm">
+            <Form.Label>Confirm Password</Form.Label>
+            <Form.Control
+              type="password"
+              placeholder="Confirm Password"
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+            ></Form.Control>
+          </Form.Group>
 
-                            type='password'
-                            placeholder='Confirm Password'
-                            value={confirmPassword}
-                            onChange={(e) => setConfirmPassword(e.target.value)}
-                        >
-                        </Form.Control>
-                    </Form.Group>
+          <Button type="submit" variant="primary">
+            Update
+          </Button>
+        </Form>
+      </Col>
 
-                    <Button type='submit' variant='primary'>
-                        Update
-                </Button>
-
-                </Form>
-            </Col>
-
-            <Col md={9}>
-                <h2>My Orders</h2>
-           
-            </Col>
-        </Row>
-    )
+      <Col md={9}>
+        <h2>My Orders</h2>
+      </Col>
+    </Row>
+  );
 }
 
-export default ProfileScreen
+export default ProfileScreen;
 ```
+
 ## step 30 product shipping
 
-1. all the shipping details will be keep insie localstorage, back to frontend create shipping screen, 
+1. all the shipping details will be keep insie localstorage, back to frontend create shipping screen,
+
 ```jsx
-import  { useState} from 'react'
-import { Form, Button } from 'react-bootstrap'
-import { useDispatch, useSelector } from 'react-redux'
-import FormContainer from '../components/FormContainer'
-import { useNavigate } from 'react-router-dom'
+import { useState } from "react";
+import { Form, Button } from "react-bootstrap";
+import { useDispatch, useSelector } from "react-redux";
+import FormContainer from "../components/FormContainer";
+import { useNavigate } from "react-router-dom";
 
 function ShippingScreen() {
-    const navigate = useNavigate()
-    const cart = useSelector(state => state.cart)
-    const { shippingAddress } = cart
+  const navigate = useNavigate();
+  const cart = useSelector((state) => state.cart);
+  const { shippingAddress } = cart;
 
+  const [address, setAddress] = useState("");
+  const [city, setCity] = useState("");
+  const [postalCode, setPostalCode] = useState("");
+  const [country, setCountry] = useState("");
 
-    const [address, setAddress] = useState('')
-    const [city, setCity] = useState('')
-    const [postalCode, setPostalCode] = useState('')
-    const [country, setCountry] = useState('')
+  const submitHandler = (e) => {
+    e.preventDefault();
 
-    const submitHandler = (e) => {
-        e.preventDefault()
-        
-        navigate('/payment')
-    }
+    navigate("/payment");
+  };
 
-    return (
-        <FormContainer>
-            {/* <CheckoutSteps step1 step2 /> */}
-            <h1>Shipping</h1>
-            <Form onSubmit={submitHandler}>
+  return (
+    <FormContainer>
+      {/* <CheckoutSteps step1 step2 /> */}
+      <h1>Shipping</h1>
+      <Form onSubmit={submitHandler}>
+        <Form.Group controlId="address">
+          <Form.Label>Address</Form.Label>
+          <Form.Control
+            required
+            type="text"
+            placeholder="Enter address"
+            value={address ? address : ""}
+            onChange={(e) => setAddress(e.target.value)}
+          ></Form.Control>
+        </Form.Group>
 
-                <Form.Group controlId='address'>
-                    <Form.Label>Address</Form.Label>
-                    <Form.Control
-                        required
-                        type='text'
-                        placeholder='Enter address'
-                        value={address ? address : ''}
-                        onChange={(e) => setAddress(e.target.value)}
-                    >
-                    </Form.Control>
-                </Form.Group>
+        <Form.Group controlId="city">
+          <Form.Label>City</Form.Label>
+          <Form.Control
+            required
+            type="text"
+            placeholder="Enter city"
+            value={city ? city : ""}
+            onChange={(e) => setCity(e.target.value)}
+          ></Form.Control>
+        </Form.Group>
 
-                <Form.Group controlId='city'>
-                    <Form.Label>City</Form.Label>
-                    <Form.Control
-                        required
-                        type='text'
-                        placeholder='Enter city'
-                        value={city ? city : ''}
-                        onChange={(e) => setCity(e.target.value)}
-                    >
-                    </Form.Control>
-                </Form.Group>
+        <Form.Group controlId="postalCode">
+          <Form.Label>Postal Code</Form.Label>
+          <Form.Control
+            required
+            type="text"
+            placeholder="Enter postal code"
+            value={postalCode ? postalCode : ""}
+            onChange={(e) => setPostalCode(e.target.value)}
+          ></Form.Control>
+        </Form.Group>
 
-                <Form.Group controlId='postalCode'>
-                    <Form.Label>Postal Code</Form.Label>
-                    <Form.Control
-                        required
-                        type='text'
-                        placeholder='Enter postal code'
-                        value={postalCode ? postalCode : ''}
-                        onChange={(e) => setPostalCode(e.target.value)}
-                    >
-                    </Form.Control>
-                </Form.Group>
+        <Form.Group controlId="country">
+          <Form.Label>Country</Form.Label>
+          <Form.Control
+            required
+            type="text"
+            placeholder="Enter country"
+            value={country ? country : ""}
+            onChange={(e) => setCountry(e.target.value)}
+          ></Form.Control>
+        </Form.Group>
 
-                <Form.Group controlId='country'>
-                    <Form.Label>Country</Form.Label>
-                    <Form.Control
-                        required
-                        type='text'
-                        placeholder='Enter country'
-                        value={country ? country : ''}
-                        onChange={(e) => setCountry(e.target.value)}
-                    >
-                    </Form.Control>
-                </Form.Group>
-
-                <Button type='submit' variant='primary'>
-                    Continue
-                </Button>
-            </Form>
-        </FormContainer>
-    )
+        <Button type="submit" variant="primary">
+          Continue
+        </Button>
+      </Form>
+    </FormContainer>
+  );
 }
 
-export default ShippingScree
+export default ShippingScree;
 ```
+
 2. update app.js
+
 ```js
 import { Container } from "react-bootstrap";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
@@ -7591,9 +7913,9 @@ function App() {
           <Routes>
             <Route path="/" element={<HomeScreen />} />
             <Route path="/login" element={<LoginScreen />} />
-             <Route path="/register" element={<RegisterScreen />} />
-              <Route path='/profile' element={<ProfileScreen />} />
-              <Route path='/shipping' element={<ShippingScreen />} />
+            <Route path="/register" element={<RegisterScreen />} />
+            <Route path="/profile" element={<ProfileScreen />} />
+            <Route path="/shipping" element={<ShippingScreen />} />
             <Route path="/product/:id" element={<ProductScreen />} />
             <Route path="/cart/:id?" element={<CartScreen />} />
           </Routes>
@@ -7605,12 +7927,17 @@ function App() {
 }
 
 export default App;
-
 ```
+
 3. update Cartactions.js, we can create the redux in any order, this time demo from actions.js
+
 ```js
 import axios from "axios";
-import { CART_ADD_ITEM ,CART_REMOVE_ITEM, CART_SAVE_SHIPPING_ADDRESS} from "../constants/cartConstants";
+import {
+  CART_ADD_ITEM,
+  CART_REMOVE_ITEM,
+  CART_SAVE_SHIPPING_ADDRESS,
+} from "../constants/cartConstants";
 
 export const addToCart = (id, qty) => async (dispatch, getState) => {
   const { data } = await axios.get(`/api/products/${id}/`);
@@ -7630,32 +7957,43 @@ export const addToCart = (id, qty) => async (dispatch, getState) => {
 
 export const removeFromCart = (id) => (dispatch, getState) => {
   dispatch({
-    type: CART_REMOVE_ITEM,                   
-    payload: id,                        
-  });                                       
-  localStorage.setItem("cartItems", JSON.stringify(getState().cart.cartItems));                     
-};      
+    type: CART_REMOVE_ITEM,
+    payload: id,
+  });
+  localStorage.setItem("cartItems", JSON.stringify(getState().cart.cartItems));
+};
 
 export const saveShippingAddress = (data) => (dispatch) => {
-    dispatch({
-        type: CART_SAVE_SHIPPING_ADDRESS,
-        payload: data,
-    })
+  dispatch({
+    type: CART_SAVE_SHIPPING_ADDRESS,
+    payload: data,
+  });
 
-    localStorage.setItem('shippingAddress', JSON.stringify(data))
-}
+  localStorage.setItem("shippingAddress", JSON.stringify(data));
+};
 ```
+
 4. update cartConstants.js
-```js
-export const CART_ADD_ITEM = 'CART_ADD_ITEM'
-export const CART_REMOVE_ITEM = 'CART_REMOVE_ITEM'
-export const CART_SAVE_SHIPPING_ADDRESS = 'CART_SAVE_SHIPPING_ADDRESS'
-```
-5. update cartReducer.js
-```js
-import { CART_ADD_ITEM, CART_REMOVE_ITEM , CART_SAVE_SHIPPING_ADDRESS} from "../constants/cartConstants";
 
-export const cartReducer = (state = { cartItems: [] , shippingAddress:{}}, action) => {
+```js
+export const CART_ADD_ITEM = "CART_ADD_ITEM";
+export const CART_REMOVE_ITEM = "CART_REMOVE_ITEM";
+export const CART_SAVE_SHIPPING_ADDRESS = "CART_SAVE_SHIPPING_ADDRESS";
+```
+
+5. update cartReducer.js
+
+```js
+import {
+  CART_ADD_ITEM,
+  CART_REMOVE_ITEM,
+  CART_SAVE_SHIPPING_ADDRESS,
+} from "../constants/cartConstants";
+
+export const cartReducer = (
+  state = { cartItems: [], shippingAddress: {} },
+  action,
+) => {
   switch (action.type) {
     case CART_ADD_ITEM:
       const item = action.payload;
@@ -7664,7 +8002,7 @@ export const cartReducer = (state = { cartItems: [] , shippingAddress:{}}, actio
         return {
           ...state,
           cartItems: state.cartItems.map((x) =>
-            x.product === existItem.product ? item : x
+            x.product === existItem.product ? item : x,
           ),
         };
       } else {
@@ -7678,34 +8016,43 @@ export const cartReducer = (state = { cartItems: [] , shippingAddress:{}}, actio
         ...state,
         cartItems: state.cartItems.filter((x) => x.product !== action.payload),
       };
-        case CART_SAVE_SHIPPING_ADDRESS:
-            return {
-                ...state,
-                shippingAddress: action.payload
-            };
+    case CART_SAVE_SHIPPING_ADDRESS:
+      return {
+        ...state,
+        shippingAddress: action.payload,
+      };
     default:
       return state;
   }
-  
-}
+};
 ```
-6. update the store.js
-```js
-import { configureStore } from '@reduxjs/toolkit';
-import { productReducer, productDetailsReducer} from "./reducers/productReducers"; // import
-import {cartReducer} from "./reducers/cartReducers";
-import { userLoginReducer, userRegisterReducer, userDetailsReducer, userUpdateProfileReducer } from './reducers/userReducers';
 
-const cartItemsFromStorage = localStorage.getItem('cartItems')
-  ? JSON.parse(localStorage.getItem('cartItems'))
+6. update the store.js
+
+```js
+import { configureStore } from "@reduxjs/toolkit";
+import {
+  productReducer,
+  productDetailsReducer,
+} from "./reducers/productReducers"; // import
+import { cartReducer } from "./reducers/cartReducers";
+import {
+  userLoginReducer,
+  userRegisterReducer,
+  userDetailsReducer,
+  userUpdateProfileReducer,
+} from "./reducers/userReducers";
+
+const cartItemsFromStorage = localStorage.getItem("cartItems")
+  ? JSON.parse(localStorage.getItem("cartItems"))
   : [];
-const userInfoFromStorage = localStorage.getItem('userInfo')
-  ? JSON.parse(localStorage.getItem('userInfo'))
+const userInfoFromStorage = localStorage.getItem("userInfo")
+  ? JSON.parse(localStorage.getItem("userInfo"))
   : null;
- 
-const shippingAddressFromStorage = localStorage.getItem('shippingAddress')
-  ? JSON.parse(localStorage.getItem('shippingAddress'))
-  : {};  
+
+const shippingAddressFromStorage = localStorage.getItem("shippingAddress")
+  ? JSON.parse(localStorage.getItem("shippingAddress"))
+  : {};
 // 👇 初始化 Redux 状态
 const preloadedState = {
   cart: {
@@ -7715,532 +8062,533 @@ const preloadedState = {
   userLogin: {
     userInfo: userInfoFromStorage, // 给 userLogin reducer 赋值
   },
-  
 };
 
 export const store = configureStore({
   reducer: {
-      productList: productReducer,
-      productDetails: productDetailsReducer,
-      cart: cartReducer,
-      userLogin: userLoginReducer,
-      userRegister: userRegisterReducer,
-      userDetails: userDetailsReducer,
-      userUpdateProfile: userUpdateProfileReducer,
+    productList: productReducer,
+    productDetails: productDetailsReducer,
+    cart: cartReducer,
+    userLogin: userLoginReducer,
+    userRegister: userRegisterReducer,
+    userDetails: userDetailsReducer,
+    userUpdateProfile: userUpdateProfileReducer,
   },
   // ✅ Thunk + DevTools ARE AUTO INCLUDED — NO SETUP NEEDED!
-  preloadedState : preloadedState
+  preloadedState: preloadedState,
 });
 
 export default store;
-
 ```
-7. update shppingScreen.jsx
-```jsx
 
-import  { useState} from 'react'
-import { Form, Button } from 'react-bootstrap'
-import { useDispatch, useSelector } from 'react-redux'
-import FormContainer from '../components/FormContainer'
+7. update shppingScreen.jsx
+
+```jsx
+import { useState } from "react";
+import { Form, Button } from "react-bootstrap";
+import { useDispatch, useSelector } from "react-redux";
+import FormContainer from "../components/FormContainer";
 // import CheckoutSteps from '../components/CheckoutSteps'
-import { saveShippingAddress } from '../actions/cartActions'
-import { useNavigate } from 'react-router-dom'
+import { saveShippingAddress } from "../actions/cartActions";
+import { useNavigate } from "react-router-dom";
 
 function ShippingScreen() {
-    const navigate = useNavigate()
-    const cart = useSelector(state => state.cart)
-    const { shippingAddress } = cart
+  const navigate = useNavigate();
+  const cart = useSelector((state) => state.cart);
+  const { shippingAddress } = cart;
 
-    const dispatch = useDispatch()
+  const dispatch = useDispatch();
 
-    const [address, setAddress] = useState(shippingAddress.address)
-    const [city, setCity] = useState(shippingAddress.city)
-    const [postalCode, setPostalCode] = useState(shippingAddress.postalCode)
-    const [country, setCountry] = useState(shippingAddress.country)
+  const [address, setAddress] = useState(shippingAddress.address);
+  const [city, setCity] = useState(shippingAddress.city);
+  const [postalCode, setPostalCode] = useState(shippingAddress.postalCode);
+  const [country, setCountry] = useState(shippingAddress.country);
 
-    const submitHandler = (e) => {
-        e.preventDefault()
-        dispatch(saveShippingAddress({ address, city, postalCode, country }))
-        navigate('/payment')
-    }
+  const submitHandler = (e) => {
+    e.preventDefault();
+    dispatch(saveShippingAddress({ address, city, postalCode, country }));
+    navigate("/payment");
+  };
 
-    return (
-        <FormContainer>
-            {/* <CheckoutSteps step1 step2 /> */}
-            <h1>Shipping</h1>
-            <Form onSubmit={submitHandler}>
+  return (
+    <FormContainer>
+      {/* <CheckoutSteps step1 step2 /> */}
+      <h1>Shipping</h1>
+      <Form onSubmit={submitHandler}>
+        <Form.Group controlId="address">
+          <Form.Label>Address</Form.Label>
+          <Form.Control
+            required
+            type="text"
+            placeholder="Enter address"
+            value={address ? address : ""}
+            onChange={(e) => setAddress(e.target.value)}
+          ></Form.Control>
+        </Form.Group>
 
-                <Form.Group controlId='address'>
-                    <Form.Label>Address</Form.Label>
-                    <Form.Control
-                        required
-                        type='text'
-                        placeholder='Enter address'
-                        value={address ? address : ''}
-                        onChange={(e) => setAddress(e.target.value)}
-                    >
-                    </Form.Control>
-                </Form.Group>
+        <Form.Group controlId="city">
+          <Form.Label>City</Form.Label>
+          <Form.Control
+            required
+            type="text"
+            placeholder="Enter city"
+            value={city ? city : ""}
+            onChange={(e) => setCity(e.target.value)}
+          ></Form.Control>
+        </Form.Group>
 
-                <Form.Group controlId='city'>
-                    <Form.Label>City</Form.Label>
-                    <Form.Control
-                        required
-                        type='text'
-                        placeholder='Enter city'
-                        value={city ? city : ''}
-                        onChange={(e) => setCity(e.target.value)}
-                    >
-                    </Form.Control>
-                </Form.Group>
+        <Form.Group controlId="postalCode">
+          <Form.Label>Postal Code</Form.Label>
+          <Form.Control
+            required
+            type="text"
+            placeholder="Enter postal code"
+            value={postalCode ? postalCode : ""}
+            onChange={(e) => setPostalCode(e.target.value)}
+          ></Form.Control>
+        </Form.Group>
 
-                <Form.Group controlId='postalCode'>
-                    <Form.Label>Postal Code</Form.Label>
-                    <Form.Control
-                        required
-                        type='text'
-                        placeholder='Enter postal code'
-                        value={postalCode ? postalCode : ''}
-                        onChange={(e) => setPostalCode(e.target.value)}
-                    >
-                    </Form.Control>
-                </Form.Group>
+        <Form.Group controlId="country">
+          <Form.Label>Country</Form.Label>
+          <Form.Control
+            required
+            type="text"
+            placeholder="Enter country"
+            value={country ? country : ""}
+            onChange={(e) => setCountry(e.target.value)}
+          ></Form.Control>
+        </Form.Group>
 
-                <Form.Group controlId='country'>
-                    <Form.Label>Country</Form.Label>
-                    <Form.Control
-                        required
-                        type='text'
-                        placeholder='Enter country'
-                        value={country ? country : ''}
-                        onChange={(e) => setCountry(e.target.value)}
-                    >
-                    </Form.Control>
-                </Form.Group>
-
-                <Button type='submit' variant='primary'>
-                    Continue
-                </Button>
-            </Form>
-        </FormContainer>
-    )
+        <Button type="submit" variant="primary">
+          Continue
+        </Button>
+      </Form>
+    </FormContainer>
+  );
 }
 
-export default ShippingScreen
-
+export default ShippingScreen;
 ```
+
 8. type in address and see it can saved into localstorage
 9. bug fixed in loginscreen.jsx
+
 ```jsx
-import React, { useState, useEffect } from 'react'
-import { Link, useNavigate, useLocation } from 'react-router-dom'
-import { Form, Button, Row, Col } from 'react-bootstrap'
-import { useDispatch, useSelector } from 'react-redux'
-import Loader from '../components/Loader'
-import Message from '../components/Message'
-import FormContainer from '../components/FormContainer'
-import { login } from '../actions/userActions'
+import React, { useState, useEffect } from "react";
+import { Link, useNavigate, useLocation } from "react-router-dom";
+import { Form, Button, Row, Col } from "react-bootstrap";
+import { useDispatch, useSelector } from "react-redux";
+import Loader from "../components/Loader";
+import Message from "../components/Message";
+import FormContainer from "../components/FormContainer";
+import { login } from "../actions/userActions";
 
 function LoginScreen() {
-    const navigate = useNavigate();
-    const location = useLocation();
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
+  const navigate = useNavigate();
+  const location = useLocation();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
-    const dispatch = useDispatch();
+  const dispatch = useDispatch();
 
-   const redirect = new URLSearchParams(location.search).get('redirect') || '/';   // this is the bug fixed
+  const redirect = new URLSearchParams(location.search).get("redirect") || "/"; // this is the bug fixed
 
-    const userLogin = useSelector(state => state.userLogin);
-    const { error, loading, userInfo } = userLogin;
+  const userLogin = useSelector((state) => state.userLogin);
+  const { error, loading, userInfo } = userLogin;
 
-    useEffect(() => {
-        if (userInfo) {
-            navigate(redirect)
-        }
-    }, [navigate, userInfo, redirect])
-
-    const submitHandler = (e) => {
-        e.preventDefault()
-        dispatch(login(email, password))
+  useEffect(() => {
+    if (userInfo) {
+      navigate(redirect);
     }
+  }, [navigate, userInfo, redirect]);
 
-    return (
-        <FormContainer>
-            <h1>Sign In</h1>
-            {error && <Message variant='danger'>{error}</Message>}
-            {loading && <Loader />}
-            <Form onSubmit={submitHandler}>
+  const submitHandler = (e) => {
+    e.preventDefault();
+    dispatch(login(email, password));
+  };
 
-                <Form.Group controlId='email' className='mb-3'>
-                    <Form.Label>Email Address</Form.Label>
-                    <Form.Control
-                        type='email'
-                        placeholder='Enter Email'
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                    >
-                    </Form.Control>
-                </Form.Group>
+  return (
+    <FormContainer>
+      <h1>Sign In</h1>
+      {error && <Message variant="danger">{error}</Message>}
+      {loading && <Loader />}
+      <Form onSubmit={submitHandler}>
+        <Form.Group controlId="email" className="mb-3">
+          <Form.Label>Email Address</Form.Label>
+          <Form.Control
+            type="email"
+            placeholder="Enter Email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+          ></Form.Control>
+        </Form.Group>
 
+        <Form.Group controlId="password" className="mb-4">
+          <Form.Label>Password</Form.Label>
+          <Form.Control
+            type="password"
+            placeholder="Enter Password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+          ></Form.Control>
+        </Form.Group>
 
-                <Form.Group controlId='password' className='mb-4'>
-                    <Form.Label>Password</Form.Label>
-                    <Form.Control
-                        type='password'
-                        placeholder='Enter Password'
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                    >
-                    </Form.Control>
-                </Form.Group>
+        <Button type="submit" variant="primary">
+          Sign In
+        </Button>
+      </Form>
 
-                <Button type='submit' variant='primary'>
-                    Sign In
-                </Button>
-            </Form>
-
-            <Row className='py-3'>
-                <Col>
-                    New Customer? <Link
-                        to={redirect ? `/register?redirect=${redirect}` : '/register'}>
-                        Register
-                        </Link>
-                </Col>
-            </Row>
-
-        </FormContainer>
-    )
+      <Row className="py-3">
+        <Col>
+          New Customer?{" "}
+          <Link to={redirect ? `/register?redirect=${redirect}` : "/register"}>
+            Register
+          </Link>
+        </Col>
+      </Row>
+    </FormContainer>
+  );
 }
 
-export default LoginScreen
+export default LoginScreen;
 ```
-10. update the cartScreen.jsx for the redirect path 
+
+10. update the cartScreen.jsx for the redirect path
+
 ```jsx
-import {Row, Col, Form, Button, ListGroup, Card, Image} from "react-bootstrap";
+import {
+  Row,
+  Col,
+  Form,
+  Button,
+  ListGroup,
+  Card,
+  Image,
+} from "react-bootstrap";
 import Message from "../components/Message";
 import { useEffect } from "react";
-import {addToCart, removeFromCart} from "../actions/cartActions";
+import { addToCart, removeFromCart } from "../actions/cartActions";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useParams, useNavigate, useLocation } from "react-router-dom";
 const CartScreen = () => {
-    const {id} = useParams();
-    const navigate = useNavigate();
-    const dispatch = useDispatch();
-    const location = useLocation();
-    const qty = location.search ? Number(location.search.split("=")[1]) : 1;
-    const cart = useSelector((state) => state.cart);
-    const {cartItems} = cart;
-    useEffect(() => {
-        if(id){
-            dispatch(addToCart(id, qty));
-        }
-    }, [dispatch, id, qty]);
-    const removeFromCartHandler = (id) => {
-        dispatch(removeFromCart(id))
+  const { id } = useParams();
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const location = useLocation();
+  const qty = location.search ? Number(location.search.split("=")[1]) : 1;
+  const cart = useSelector((state) => state.cart);
+  const { cartItems } = cart;
+  useEffect(() => {
+    if (id) {
+      dispatch(addToCart(id, qty));
     }
+  }, [dispatch, id, qty]);
+  const removeFromCartHandler = (id) => {
+    dispatch(removeFromCart(id));
+  };
 
-    const checkoutHandler = () => {
-        navigate('/login?redirect=/shipping')   // fixed this line
-    }
+  const checkoutHandler = () => {
+    navigate("/login?redirect=/shipping"); // fixed this line
+  };
 
   return (
-  <Row>
-            <Col md={8}>
-                <h1>Shopping Cart</h1>
-                {cartItems.length === 0 ? (
-                    <Message variant='info'>
-                        Your cart is empty <Link to='/'>Go Back</Link>
-                    </Message>
-                ) : (
-                        <ListGroup variant='flush'>
-                            {cartItems.map(item => (
-                                <ListGroup.Item key={item.product}>
-                                    <Row>
-                                        <Col md={2}>
-                                            <Image src={item.image} alt={item.name} fluid rounded />
-                                        </Col>
-                                        <Col md={3}>
-                                            <Link to={`/product/${item.product}`}>{item.name}</Link>
-                                        </Col>
+    <Row>
+      <Col md={8}>
+        <h1>Shopping Cart</h1>
+        {cartItems.length === 0 ? (
+          <Message variant="info">
+            Your cart is empty <Link to="/">Go Back</Link>
+          </Message>
+        ) : (
+          <ListGroup variant="flush">
+            {cartItems.map((item) => (
+              <ListGroup.Item key={item.product}>
+                <Row>
+                  <Col md={2}>
+                    <Image src={item.image} alt={item.name} fluid rounded />
+                  </Col>
+                  <Col md={3}>
+                    <Link to={`/product/${item.product}`}>{item.name}</Link>
+                  </Col>
 
-                                        <Col md={2}>
-                                            ${item.price}
-                                        </Col>
+                  <Col md={2}>${item.price}</Col>
 
-                                        <Col md={3}>
-                                            <Form.Control
-                                                as="select"
-                                                value={item.qty}
-                                                onChange={(e) => dispatch(addToCart(item.product, Number(e.target.value)))}
-                                            >
-                                                {
+                  <Col md={3}>
+                    <Form.Control
+                      as="select"
+                      value={item.qty}
+                      onChange={(e) =>
+                        dispatch(
+                          addToCart(item.product, Number(e.target.value)),
+                        )
+                      }
+                    >
+                      {[...Array(item.countInStock).keys()].map((x) => (
+                        <option key={x + 1} value={x + 1}>
+                          {x + 1}
+                        </option>
+                      ))}
+                    </Form.Control>
+                  </Col>
 
-                                                    [...Array(item.countInStock).keys()].map((x) => (
-                                                        <option key={x + 1} value={x + 1}>
-                                                            {x + 1}
-                                                        </option>
-                                                    ))
-                                                }
+                  <Col md={1}>
+                    <Button
+                      type="button"
+                      variant="light"
+                      onClick={() => removeFromCartHandler(item.product)}
+                    >
+                      <i className="fas fa-trash"></i>
+                    </Button>
+                  </Col>
+                </Row>
+              </ListGroup.Item>
+            ))}
+          </ListGroup>
+        )}
+      </Col>
 
-                                            </Form.Control>
-                                        </Col>
+      <Col md={4}>
+        <Card>
+          <ListGroup variant="flush">
+            <ListGroup.Item>
+              <h2>
+                Subtotal ({cartItems.reduce((acc, item) => acc + item.qty, 0)})
+                items
+              </h2>
+              $
+              {cartItems
+                .reduce((acc, item) => acc + item.qty * item.price, 0)
+                .toFixed(2)}
+            </ListGroup.Item>
+          </ListGroup>
 
-                                        <Col md={1}>
-                                            <Button
-                                                type='button'
-                                                variant='light'
-                                                onClick={() => removeFromCartHandler(item.product)}
-                                            >
-                                                <i className='fas fa-trash'></i>
-                                            </Button>
-                                        </Col>
-                                    </Row>
-                                </ListGroup.Item>
-                            ))}
-                        </ListGroup>
-                    )}
-            </Col>
+          <ListGroup.Item>
+            <Button
+              type="button"
+              className="w-100 py-2"
+              disabled={cartItems.length === 0}
+              onClick={checkoutHandler}
+            >
+              Proceed To Checkout
+            </Button>
+          </ListGroup.Item>
+        </Card>
+      </Col>
+    </Row>
+  );
+};
 
-            <Col md={4}>
-                <Card>
-                    <ListGroup variant='flush'>
-                        <ListGroup.Item>
-                            <h2>Subtotal ({cartItems.reduce((acc, item) => acc + item.qty, 0)}) items</h2>
-                            ${cartItems.reduce((acc, item) => acc + item.qty * item.price, 0).toFixed(2)}
-                        </ListGroup.Item>
-                    </ListGroup>
-
-                    <ListGroup.Item>
-                        <Button
-                            type='button'
-                            className='w-100 py-2'
-                            disabled={cartItems.length === 0}
-                            onClick={checkoutHandler}
-                        >
-                            Proceed To Checkout
-                        </Button>
-                    </ListGroup.Item>
-
-
-                </Card>
-            </Col>
-        </Row>
-  )
-}
-
-export default CartScreen
+export default CartScreen;
 ```
+
 11. add checkout steps progress bar
+
 ```jsx
-import { Nav } from 'react-bootstrap'
-import { LinkContainer } from 'react-router-bootstrap'
+import { Nav } from "react-bootstrap";
+import { LinkContainer } from "react-router-bootstrap";
 
 function CheckoutSteps({ step1, step2, step3, step4 }) {
+  return (
+    <Nav className="justify-content-center mb-4">
+      <Nav.Item>
+        {step1 ? (
+          <LinkContainer to="/login">
+            <Nav.Link>Login</Nav.Link>
+          </LinkContainer>
+        ) : (
+          <Nav.Link disabled>Login</Nav.Link>
+        )}
+      </Nav.Item>
 
-    return (
-        <Nav className='justify-content-center mb-4'>
-            <Nav.Item>
-                {step1 ? (
-                    <LinkContainer to='/login'>
-                        <Nav.Link>Login</Nav.Link>
-                    </LinkContainer>
-                ) : (
-                        <Nav.Link disabled>Login</Nav.Link>
-                    )}
-            </Nav.Item>
+      <Nav.Item>
+        {step2 ? (
+          <LinkContainer to="/shipping">
+            <Nav.Link>Shipping</Nav.Link>
+          </LinkContainer>
+        ) : (
+          <Nav.Link disabled>Shipping</Nav.Link>
+        )}
+      </Nav.Item>
 
-            <Nav.Item>
-                {step2 ? (
-                    <LinkContainer to='/shipping'>
-                        <Nav.Link>Shipping</Nav.Link>
-                    </LinkContainer>
-                ) : (
-                        <Nav.Link disabled>Shipping</Nav.Link>
-                    )}
-            </Nav.Item>
+      <Nav.Item>
+        {step3 ? (
+          <LinkContainer to="/payment">
+            <Nav.Link>Payment</Nav.Link>
+          </LinkContainer>
+        ) : (
+          <Nav.Link disabled>Payment</Nav.Link>
+        )}
+      </Nav.Item>
 
-            <Nav.Item>
-                {step3 ? (
-                    <LinkContainer to='/payment'>
-                        <Nav.Link>Payment</Nav.Link>
-                    </LinkContainer>
-                ) : (
-                        <Nav.Link disabled>Payment</Nav.Link>
-                    )}
-            </Nav.Item>
-
-            <Nav.Item>
-                {step4 ? (
-                    <LinkContainer to='/placeorder'>
-                        <Nav.Link>Place Order</Nav.Link>
-                    </LinkContainer>
-                ) : (
-                        <Nav.Link disabled>Place Order</Nav.Link>
-                    )}
-            </Nav.Item>
-        </Nav>
-    )
+      <Nav.Item>
+        {step4 ? (
+          <LinkContainer to="/placeorder">
+            <Nav.Link>Place Order</Nav.Link>
+          </LinkContainer>
+        ) : (
+          <Nav.Link disabled>Place Order</Nav.Link>
+        )}
+      </Nav.Item>
+    </Nav>
+  );
 }
 
-export default CheckoutSteps
-
+export default CheckoutSteps;
 ```
+
 12. update shippingScreen.jsx
+
 ```jsx
-import  { useState} from 'react'
-import { Form, Button } from 'react-bootstrap'
-import { useDispatch, useSelector } from 'react-redux'
-import FormContainer from '../components/FormContainer'
-import CheckoutSteps from '../components/CheckoutSteps'
-import { saveShippingAddress } from '../actions/cartActions'
-import { useNavigate } from 'react-router-dom'
+import { useState } from "react";
+import { Form, Button } from "react-bootstrap";
+import { useDispatch, useSelector } from "react-redux";
+import FormContainer from "../components/FormContainer";
+import CheckoutSteps from "../components/CheckoutSteps";
+import { saveShippingAddress } from "../actions/cartActions";
+import { useNavigate } from "react-router-dom";
 
 function ShippingScreen() {
-    const navigate = useNavigate()
-    const cart = useSelector(state => state.cart)
-    const { shippingAddress } = cart
+  const navigate = useNavigate();
+  const cart = useSelector((state) => state.cart);
+  const { shippingAddress } = cart;
 
-    const dispatch = useDispatch()
+  const dispatch = useDispatch();
 
-    const [address, setAddress] = useState(shippingAddress.address)
-    const [city, setCity] = useState(shippingAddress.city)
-    const [postalCode, setPostalCode] = useState(shippingAddress.postalCode)
-    const [country, setCountry] = useState(shippingAddress.country)
+  const [address, setAddress] = useState(shippingAddress.address);
+  const [city, setCity] = useState(shippingAddress.city);
+  const [postalCode, setPostalCode] = useState(shippingAddress.postalCode);
+  const [country, setCountry] = useState(shippingAddress.country);
 
-    const submitHandler = (e) => {
-        e.preventDefault()
-        dispatch(saveShippingAddress({ address, city, postalCode, country }))
-        navigate('/payment')
-    }
+  const submitHandler = (e) => {
+    e.preventDefault();
+    dispatch(saveShippingAddress({ address, city, postalCode, country }));
+    navigate("/payment");
+  };
 
-    return (
-        <FormContainer>
-            <CheckoutSteps step1 step2 />
-            <h1>Shipping</h1>
-            <Form onSubmit={submitHandler}>
+  return (
+    <FormContainer>
+      <CheckoutSteps step1 step2 />
+      <h1>Shipping</h1>
+      <Form onSubmit={submitHandler}>
+        <Form.Group controlId="address">
+          <Form.Label>Address</Form.Label>
+          <Form.Control
+            required
+            type="text"
+            placeholder="Enter address"
+            value={address ? address : ""}
+            onChange={(e) => setAddress(e.target.value)}
+          ></Form.Control>
+        </Form.Group>
 
-                <Form.Group controlId='address'>
-                    <Form.Label>Address</Form.Label>
-                    <Form.Control
-                        required
-                        type='text'
-                        placeholder='Enter address'
-                        value={address ? address : ''}
-                        onChange={(e) => setAddress(e.target.value)}
-                    >
-                    </Form.Control>
-                </Form.Group>
+        <Form.Group controlId="city">
+          <Form.Label>City</Form.Label>
+          <Form.Control
+            required
+            type="text"
+            placeholder="Enter city"
+            value={city ? city : ""}
+            onChange={(e) => setCity(e.target.value)}
+          ></Form.Control>
+        </Form.Group>
 
-                <Form.Group controlId='city'>
-                    <Form.Label>City</Form.Label>
-                    <Form.Control
-                        required
-                        type='text'
-                        placeholder='Enter city'
-                        value={city ? city : ''}
-                        onChange={(e) => setCity(e.target.value)}
-                    >
-                    </Form.Control>
-                </Form.Group>
+        <Form.Group controlId="postalCode">
+          <Form.Label>Postal Code</Form.Label>
+          <Form.Control
+            required
+            type="text"
+            placeholder="Enter postal code"
+            value={postalCode ? postalCode : ""}
+            onChange={(e) => setPostalCode(e.target.value)}
+          ></Form.Control>
+        </Form.Group>
 
-                <Form.Group controlId='postalCode'>
-                    <Form.Label>Postal Code</Form.Label>
-                    <Form.Control
-                        required
-                        type='text'
-                        placeholder='Enter postal code'
-                        value={postalCode ? postalCode : ''}
-                        onChange={(e) => setPostalCode(e.target.value)}
-                    >
-                    </Form.Control>
-                </Form.Group>
+        <Form.Group controlId="country">
+          <Form.Label>Country</Form.Label>
+          <Form.Control
+            required
+            type="text"
+            placeholder="Enter country"
+            value={country ? country : ""}
+            onChange={(e) => setCountry(e.target.value)}
+          ></Form.Control>
+        </Form.Group>
 
-                <Form.Group controlId='country'>
-                    <Form.Label>Country</Form.Label>
-                    <Form.Control
-                        required
-                        type='text'
-                        placeholder='Enter country'
-                        value={country ? country : ''}
-                        onChange={(e) => setCountry(e.target.value)}
-                    >
-                    </Form.Control>
-                </Form.Group>
-
-                <Button type='submit' variant='primary'>
-                    Continue
-                </Button>
-            </Form>
-        </FormContainer>
-    )
+        <Button type="submit" variant="primary">
+          Continue
+        </Button>
+      </Form>
+    </FormContainer>
+  );
 }
 
-export default ShippingScree
+export default ShippingScree;
 ```
+
 ## step 31 frontend payment
+
 1. create paymentScreen.jsx
+
 ```jsx
-import React, { useState, useEffect } from 'react'
-import { Form, Button, Col } from 'react-bootstrap'
-import { useDispatch, useSelector } from 'react-redux'
-import FormContainer from '../components/FormContainer'
-import CheckoutSteps from '../components/CheckoutSteps'
-import { useNavigate } from 'react-router-dom'
+import React, { useState, useEffect } from "react";
+import { Form, Button, Col } from "react-bootstrap";
+import { useDispatch, useSelector } from "react-redux";
+import FormContainer from "../components/FormContainer";
+import CheckoutSteps from "../components/CheckoutSteps";
+import { useNavigate } from "react-router-dom";
 // import { savePaymentMethod } from '../actions/cartActions'
 
 function PaymentScreen() {
-    const navigate = useNavigate()
-    const cart = useSelector(state => state.cart)
-    const { shippingAddress } = cart
+  const navigate = useNavigate();
+  const cart = useSelector((state) => state.cart);
+  const { shippingAddress } = cart;
 
-    const dispatch = useDispatch()
+  const dispatch = useDispatch();
 
-    const [paymentMethod, setPaymentMethod] = useState('PayPal')
+  const [paymentMethod, setPaymentMethod] = useState("PayPal");
 
-    if (!shippingAddress.address) {
-        navigate('/shipping')
-    }
+  if (!shippingAddress.address) {
+    navigate("/shipping");
+  }
 
-    const submitHandler = (e) => {
-        e.preventDefault()
-        // dispatch(savePaymentMethod(paymentMethod))
-        navigate('/placeorder')
-    }
+  const submitHandler = (e) => {
+    e.preventDefault();
+    // dispatch(savePaymentMethod(paymentMethod))
+    navigate("/placeorder");
+  };
 
-    return (
-        <FormContainer>
-            <CheckoutSteps step1 step2 step3 />
+  return (
+    <FormContainer>
+      <CheckoutSteps step1 step2 step3 />
 
-            <Form onSubmit={submitHandler}>
-                <Form.Group>
-                    <Form.Label as='legend'>Select Method</Form.Label>
-                    <Col>
-                        <Form.Check
-                            type='radio'
-                            label='PayPal or Credit Card'
-                            id='paypal'
-                            name='paymentMethod'
-                            checked
-                            onChange={(e) => setPaymentMethod(e.target.value)}
-                        >
+      <Form onSubmit={submitHandler}>
+        <Form.Group>
+          <Form.Label as="legend">Select Method</Form.Label>
+          <Col>
+            <Form.Check
+              type="radio"
+              label="PayPal or Credit Card"
+              id="paypal"
+              name="paymentMethod"
+              checked
+              onChange={(e) => setPaymentMethod(e.target.value)}
+            ></Form.Check>
+          </Col>
+        </Form.Group>
 
-                        </Form.Check>
-                    </Col>
-                </Form.Group>
-
-                <Button type='submit' variant='primary'>
-                    Continue
-                </Button>
-            </Form>
-        </FormContainer>
-    )
+        <Button type="submit" variant="primary">
+          Continue
+        </Button>
+      </Form>
+    </FormContainer>
+  );
 }
 
-export default PaymentScree
-
+export default PaymentScree;
 ```
+
 2. update app.js
+
 ```js
 import { Container } from "react-bootstrap";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
@@ -8263,10 +8611,10 @@ function App() {
           <Routes>
             <Route path="/" element={<HomeScreen />} />
             <Route path="/login" element={<LoginScreen />} />
-             <Route path="/register" element={<RegisterScreen />} />
-              <Route path='/profile' element={<ProfileScreen />} />
-              <Route path='/shipping' element={<ShippingScreen />} />
-              <Route path='/payment' element={<PaymentScreen />} />
+            <Route path="/register" element={<RegisterScreen />} />
+            <Route path="/profile" element={<ProfileScreen />} />
+            <Route path="/shipping" element={<ShippingScreen />} />
+            <Route path="/payment" element={<PaymentScreen />} />
             <Route path="/product/:id" element={<ProductScreen />} />
             <Route path="/cart/:id?" element={<CartScreen />} />
           </Routes>
@@ -8278,9 +8626,10 @@ function App() {
 }
 
 export default App;
-
 ```
+
 3. add payment methods, update the cartConstants.js
+
 ```js
 export const CART_ADD_ITEM = "CART_ADD_ITEM";
 export const CART_REMOVE_ITEM = "CART_REMOVE_ITEM";
@@ -8289,10 +8638,19 @@ export const CART_SAVE_PAYMENT_METHOD = "CART_SAVE_PAYMENT_METHOD";
 ```
 
 4. update cartReducer.js
-```js
-import { CART_ADD_ITEM, CART_REMOVE_ITEM , CART_SAVE_SHIPPING_ADDRESS, CART_SAVE_PAYMENT_METHOD,} from "../constants/cartConstants";
 
-export const cartReducer = (state = { cartItems: [], shippingAddress: {} }, action) => {
+```js
+import {
+  CART_ADD_ITEM,
+  CART_REMOVE_ITEM,
+  CART_SAVE_SHIPPING_ADDRESS,
+  CART_SAVE_PAYMENT_METHOD,
+} from "../constants/cartConstants";
+
+export const cartReducer = (
+  state = { cartItems: [], shippingAddress: {} },
+  action,
+) => {
   switch (action.type) {
     case CART_ADD_ITEM:
       const item = action.payload;
@@ -8301,7 +8659,7 @@ export const cartReducer = (state = { cartItems: [], shippingAddress: {} }, acti
         return {
           ...state,
           cartItems: state.cartItems.map((x) =>
-            x.product === existItem.product ? item : x
+            x.product === existItem.product ? item : x,
           ),
         };
       } else {
@@ -8316,25 +8674,31 @@ export const cartReducer = (state = { cartItems: [], shippingAddress: {} }, acti
         cartItems: state.cartItems.filter((x) => x.product !== action.payload),
       };
     case CART_SAVE_SHIPPING_ADDRESS:
-            return {
-                ...state,
-                shippingAddress: action.payload
-            };
+      return {
+        ...state,
+        shippingAddress: action.payload,
+      };
     case CART_SAVE_PAYMENT_METHOD:
-            return {
-                ...state,
-                paymentMethod: action.payload
-            }        
+      return {
+        ...state,
+        paymentMethod: action.payload,
+      };
     default:
       return state;
   }
-  
-}
+};
 ```
+
 5. update cartActions.js
+
 ```js
 import axios from "axios";
-import { CART_ADD_ITEM ,CART_REMOVE_ITEM, CART_SAVE_SHIPPING_ADDRESS, CART_SAVE_PAYMENT_METHOD} from "../constants/cartConstants";
+import {
+  CART_ADD_ITEM,
+  CART_REMOVE_ITEM,
+  CART_SAVE_SHIPPING_ADDRESS,
+  CART_SAVE_PAYMENT_METHOD,
+} from "../constants/cartConstants";
 
 export const addToCart = (id, qty) => async (dispatch, getState) => {
   const { data } = await axios.get(`/api/products/${id}/`);
@@ -8354,244 +8718,253 @@ export const addToCart = (id, qty) => async (dispatch, getState) => {
 
 export const removeFromCart = (id) => (dispatch, getState) => {
   dispatch({
-    type: CART_REMOVE_ITEM,                   
-    payload: id,                        
-  });                                       
-  localStorage.setItem("cartItems", JSON.stringify(getState().cart.cartItems));                     
-};      
+    type: CART_REMOVE_ITEM,
+    payload: id,
+  });
+  localStorage.setItem("cartItems", JSON.stringify(getState().cart.cartItems));
+};
 
 export const saveShippingAddress = (data) => (dispatch) => {
-    dispatch({
-        type: CART_SAVE_SHIPPING_ADDRESS,
-        payload: data,
-    })
+  dispatch({
+    type: CART_SAVE_SHIPPING_ADDRESS,
+    payload: data,
+  });
 
-    localStorage.setItem('shippingAddress', JSON.stringify(data))
-}
+  localStorage.setItem("shippingAddress", JSON.stringify(data));
+};
 
 export const savePaymentMethod = (data) => (dispatch) => {
-    dispatch({
-        type: CART_SAVE_PAYMENT_METHOD,
-        payload: data,
-    })
+  dispatch({
+    type: CART_SAVE_PAYMENT_METHOD,
+    payload: data,
+  });
 
-    localStorage.setItem('paymentMethod', JSON.stringify(data))
-}
+  localStorage.setItem("paymentMethod", JSON.stringify(data));
+};
 ```
+
 6. update paymentScreen.jsx
+
 ```jsx
-import  { useState } from 'react'
-import { Form, Button, Col } from 'react-bootstrap'
-import { useDispatch, useSelector } from 'react-redux'
-import FormContainer from '../components/FormContainer'
-import CheckoutSteps from '../components/CheckoutSteps'
-import { useNavigate } from 'react-router-dom'
-import { savePaymentMethod } from '../actions/cartActions'
+import { useState } from "react";
+import { Form, Button, Col } from "react-bootstrap";
+import { useDispatch, useSelector } from "react-redux";
+import FormContainer from "../components/FormContainer";
+import CheckoutSteps from "../components/CheckoutSteps";
+import { useNavigate } from "react-router-dom";
+import { savePaymentMethod } from "../actions/cartActions";
 
 function PaymentScreen() {
-    const navigate = useNavigate()
-    const cart = useSelector(state => state.cart)
-    const { shippingAddress } = cart
+  const navigate = useNavigate();
+  const cart = useSelector((state) => state.cart);
+  const { shippingAddress } = cart;
 
-    const dispatch = useDispatch()
+  const dispatch = useDispatch();
 
-    const [paymentMethod, setPaymentMethod] = useState('PayPal')
+  const [paymentMethod, setPaymentMethod] = useState("PayPal");
 
-    if (!shippingAddress.address) {
-        navigate('/shipping')
-    }
+  if (!shippingAddress.address) {
+    navigate("/shipping");
+  }
 
-    const submitHandler = (e) => {
-        e.preventDefault()
-        dispatch(savePaymentMethod(paymentMethod))
-        navigate('/placeorder')
-    }
+  const submitHandler = (e) => {
+    e.preventDefault();
+    dispatch(savePaymentMethod(paymentMethod));
+    navigate("/placeorder");
+  };
 
-    return (
-        <FormContainer>
-            <CheckoutSteps step1 step2 step3 />
+  return (
+    <FormContainer>
+      <CheckoutSteps step1 step2 step3 />
 
-            <Form onSubmit={submitHandler}>
-                <Form.Group>
-                    <Form.Label as='legend'>Select Method</Form.Label>
-                    <Col>
-                        <Form.Check
-                            type='radio'
-                            label='PayPal or Credit Card'
-                            id='paypal'
-                            name='paymentMethod'
-                            checked
-                            onChange={(e) => setPaymentMethod(e.target.value)}
-                        >
+      <Form onSubmit={submitHandler}>
+        <Form.Group>
+          <Form.Label as="legend">Select Method</Form.Label>
+          <Col>
+            <Form.Check
+              type="radio"
+              label="PayPal or Credit Card"
+              id="paypal"
+              name="paymentMethod"
+              checked
+              onChange={(e) => setPaymentMethod(e.target.value)}
+            ></Form.Check>
+          </Col>
+        </Form.Group>
 
-                        </Form.Check>
-                    </Col>
-                </Form.Group>
-
-                <Button type='submit' variant='primary'>
-                    Continue
-                </Button>
-            </Form>
-        </FormContainer>
-    )
+        <Button type="submit" variant="primary">
+          Continue
+        </Button>
+      </Form>
+    </FormContainer>
+  );
 }
 
-export default PaymentScreen
+export default PaymentScreen;
 ```
 
-## step 32 place order 
-1. create placeOrderScreen.jsx
-```jsx
-import React, { useState, useEffect } from 'react'
-import { Button, Row, Col, ListGroup, Image, Card } from 'react-bootstrap'
-import { Link, useNavigate } from 'react-router-dom'
-import { useDispatch, useSelector } from 'react-redux'
-import Message from '../components/Message'
-import CheckoutSteps from '../components/CheckoutSteps'
+## step 32 place order
 
+1. create placeOrderScreen.jsx
+
+```jsx
+import React, { useState, useEffect } from "react";
+import { Button, Row, Col, ListGroup, Image, Card } from "react-bootstrap";
+import { Link, useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import Message from "../components/Message";
+import CheckoutSteps from "../components/CheckoutSteps";
 
 function PlaceOrderScreen() {
-    const navigate = useNavigate()
-    
+  const navigate = useNavigate();
 
-    const dispatch = useDispatch()
+  const dispatch = useDispatch();
 
-    const cart = useSelector(state => state.cart) // select cart from store
+  const cart = useSelector((state) => state.cart); // select cart from store
 
-    const itemsPrice = cart.cartItems.reduce((acc, item) => acc + item.price * item.qty, 0).toFixed(2)
-    const shippingPrice = (itemsPrice > 100 ? 0 : 10).toFixed(2)
-    const taxPrice = Number((0.082) * itemsPrice).toFixed(2)
-    const totalPrice = (Number(itemsPrice) + Number(shippingPrice) + Number(taxPrice)).toFixed(2)
-// can't reassign redux values, use local varibles that will create issues later within django
+  const itemsPrice = cart.cartItems
+    .reduce((acc, item) => acc + item.price * item.qty, 0)
+    .toFixed(2);
+  const shippingPrice = (itemsPrice > 100 ? 0 : 10).toFixed(2);
+  const taxPrice = Number(0.082 * itemsPrice).toFixed(2);
+  const totalPrice = (
+    Number(itemsPrice) +
+    Number(shippingPrice) +
+    Number(taxPrice)
+  ).toFixed(2);
+  // can't reassign redux values, use local varibles that will create issues later within django
 
-    if (!cart.paymentMethod) {
-        navigate('/payment')
-    }
+  if (!cart.paymentMethod) {
+    navigate("/payment");
+  }
 
-    const placeOrder = () => {
-       
-    }
+  const placeOrder = () => {};
 
-    return (
-        <div>
-            <CheckoutSteps step1 step2 step3 step4 />
-            <Row>
-                <Col md={8}>
-                    <ListGroup variant='flush'>
-                        <ListGroup.Item>
-                            <h2>Shipping</h2>
+  return (
+    <div>
+      <CheckoutSteps step1 step2 step3 step4 />
+      <Row>
+        <Col md={8}>
+          <ListGroup variant="flush">
+            <ListGroup.Item>
+              <h2>Shipping</h2>
 
-                            <p>
-                                <strong>Shipping: </strong>
-                                {cart.shippingAddress.address},  {cart.shippingAddress.city}
-                                {'  '}
-                                {cart.shippingAddress.postalCode},
-                                {'  '}
-                                {cart.shippingAddress.country}
-                            </p>
-                        </ListGroup.Item>
+              <p>
+                <strong>Shipping: </strong>
+                {cart.shippingAddress.address}, {cart.shippingAddress.city}
+                {"  "}
+                {cart.shippingAddress.postalCode},{"  "}
+                {cart.shippingAddress.country}
+              </p>
+            </ListGroup.Item>
 
-                        <ListGroup.Item>
-                            <h2>Payment Method</h2>
-                            <p>
-                                <strong>Method: </strong>
-                                {cart.paymentMethod}
-                            </p>
-                        </ListGroup.Item>
+            <ListGroup.Item>
+              <h2>Payment Method</h2>
+              <p>
+                <strong>Method: </strong>
+                {cart.paymentMethod}
+              </p>
+            </ListGroup.Item>
 
-                        <ListGroup.Item>
-                            <h2>Order Items</h2>
-                            {cart.cartItems.length === 0 ? <Message variant='info'>
-                                Your cart is empty
-                            </Message> : (
-                                    <ListGroup variant='flush'>
-                                        {cart.cartItems.map((item, index) => (
-                                            <ListGroup.Item key={index}>
-                                                <Row>
-                                                    <Col md={1}>
-                                                        <Image src={item.image} alt={item.name} fluid rounded />
-                                                    </Col>
+            <ListGroup.Item>
+              <h2>Order Items</h2>
+              {cart.cartItems.length === 0 ? (
+                <Message variant="info">Your cart is empty</Message>
+              ) : (
+                <ListGroup variant="flush">
+                  {cart.cartItems.map((item, index) => (
+                    <ListGroup.Item key={index}>
+                      <Row>
+                        <Col md={1}>
+                          <Image
+                            src={item.image}
+                            alt={item.name}
+                            fluid
+                            rounded
+                          />
+                        </Col>
 
-                                                    <Col>
-                                                        <Link to={`/product/${item.product}`}>{item.name}</Link>
-                                                    </Col>
+                        <Col>
+                          <Link to={`/product/${item.product}`}>
+                            {item.name}
+                          </Link>
+                        </Col>
 
-                                                    <Col md={4}>
-                                                        {item.qty} X ${item.price} = ${(item.qty * item.price).toFixed(2)}
-                                                    </Col>
-                                                </Row>
-                                            </ListGroup.Item>
-                                        ))}
-                                    </ListGroup>
-                                )}
-                        </ListGroup.Item>
+                        <Col md={4}>
+                          {item.qty} X ${item.price} = $
+                          {(item.qty * item.price).toFixed(2)}
+                        </Col>
+                      </Row>
+                    </ListGroup.Item>
+                  ))}
+                </ListGroup>
+              )}
+            </ListGroup.Item>
+          </ListGroup>
+        </Col>
 
-                    </ListGroup>
+        <Col md={4}>
+          <Card>
+            <ListGroup variant="flush">
+              <ListGroup.Item>
+                <h2>Order Summary</h2>
+              </ListGroup.Item>
 
-                </Col>
+              <ListGroup.Item>
+                <Row>
+                  <Col>Items:</Col>
+                  <Col>${itemsPrice}</Col>
+                </Row>
+              </ListGroup.Item>
 
-                <Col md={4}>
-                    <Card>
-                        <ListGroup variant='flush'>
-                            <ListGroup.Item>
-                                <h2>Order Summary</h2>
-                            </ListGroup.Item>
+              <ListGroup.Item>
+                <Row>
+                  <Col>Shipping:</Col>
+                  <Col>${shippingPrice}</Col>
+                </Row>
+              </ListGroup.Item>
 
-                            <ListGroup.Item>
-                                <Row>
-                                    <Col>Items:</Col>
-                                    <Col>${itemsPrice}</Col>
-                                </Row>
-                            </ListGroup.Item>
+              <ListGroup.Item>
+                <Row>
+                  <Col>Tax:</Col>
+                  <Col>${taxPrice}</Col>
+                </Row>
+              </ListGroup.Item>
 
-                            <ListGroup.Item>
-                                <Row>
-                                    <Col>Shipping:</Col>
-                                    <Col>${shippingPrice}</Col>
-                                </Row>
-                            </ListGroup.Item>
+              <ListGroup.Item>
+                <Row>
+                  <Col>Total:</Col>
+                  <Col>${totalPrice}</Col>
+                </Row>
+              </ListGroup.Item>
 
-                            <ListGroup.Item>
-                                <Row>
-                                    <Col>Tax:</Col>
-                                    <Col>${taxPrice}</Col>
-                                </Row>
-                            </ListGroup.Item>
+              <ListGroup.Item>
+                {/* {error && <Message variant='danger'>{error}</Message>} */}
+              </ListGroup.Item>
 
-                            <ListGroup.Item>
-                                <Row>
-                                    <Col>Total:</Col>
-                                    <Col>${totalPrice}</Col>
-                                </Row>
-                            </ListGroup.Item>
-
-
-                            <ListGroup.Item>
-                                {/* {error && <Message variant='danger'>{error}</Message>} */}
-                            </ListGroup.Item>
-
-                            <ListGroup.Item>
-                                <Button
-                                    type='button'
-                                    className='btn-block'
-                                    disabled={cart.cartItems === 0}
-                                    onClick={placeOrder}
-                                >
-                                    Place Order
-                                </Button>
-                            </ListGroup.Item>
-
-                        </ListGroup>
-                    </Card>
-                </Col>
-            </Row>
-        </div>
-    )
+              <ListGroup.Item>
+                <Button
+                  type="button"
+                  className="btn-block"
+                  disabled={cart.cartItems === 0}
+                  onClick={placeOrder}
+                >
+                  Place Order
+                </Button>
+              </ListGroup.Item>
+            </ListGroup>
+          </Card>
+        </Col>
+      </Row>
+    </div>
+  );
 }
 
-export default PlaceOrderScreen
+export default PlaceOrderScreen;
 ```
+
 2. update app.js
+
 ```js
 import { Container } from "react-bootstrap";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
@@ -8615,11 +8988,11 @@ function App() {
           <Routes>
             <Route path="/" element={<HomeScreen />} />
             <Route path="/login" element={<LoginScreen />} />
-             <Route path="/register" element={<RegisterScreen />} />
-              <Route path='/profile' element={<ProfileScreen />} />
-              <Route path='/shipping' element={<ShippingScreen />} />
-              <Route path='/payment' element={<PaymentScreen />} />
-              <Route path='/placeorder' element={<PlaceOrderScreen />} />
+            <Route path="/register" element={<RegisterScreen />} />
+            <Route path="/profile" element={<ProfileScreen />} />
+            <Route path="/shipping" element={<ShippingScreen />} />
+            <Route path="/payment" element={<PaymentScreen />} />
+            <Route path="/placeorder" element={<PlaceOrderScreen />} />
             <Route path="/product/:id" element={<ProductScreen />} />
             <Route path="/cart/:id?" element={<CartScreen />} />
           </Routes>
@@ -8631,10 +9004,11 @@ function App() {
 }
 
 export default App;
-
 ```
-3. go to backend side, 
+
+3. go to backend side,
 4. update order_view.py
+
 ```py
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
@@ -8699,7 +9073,9 @@ def addOrderItems(request):
 
 
 ```
-5. update  order_urls.py
+
+5. update order_urls.py
+
 ```py
 from django.urls import path
 from base.views import order_views as views
@@ -8709,7 +9085,9 @@ urlpatterns = [
     path('add/', views.addOrderItems, name='orders-add'),
 ]
 ```
+
 6. update the serializer.py
+
 ```py
 from rest_framework import serializers
 from django.contrib.auth.models import User
@@ -8755,7 +9133,7 @@ class ShippingAddressSerializer(serializers.ModelSerializer):
 class OrderItemSerializer(serializers.ModelSerializer):
     class Meta:
         model = OrderItem
-        fields = '__all__'        
+        fields = '__all__'
 
 class OrderSerializer(serializers.ModelSerializer):
     orderItems = serializers.SerializerMethodField(read_only=True)
@@ -8782,9 +9160,11 @@ class OrderSerializer(serializers.ModelSerializer):
     def get_user(self, obj):
         user = obj.user
         serializer = UserSerializer(user, many=False)
-        return serializer.data        
+        return serializer.data
 ```
+
 7. then update the order_views.py
+
 ```py
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
@@ -8851,69 +9231,78 @@ def addOrderItems(request):
         return Response(serializer.data)
 
 ```
-## step 31 placeoerder frontend
-1. create orderconstants
-```js
-export const ORDER_CREATE_REQUEST = 'ORDER_CREATE_REQUEST'
-export const ORDER_CREATE_SUCCESS = 'ORDER_CREATE_SUCCESS'
-export const ORDER_CREATE_FAIL = 'ORDER_CREATE_FAIL'
 
+## step 31 placeoerder frontend
+
+1. create orderconstants
+
+```js
+export const ORDER_CREATE_REQUEST = "ORDER_CREATE_REQUEST";
+export const ORDER_CREATE_SUCCESS = "ORDER_CREATE_SUCCESS";
+export const ORDER_CREATE_FAIL = "ORDER_CREATE_FAIL";
 ```
+
 2. create orderreducer.js
+
 ```js
 import {
-    ORDER_CREATE_REQUEST,
-    ORDER_CREATE_SUCCESS,
-    ORDER_CREATE_FAIL,
-
-   
-} from '../constants/orderConstants'
-
+  ORDER_CREATE_REQUEST,
+  ORDER_CREATE_SUCCESS,
+  ORDER_CREATE_FAIL,
+} from "../constants/orderConstants";
 
 export const orderCreateReducer = (state = {}, action) => {
-    switch (action.type) {
-        case ORDER_CREATE_REQUEST:
-            return {
-                loading: true
-            }
+  switch (action.type) {
+    case ORDER_CREATE_REQUEST:
+      return {
+        loading: true,
+      };
 
-        case ORDER_CREATE_SUCCESS:
-            return {
-                loading: false,
-                success: true,
-                order: action.payload
-            }
+    case ORDER_CREATE_SUCCESS:
+      return {
+        loading: false,
+        success: true,
+        order: action.payload,
+      };
 
-        case ORDER_CREATE_FAIL:
-            return {
-                loading: false,
-                error: action.payload
-            }
+    case ORDER_CREATE_FAIL:
+      return {
+        loading: false,
+        error: action.payload,
+      };
 
-
-        default:
-            return state
-    }
-}
-
+    default:
+      return state;
+  }
+};
 ```
+
 3. update the store.js
+
 ```js
-import { configureStore } from '@reduxjs/toolkit';
-import { productReducer, productDetailsReducer} from "./reducers/productReducers"; // import
-import {cartReducer} from "./reducers/cartReducers";
-import { userLoginReducer, userRegisterReducer, userDetailsReducer, userUpdateProfileReducer } from './reducers/userReducers';
-import { orderCreateReducer } from './reducers/orderReducers';
-const cartItemsFromStorage = localStorage.getItem('cartItems')
-  ? JSON.parse(localStorage.getItem('cartItems'))
+import { configureStore } from "@reduxjs/toolkit";
+import {
+  productReducer,
+  productDetailsReducer,
+} from "./reducers/productReducers"; // import
+import { cartReducer } from "./reducers/cartReducers";
+import {
+  userLoginReducer,
+  userRegisterReducer,
+  userDetailsReducer,
+  userUpdateProfileReducer,
+} from "./reducers/userReducers";
+import { orderCreateReducer } from "./reducers/orderReducers";
+const cartItemsFromStorage = localStorage.getItem("cartItems")
+  ? JSON.parse(localStorage.getItem("cartItems"))
   : [];
-const userInfoFromStorage = localStorage.getItem('userInfo')
-  ? JSON.parse(localStorage.getItem('userInfo'))
+const userInfoFromStorage = localStorage.getItem("userInfo")
+  ? JSON.parse(localStorage.getItem("userInfo"))
   : null;
- 
-const shippingAddressFromStorage = localStorage.getItem('shippingAddress')
-  ? JSON.parse(localStorage.getItem('shippingAddress'))
-  : {};  
+
+const shippingAddressFromStorage = localStorage.getItem("shippingAddress")
+  ? JSON.parse(localStorage.getItem("shippingAddress"))
+  : {};
 // 👇 初始化 Redux 状态
 const preloadedState = {
   cart: {
@@ -8923,546 +9312,570 @@ const preloadedState = {
   userLogin: {
     userInfo: userInfoFromStorage, // 给 userLogin reducer 赋值
   },
-  
 };
 
 export const store = configureStore({
   reducer: {
-      productList: productReducer,
-      productDetails: productDetailsReducer,
-      cart: cartReducer,
-      userLogin: userLoginReducer,
-      userRegister: userRegisterReducer,
-      userDetails: userDetailsReducer,
-      userUpdateProfile: userUpdateProfileReducer,
-      orderCreate: orderCreateReducer
+    productList: productReducer,
+    productDetails: productDetailsReducer,
+    cart: cartReducer,
+    userLogin: userLoginReducer,
+    userRegister: userRegisterReducer,
+    userDetails: userDetailsReducer,
+    userUpdateProfile: userUpdateProfileReducer,
+    orderCreate: orderCreateReducer,
   },
   // ✅ Thunk + DevTools ARE AUTO INCLUDED — NO SETUP NEEDED!
-  preloadedState : preloadedState,
-  middleware: (getDefaultMiddleware) => getDefaultMiddleware({ serializableCheck: false, immutableCheck: false, })  // for devtools bug
+  preloadedState: preloadedState,
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware({ serializableCheck: false, immutableCheck: false }), // for devtools bug
 });
 
 export default store;
-
 ```
-4. create orderactions.js
-```js
-import axios from 'axios'
-import {
-    ORDER_CREATE_REQUEST,
-    ORDER_CREATE_SUCCESS,
-    ORDER_CREATE_FAIL,
 
-  
-} from '../constants/orderConstants'
+4. create orderactions.js
+
+```js
+import axios from "axios";
+import {
+  ORDER_CREATE_REQUEST,
+  ORDER_CREATE_SUCCESS,
+  ORDER_CREATE_FAIL,
+} from "../constants/orderConstants";
 
 export const createOrder = (order) => async (dispatch, getState) => {
-    try {
-        dispatch({
-            type: ORDER_CREATE_REQUEST
-        })
+  try {
+    dispatch({
+      type: ORDER_CREATE_REQUEST,
+    });
 
-        const {
-            userLogin: { userInfo },
-        } = getState()
+    const {
+      userLogin: { userInfo },
+    } = getState();
 
-        const config = {
-            headers: {
-                'Content-type': 'application/json',
-                Authorization: `Bearer ${userInfo.token}`
-            }
-        }
+    const config = {
+      headers: {
+        "Content-type": "application/json",
+        Authorization: `Bearer ${userInfo.token}`,
+      },
+    };
 
-        const { data } = await axios.post(
-            `/api/orders/add/`,
-            order,
-            config
-        )
+    const { data } = await axios.post(`/api/orders/add/`, order, config);
 
-        dispatch({
-            type: ORDER_CREATE_SUCCESS,
-            payload: data
-        })
+    dispatch({
+      type: ORDER_CREATE_SUCCESS,
+      payload: data,
+    });
 
-        dispatch({
-            type: CART_CLEAR_ITEMS,
-            payload: data
-        })
+    dispatch({
+      type: CART_CLEAR_ITEMS,
+      payload: data,
+    });
 
-        localStorage.removeItem('cartItems')
-
-
-    } catch (error) {
-        dispatch({
-            type: ORDER_CREATE_FAIL,
-            payload: error.response && error.response.data.detail
-                ? error.response.data.detail
-                : error.message,
-        })
-    }
-}
-
+    localStorage.removeItem("cartItems");
+  } catch (error) {
+    dispatch({
+      type: ORDER_CREATE_FAIL,
+      payload:
+        error.response && error.response.data.detail
+          ? error.response.data.detail
+          : error.message,
+    });
+  }
+};
 ```
+
 5. update placeorderscreen.jsx
+
 ```jsx
-import React, { useEffect } from 'react'
-import { Button, Row, Col, ListGroup, Image, Card } from 'react-bootstrap'
-import { Link, useNavigate } from 'react-router-dom'
-import { useDispatch, useSelector } from 'react-redux'
-import Message from '../components/Message'
-import CheckoutSteps from '../components/CheckoutSteps'
-import { createOrder } from '../actions/orderActions'
+import React, { useEffect } from "react";
+import { Button, Row, Col, ListGroup, Image, Card } from "react-bootstrap";
+import { Link, useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import Message from "../components/Message";
+import CheckoutSteps from "../components/CheckoutSteps";
+import { createOrder } from "../actions/orderActions";
 // import { ORDER_CREATE_RESET } from '../constants/orderConstants'
 
 function PlaceOrderScreen() {
-    const navigate = useNavigate()
-    const orderCreate = useSelector(state => state.orderCreate)
-    const { order, error, success } = orderCreate
+  const navigate = useNavigate();
+  const orderCreate = useSelector((state) => state.orderCreate);
+  const { order, error, success } = orderCreate;
 
-    const dispatch = useDispatch()
+  const dispatch = useDispatch();
 
-    const cart = useSelector(state => state.cart) // select cart from store
+  const cart = useSelector((state) => state.cart); // select cart from store
 
-     const itemsPrice = cart.cartItems.reduce((acc, item) => acc + item.price * item.qty, 0).toFixed(2)
-    const shippingPrice = (itemsPrice > 100 ? 0 : 10).toFixed(2)
-    const taxPrice = Number((0.082) * itemsPrice).toFixed(2)
-    const totalPrice = (Number(itemsPrice) + Number(shippingPrice) + Number(taxPrice)).toFixed(2)
+  const itemsPrice = cart.cartItems
+    .reduce((acc, item) => acc + item.price * item.qty, 0)
+    .toFixed(2);
+  const shippingPrice = (itemsPrice > 100 ? 0 : 10).toFixed(2);
+  const taxPrice = Number(0.082 * itemsPrice).toFixed(2);
+  const totalPrice = (
+    Number(itemsPrice) +
+    Number(shippingPrice) +
+    Number(taxPrice)
+  ).toFixed(2);
 
+  if (!cart.paymentMethod) {
+    navigate("/payment");
+  }
 
-    if (!cart.paymentMethod) {
-        navigate('/payment')
+  useEffect(() => {
+    if (success) {
+      navigate(`/order/${order._id}`);
+      //  dispatch({ type: ORDER_CREATE_RESET })
     }
+  }, [success, navigate]);
 
-    useEffect(() => {
-        if (success) {
-            navigate(`/order/${order._id}`)
-            //  dispatch({ type: ORDER_CREATE_RESET })
-        }
-    }, [success, navigate])
-
-    const placeOrder = () => {
-        dispatch(createOrder({
-             orderItems: cart.cartItems,
+  const placeOrder = () => {
+    dispatch(
+      createOrder({
+        orderItems: cart.cartItems,
         shippingAddress: cart.shippingAddress,
         paymentMethod: cart.paymentMethod, // ✅ 现在正常存在
-        itemsPrice: itemsPrice,            // ✅ 本地变量
-        shippingPrice: shippingPrice,      // ✅ 本地变量
-        taxPrice: taxPrice,                // ✅ 本地变量
-        totalPrice: totalPrice,       
-        }))
-    }
+        itemsPrice: itemsPrice, // ✅ 本地变量
+        shippingPrice: shippingPrice, // ✅ 本地变量
+        taxPrice: taxPrice, // ✅ 本地变量
+        totalPrice: totalPrice,
+      }),
+    );
+  };
 
-    return (
-        <div>
-            <CheckoutSteps step1 step2 step3 step4 />
-            <Row>
-                <Col md={8}>
-                    <ListGroup variant='flush'>
-                        <ListGroup.Item>
-                            <h2>Shipping</h2>
+  return (
+    <div>
+      <CheckoutSteps step1 step2 step3 step4 />
+      <Row>
+        <Col md={8}>
+          <ListGroup variant="flush">
+            <ListGroup.Item>
+              <h2>Shipping</h2>
 
-                            <p>
-                                <strong>Shipping: </strong>
-                                {cart.shippingAddress.address},  {cart.shippingAddress.city}
-                                {'  '}
-                                {cart.shippingAddress.postalCode},
-                                {'  '}
-                                {cart.shippingAddress.country}
-                            </p>
-                        </ListGroup.Item>
+              <p>
+                <strong>Shipping: </strong>
+                {cart.shippingAddress.address}, {cart.shippingAddress.city}
+                {"  "}
+                {cart.shippingAddress.postalCode},{"  "}
+                {cart.shippingAddress.country}
+              </p>
+            </ListGroup.Item>
 
-                        <ListGroup.Item>
-                            <h2>Payment Method</h2>
-                            <p>
-                                <strong>Method: </strong>
-                                {cart.paymentMethod}
-                            </p>
-                        </ListGroup.Item>
+            <ListGroup.Item>
+              <h2>Payment Method</h2>
+              <p>
+                <strong>Method: </strong>
+                {cart.paymentMethod}
+              </p>
+            </ListGroup.Item>
 
-                        <ListGroup.Item>
-                            <h2>Order Items</h2>
-                            {cart.cartItems.length === 0 ? <Message variant='info'>
-                                Your cart is empty
-                            </Message> : (
-                                    <ListGroup variant='flush'>
-                                        {cart.cartItems.map((item, index) => (
-                                            <ListGroup.Item key={index}>
-                                                <Row>
-                                                    <Col md={1}>
-                                                        <Image src={item.image} alt={item.name} fluid rounded />
-                                                    </Col>
+            <ListGroup.Item>
+              <h2>Order Items</h2>
+              {cart.cartItems.length === 0 ? (
+                <Message variant="info">Your cart is empty</Message>
+              ) : (
+                <ListGroup variant="flush">
+                  {cart.cartItems.map((item, index) => (
+                    <ListGroup.Item key={index}>
+                      <Row>
+                        <Col md={1}>
+                          <Image
+                            src={item.image}
+                            alt={item.name}
+                            fluid
+                            rounded
+                          />
+                        </Col>
 
-                                                    <Col>
-                                                        <Link to={`/product/${item.product}`}>{item.name}</Link>
-                                                    </Col>
+                        <Col>
+                          <Link to={`/product/${item.product}`}>
+                            {item.name}
+                          </Link>
+                        </Col>
 
-                                                    <Col md={4}>
-                                                        {item.qty} X ${item.price} = ${(item.qty * item.price).toFixed(2)}
-                                                    </Col>
-                                                </Row>
-                                            </ListGroup.Item>
-                                        ))}
-                                    </ListGroup>
-                                )}
-                        </ListGroup.Item>
+                        <Col md={4}>
+                          {item.qty} X ${item.price} = $
+                          {(item.qty * item.price).toFixed(2)}
+                        </Col>
+                      </Row>
+                    </ListGroup.Item>
+                  ))}
+                </ListGroup>
+              )}
+            </ListGroup.Item>
+          </ListGroup>
+        </Col>
 
-                    </ListGroup>
+        <Col md={4}>
+          <Card>
+            <ListGroup variant="flush">
+              <ListGroup.Item>
+                <h2>Order Summary</h2>
+              </ListGroup.Item>
 
-                </Col>
+              <ListGroup.Item>
+                <Row>
+                  <Col>Items:</Col>
+                  <Col>${itemsPrice}</Col>
+                </Row>
+              </ListGroup.Item>
 
-                <Col md={4}>
-                    <Card>
-                        <ListGroup variant='flush'>
-                            <ListGroup.Item>
-                                <h2>Order Summary</h2>
-                            </ListGroup.Item>
+              <ListGroup.Item>
+                <Row>
+                  <Col>Shipping:</Col>
+                  <Col>${shippingPrice}</Col>
+                </Row>
+              </ListGroup.Item>
 
-                            <ListGroup.Item>
-                                <Row>
-                                    <Col>Items:</Col>
-                                    <Col>${itemsPrice}</Col>
-                                </Row>
-                            </ListGroup.Item>
+              <ListGroup.Item>
+                <Row>
+                  <Col>Tax:</Col>
+                  <Col>${taxPrice}</Col>
+                </Row>
+              </ListGroup.Item>
 
-                            <ListGroup.Item>
-                                <Row>
-                                    <Col>Shipping:</Col>
-                                    <Col>${shippingPrice}</Col>
-                                </Row>
-                            </ListGroup.Item>
+              <ListGroup.Item>
+                <Row>
+                  <Col>Total:</Col>
+                  <Col>${totalPrice}</Col>
+                </Row>
+              </ListGroup.Item>
 
-                            <ListGroup.Item>
-                                <Row>
-                                    <Col>Tax:</Col>
-                                    <Col>${taxPrice}</Col>
-                                </Row>
-                            </ListGroup.Item>
+              <ListGroup.Item>
+                {error && <Message variant="danger">{error}</Message>}
+              </ListGroup.Item>
 
-                            <ListGroup.Item>
-                                <Row>
-                                    <Col>Total:</Col>
-                                    <Col>${totalPrice}</Col>
-                                </Row>
-                            </ListGroup.Item>
-
-
-                            <ListGroup.Item>
-                                {error && <Message variant='danger'>{error}</Message>}
-                            </ListGroup.Item>
-
-                            <ListGroup.Item>
-                                <Button
-                                    type='button'
-                                    className='btn-block'
-                                    disabled={cart.cartItems === 0}
-                                    onClick={placeOrder}
-                                >
-                                    Place Order
-                                </Button>
-                            </ListGroup.Item>
-
-                        </ListGroup>
-                    </Card>
-                </Col>
-            </Row>
-        </div>
-    )
+              <ListGroup.Item>
+                <Button
+                  type="button"
+                  className="btn-block"
+                  disabled={cart.cartItems === 0}
+                  onClick={placeOrder}
+                >
+                  Place Order
+                </Button>
+              </ListGroup.Item>
+            </ListGroup>
+          </Card>
+        </Col>
+      </Row>
+    </div>
+  );
 }
 
-export default PlaceOrderScree
+export default PlaceOrderScree;
 ```
+
 6. if everything is ok, placeorder will route to order/:id means the order is created.
 7. need to clear the order from cart, after create order, update constants
-```js
-export const ORDER_CREATE_REQUEST = 'ORDER_CREATE_REQUEST'
-export const ORDER_CREATE_SUCCESS = 'ORDER_CREATE_SUCCESS'
-export const ORDER_CREATE_FAIL = 'ORDER_CREATE_FAIL'
 
-export const ORDER_CREATE_RESET = 'ORDER_CREATE_RESET'
+```js
+export const ORDER_CREATE_REQUEST = "ORDER_CREATE_REQUEST";
+export const ORDER_CREATE_SUCCESS = "ORDER_CREATE_SUCCESS";
+export const ORDER_CREATE_FAIL = "ORDER_CREATE_FAIL";
+
+export const ORDER_CREATE_RESET = "ORDER_CREATE_RESET";
 ```
+
 8. update orderreducer.js
+
 ```js
 import {
-    ORDER_CREATE_REQUEST,
-    ORDER_CREATE_SUCCESS,
-    ORDER_CREATE_FAIL,
-    ORDER_CREATE_RESET
-   
-} from '../constants/orderConstants'
-
+  ORDER_CREATE_REQUEST,
+  ORDER_CREATE_SUCCESS,
+  ORDER_CREATE_FAIL,
+  ORDER_CREATE_RESET,
+} from "../constants/orderConstants";
 
 export const orderCreateReducer = (state = {}, action) => {
-    switch (action.type) {
-        case ORDER_CREATE_REQUEST:
-            return {
-                loading: true
-            }
+  switch (action.type) {
+    case ORDER_CREATE_REQUEST:
+      return {
+        loading: true,
+      };
 
-        case ORDER_CREATE_SUCCESS:
-            return {
-                loading: false,
-                success: true,
-                order: action.payload
-            }
+    case ORDER_CREATE_SUCCESS:
+      return {
+        loading: false,
+        success: true,
+        order: action.payload,
+      };
 
-        case ORDER_CREATE_FAIL:
-            return {
-                loading: false,
-                error: action.payload
-            }
+    case ORDER_CREATE_FAIL:
+      return {
+        loading: false,
+        error: action.payload,
+      };
 
-        case ORDER_CREATE_RESET:
-            return {}   
+    case ORDER_CREATE_RESET:
+      return {};
 
-        default:
-            return state
-    }
-}
-
+    default:
+      return state;
+  }
+};
 ```
+
 9. update placeorderscreen.jsx
+
 ```jsx
-import React, { useEffect } from 'react'
-import { Button, Row, Col, ListGroup, Image, Card } from 'react-bootstrap'
-import { Link, useNavigate } from 'react-router-dom'
-import { useDispatch, useSelector } from 'react-redux'
-import Message from '../components/Message'
-import CheckoutSteps from '../components/CheckoutSteps'
-import { createOrder } from '../actions/orderActions'
-import { ORDER_CREATE_RESET } from '../constants/orderConstants'
+import React, { useEffect } from "react";
+import { Button, Row, Col, ListGroup, Image, Card } from "react-bootstrap";
+import { Link, useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import Message from "../components/Message";
+import CheckoutSteps from "../components/CheckoutSteps";
+import { createOrder } from "../actions/orderActions";
+import { ORDER_CREATE_RESET } from "../constants/orderConstants";
 
 function PlaceOrderScreen() {
-    const navigate = useNavigate()
-    const orderCreate = useSelector(state => state.orderCreate)
-    const { order, error, success } = orderCreate
+  const navigate = useNavigate();
+  const orderCreate = useSelector((state) => state.orderCreate);
+  const { order, error, success } = orderCreate;
 
-    const dispatch = useDispatch()
+  const dispatch = useDispatch();
 
-    const cart = useSelector(state => state.cart) // select cart from store
+  const cart = useSelector((state) => state.cart); // select cart from store
 
-     const itemsPrice = cart.cartItems.reduce((acc, item) => acc + item.price * item.qty, 0).toFixed(2)
-    const shippingPrice = (itemsPrice > 100 ? 0 : 10).toFixed(2)
-    const taxPrice = Number((0.082) * itemsPrice).toFixed(2)
-    const totalPrice = (Number(itemsPrice) + Number(shippingPrice) + Number(taxPrice)).toFixed(2)
+  const itemsPrice = cart.cartItems
+    .reduce((acc, item) => acc + item.price * item.qty, 0)
+    .toFixed(2);
+  const shippingPrice = (itemsPrice > 100 ? 0 : 10).toFixed(2);
+  const taxPrice = Number(0.082 * itemsPrice).toFixed(2);
+  const totalPrice = (
+    Number(itemsPrice) +
+    Number(shippingPrice) +
+    Number(taxPrice)
+  ).toFixed(2);
 
+  if (!cart.paymentMethod) {
+    navigate("/payment");
+  }
 
-    if (!cart.paymentMethod) {
-        navigate('/payment')
+  useEffect(() => {
+    if (success) {
+      navigate(`/order/${order._id}`);
+      dispatch({ type: ORDER_CREATE_RESET });
     }
+  }, [success, navigate]);
 
-    useEffect(() => {
-        if (success) {
-            navigate(`/order/${order._id}`)
-             dispatch({ type: ORDER_CREATE_RESET })
-        }
-    }, [success, navigate])
-
-    const placeOrder = () => {
-        dispatch(createOrder({
-             orderItems: cart.cartItems,
+  const placeOrder = () => {
+    dispatch(
+      createOrder({
+        orderItems: cart.cartItems,
         shippingAddress: cart.shippingAddress,
         paymentMethod: cart.paymentMethod, // ✅ 现在正常存在
-        itemsPrice: itemsPrice,            // ✅ 本地变量
-        shippingPrice: shippingPrice,      // ✅ 本地变量
-        taxPrice: taxPrice,                // ✅ 本地变量
-        totalPrice: totalPrice,       
-        }))
-    }
+        itemsPrice: itemsPrice, // ✅ 本地变量
+        shippingPrice: shippingPrice, // ✅ 本地变量
+        taxPrice: taxPrice, // ✅ 本地变量
+        totalPrice: totalPrice,
+      }),
+    );
+  };
 
-    return (
-        <div>
-            <CheckoutSteps step1 step2 step3 step4 />
-            <Row>
-                <Col md={8}>
-                    <ListGroup variant='flush'>
-                        <ListGroup.Item>
-                            <h2>Shipping</h2>
+  return (
+    <div>
+      <CheckoutSteps step1 step2 step3 step4 />
+      <Row>
+        <Col md={8}>
+          <ListGroup variant="flush">
+            <ListGroup.Item>
+              <h2>Shipping</h2>
 
-                            <p>
-                                <strong>Shipping: </strong>
-                                {cart.shippingAddress.address},  {cart.shippingAddress.city}
-                                {'  '}
-                                {cart.shippingAddress.postalCode},
-                                {'  '}
-                                {cart.shippingAddress.country}
-                            </p>
-                        </ListGroup.Item>
+              <p>
+                <strong>Shipping: </strong>
+                {cart.shippingAddress.address}, {cart.shippingAddress.city}
+                {"  "}
+                {cart.shippingAddress.postalCode},{"  "}
+                {cart.shippingAddress.country}
+              </p>
+            </ListGroup.Item>
 
-                        <ListGroup.Item>
-                            <h2>Payment Method</h2>
-                            <p>
-                                <strong>Method: </strong>
-                                {cart.paymentMethod}
-                            </p>
-                        </ListGroup.Item>
+            <ListGroup.Item>
+              <h2>Payment Method</h2>
+              <p>
+                <strong>Method: </strong>
+                {cart.paymentMethod}
+              </p>
+            </ListGroup.Item>
 
-                        <ListGroup.Item>
-                            <h2>Order Items</h2>
-                            {cart.cartItems.length === 0 ? <Message variant='info'>
-                                Your cart is empty
-                            </Message> : (
-                                    <ListGroup variant='flush'>
-                                        {cart.cartItems.map((item, index) => (
-                                            <ListGroup.Item key={index}>
-                                                <Row>
-                                                    <Col md={1}>
-                                                        <Image src={item.image} alt={item.name} fluid rounded />
-                                                    </Col>
+            <ListGroup.Item>
+              <h2>Order Items</h2>
+              {cart.cartItems.length === 0 ? (
+                <Message variant="info">Your cart is empty</Message>
+              ) : (
+                <ListGroup variant="flush">
+                  {cart.cartItems.map((item, index) => (
+                    <ListGroup.Item key={index}>
+                      <Row>
+                        <Col md={1}>
+                          <Image
+                            src={item.image}
+                            alt={item.name}
+                            fluid
+                            rounded
+                          />
+                        </Col>
 
-                                                    <Col>
-                                                        <Link to={`/product/${item.product}`}>{item.name}</Link>
-                                                    </Col>
+                        <Col>
+                          <Link to={`/product/${item.product}`}>
+                            {item.name}
+                          </Link>
+                        </Col>
 
-                                                    <Col md={4}>
-                                                        {item.qty} X ${item.price} = ${(item.qty * item.price).toFixed(2)}
-                                                    </Col>
-                                                </Row>
-                                            </ListGroup.Item>
-                                        ))}
-                                    </ListGroup>
-                                )}
-                        </ListGroup.Item>
+                        <Col md={4}>
+                          {item.qty} X ${item.price} = $
+                          {(item.qty * item.price).toFixed(2)}
+                        </Col>
+                      </Row>
+                    </ListGroup.Item>
+                  ))}
+                </ListGroup>
+              )}
+            </ListGroup.Item>
+          </ListGroup>
+        </Col>
 
-                    </ListGroup>
+        <Col md={4}>
+          <Card>
+            <ListGroup variant="flush">
+              <ListGroup.Item>
+                <h2>Order Summary</h2>
+              </ListGroup.Item>
 
-                </Col>
+              <ListGroup.Item>
+                <Row>
+                  <Col>Items:</Col>
+                  <Col>${itemsPrice}</Col>
+                </Row>
+              </ListGroup.Item>
 
-                <Col md={4}>
-                    <Card>
-                        <ListGroup variant='flush'>
-                            <ListGroup.Item>
-                                <h2>Order Summary</h2>
-                            </ListGroup.Item>
+              <ListGroup.Item>
+                <Row>
+                  <Col>Shipping:</Col>
+                  <Col>${shippingPrice}</Col>
+                </Row>
+              </ListGroup.Item>
 
-                            <ListGroup.Item>
-                                <Row>
-                                    <Col>Items:</Col>
-                                    <Col>${itemsPrice}</Col>
-                                </Row>
-                            </ListGroup.Item>
+              <ListGroup.Item>
+                <Row>
+                  <Col>Tax:</Col>
+                  <Col>${taxPrice}</Col>
+                </Row>
+              </ListGroup.Item>
 
-                            <ListGroup.Item>
-                                <Row>
-                                    <Col>Shipping:</Col>
-                                    <Col>${shippingPrice}</Col>
-                                </Row>
-                            </ListGroup.Item>
+              <ListGroup.Item>
+                <Row>
+                  <Col>Total:</Col>
+                  <Col>${totalPrice}</Col>
+                </Row>
+              </ListGroup.Item>
 
-                            <ListGroup.Item>
-                                <Row>
-                                    <Col>Tax:</Col>
-                                    <Col>${taxPrice}</Col>
-                                </Row>
-                            </ListGroup.Item>
+              <ListGroup.Item>
+                {error && <Message variant="danger">{error}</Message>}
+              </ListGroup.Item>
 
-                            <ListGroup.Item>
-                                <Row>
-                                    <Col>Total:</Col>
-                                    <Col>${totalPrice}</Col>
-                                </Row>
-                            </ListGroup.Item>
-
-
-                            <ListGroup.Item>
-                                {error && <Message variant='danger'>{error}</Message>}
-                            </ListGroup.Item>
-
-                            <ListGroup.Item>
-                                <Button
-                                    type='button'
-                                    className='btn-block'
-                                    disabled={cart.cartItems === 0}
-                                    onClick={placeOrder}
-                                >
-                                    Place Order
-                                </Button>
-                            </ListGroup.Item>
-
-                        </ListGroup>
-                    </Card>
-                </Col>
-            </Row>
-        </div>
-    )
+              <ListGroup.Item>
+                <Button
+                  type="button"
+                  className="btn-block"
+                  disabled={cart.cartItems === 0}
+                  onClick={placeOrder}
+                >
+                  Place Order
+                </Button>
+              </ListGroup.Item>
+            </ListGroup>
+          </Card>
+        </Col>
+      </Row>
+    </div>
+  );
 }
 
-export default PlaceOrderScree
+export default PlaceOrderScree;
 ```
+
 10. we need to delete the items from localstorage, update cartconstants
+
 ```js
 export const CART_ADD_ITEM = "CART_ADD_ITEM";
 export const CART_REMOVE_ITEM = "CART_REMOVE_ITEM";
 export const CART_SAVE_SHIPPING_ADDRESS = "CART_SAVE_SHIPPING_ADDRESS";
 export const CART_SAVE_PAYMENT_METHOD = "CART_SAVE_PAYMENT_METHOD";
 
-export const CART_CLEAR_ITEMS = 'CART_CLEAR_ITEMS'
+export const CART_CLEAR_ITEMS = "CART_CLEAR_ITEMS";
 ```
+
 11. update orderactions.js
+
 ```js
-import axios from 'axios'
+import axios from "axios";
 import {
-    ORDER_CREATE_REQUEST,
-    ORDER_CREATE_SUCCESS,
-    ORDER_CREATE_FAIL,
+  ORDER_CREATE_REQUEST,
+  ORDER_CREATE_SUCCESS,
+  ORDER_CREATE_FAIL,
+} from "../constants/orderConstants";
 
-  
-} from '../constants/orderConstants'
-
-import { CART_CLEAR_ITEMS } from '../constants/cartConstants'
-
+import { CART_CLEAR_ITEMS } from "../constants/cartConstants";
 
 export const createOrder = (order) => async (dispatch, getState) => {
-    try {
-        dispatch({
-            type: ORDER_CREATE_REQUEST
-        })
+  try {
+    dispatch({
+      type: ORDER_CREATE_REQUEST,
+    });
 
-        const {
-            userLogin: { userInfo },
-        } = getState()
+    const {
+      userLogin: { userInfo },
+    } = getState();
 
-        const config = {
-            headers: {
-                'Content-type': 'application/json',
-                Authorization: `Bearer ${userInfo.token}`
-            }
-        }
+    const config = {
+      headers: {
+        "Content-type": "application/json",
+        Authorization: `Bearer ${userInfo.token}`,
+      },
+    };
 
-        const { data } = await axios.post(
-            `/api/orders/add/`,
-            order,
-            config
-        )
+    const { data } = await axios.post(`/api/orders/add/`, order, config);
 
-        dispatch({
-            type: ORDER_CREATE_SUCCESS,
-            payload: data
-        })
+    dispatch({
+      type: ORDER_CREATE_SUCCESS,
+      payload: data,
+    });
 
-        dispatch({
-            type: CART_CLEAR_ITEMS,
-            payload: data
-        })
+    dispatch({
+      type: CART_CLEAR_ITEMS,
+      payload: data,
+    });
 
-        localStorage.removeItem('cartItems');
-
-
-    } catch (error) {
-        dispatch({
-            type: ORDER_CREATE_FAIL,
-            payload: error.response && error.response.data.detail
-                ? error.response.data.detail
-                : error.message,
-        })
-    }
-}
-
+    localStorage.removeItem("cartItems");
+  } catch (error) {
+    dispatch({
+      type: ORDER_CREATE_FAIL,
+      payload:
+        error.response && error.response.data.detail
+          ? error.response.data.detail
+          : error.message,
+    });
+  }
+};
 ```
-12. remove the state from the cartreducer.js
-```js
-import { CART_ADD_ITEM, CART_REMOVE_ITEM , CART_SAVE_SHIPPING_ADDRESS, CART_SAVE_PAYMENT_METHOD, CART_CLEAR_ITEMS} from "../constants/cartConstants";
 
-export const cartReducer = (state = { cartItems: [], shippingAddress: {} }, action) => {
+12. remove the state from the cartreducer.js
+
+```js
+import {
+  CART_ADD_ITEM,
+  CART_REMOVE_ITEM,
+  CART_SAVE_SHIPPING_ADDRESS,
+  CART_SAVE_PAYMENT_METHOD,
+  CART_CLEAR_ITEMS,
+} from "../constants/cartConstants";
+
+export const cartReducer = (
+  state = { cartItems: [], shippingAddress: {} },
+  action,
+) => {
   switch (action.type) {
     case CART_ADD_ITEM:
       const item = action.payload;
@@ -9471,7 +9884,7 @@ export const cartReducer = (state = { cartItems: [], shippingAddress: {} }, acti
         return {
           ...state,
           cartItems: state.cartItems.map((x) =>
-            x.product === existItem.product ? item : x
+            x.product === existItem.product ? item : x,
           ),
         };
       } else {
@@ -9486,29 +9899,30 @@ export const cartReducer = (state = { cartItems: [], shippingAddress: {} }, acti
         cartItems: state.cartItems.filter((x) => x.product !== action.payload),
       };
     case CART_SAVE_SHIPPING_ADDRESS:
-            return {
-                ...state,
-                shippingAddress: action.payload
-            };
+      return {
+        ...state,
+        shippingAddress: action.payload,
+      };
     case CART_SAVE_PAYMENT_METHOD:
-            return {
-                ...state,
-                paymentMethod: action.payload
-            }     
+      return {
+        ...state,
+        paymentMethod: action.payload,
+      };
     case CART_CLEAR_ITEMS:
-            return {
-                ...state,
-                cartItems: []
-            }   
+      return {
+        ...state,
+        cartItems: [],
+      };
     default:
       return state;
   }
-  
-}
+};
 ```
 
 ## step 32 getorder by endpoint
+
 1. backto backend , update order_views.py
+
 ```py
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
@@ -9528,7 +9942,9 @@ def getOrderById(request, pk):
         return Response({'detail': 'Order does not exist'}, status=status.HTTP_400_BAD_REQUEST)
 
 ```
+
 2. update order_urls.py
+
 ```py
 from django.urls import path
 from base.views import order_views as views
@@ -9538,105 +9954,119 @@ urlpatterns = [
     path('<str:pk>/', views.getOrderById, name='user-order'),
 ]
 ```
+
 3. goto postman and test, once the backend is fine then back to frontend, create orderConstant.js
+
 ```js
-export const ORDER_CREATE_REQUEST = 'ORDER_CREATE_REQUEST'
-export const ORDER_CREATE_SUCCESS = 'ORDER_CREATE_SUCCESS'
-export const ORDER_CREATE_FAIL = 'ORDER_CREATE_FAIL'
+export const ORDER_CREATE_REQUEST = "ORDER_CREATE_REQUEST";
+export const ORDER_CREATE_SUCCESS = "ORDER_CREATE_SUCCESS";
+export const ORDER_CREATE_FAIL = "ORDER_CREATE_FAIL";
 
-export const ORDER_CREATE_RESET = 'ORDER_CREATE_RESET'
+export const ORDER_CREATE_RESET = "ORDER_CREATE_RESET";
 
-export const ORDER_DETAILS_REQUEST = 'ORDER_DETAILS_REQUEST'
-export const ORDER_DETAILS_SUCCESS = 'ORDER_DETAILS_SUCCESS'
-export const ORDER_DETAILS_FAIL = 'ORDER_DETAILS_FAIL'
-
+export const ORDER_DETAILS_REQUEST = "ORDER_DETAILS_REQUEST";
+export const ORDER_DETAILS_SUCCESS = "ORDER_DETAILS_SUCCESS";
+export const ORDER_DETAILS_FAIL = "ORDER_DETAILS_FAIL";
 ```
+
 4. update orderreducer.js
+
 ```js
 import {
-    ORDER_CREATE_REQUEST,
-    ORDER_CREATE_SUCCESS,
-    ORDER_CREATE_FAIL,
-    ORDER_CREATE_RESET,
-
-    ORDER_DETAILS_REQUEST, 
-    ORDER_DETAILS_SUCCESS,
-    ORDER_DETAILS_FAIL,
-   
-} from '../constants/orderConstants'
-
+  ORDER_CREATE_REQUEST,
+  ORDER_CREATE_SUCCESS,
+  ORDER_CREATE_FAIL,
+  ORDER_CREATE_RESET,
+  ORDER_DETAILS_REQUEST,
+  ORDER_DETAILS_SUCCESS,
+  ORDER_DETAILS_FAIL,
+} from "../constants/orderConstants";
 
 export const orderCreateReducer = (state = {}, action) => {
-    switch (action.type) {
-        case ORDER_CREATE_REQUEST:
-            return {
-                loading: true
-            }
+  switch (action.type) {
+    case ORDER_CREATE_REQUEST:
+      return {
+        loading: true,
+      };
 
-        case ORDER_CREATE_SUCCESS:
-            return {
-                loading: false,
-                success: true,
-                order: action.payload
-            }
+    case ORDER_CREATE_SUCCESS:
+      return {
+        loading: false,
+        success: true,
+        order: action.payload,
+      };
 
-        case ORDER_CREATE_FAIL:
-            return {
-                loading: false,
-                error: action.payload
-            }
+    case ORDER_CREATE_FAIL:
+      return {
+        loading: false,
+        error: action.payload,
+      };
 
-        case ORDER_CREATE_RESET:
-            return {}   
+    case ORDER_CREATE_RESET:
+      return {};
 
-        default:
-            return state
-    }
-}
-export const orderDetailsReducer = (state = { loading: true, orderItems: [], shippingAddress: {} }, action) => {
-    switch (action.type) {
-        case ORDER_DETAILS_REQUEST:
-            return {
-                ...state,
-                loading: true
-            }
+    default:
+      return state;
+  }
+};
+export const orderDetailsReducer = (
+  state = { loading: true, orderItems: [], shippingAddress: {} },
+  action,
+) => {
+  switch (action.type) {
+    case ORDER_DETAILS_REQUEST:
+      return {
+        ...state,
+        loading: true,
+      };
 
-        case ORDER_DETAILS_SUCCESS:
-            return {
-                loading: false,
-                order: action.payload
-            }
+    case ORDER_DETAILS_SUCCESS:
+      return {
+        loading: false,
+        order: action.payload,
+      };
 
-        case ORDER_DETAILS_FAIL:
-            return {
-                loading: false,
-                error: action.payload
-            }
+    case ORDER_DETAILS_FAIL:
+      return {
+        loading: false,
+        error: action.payload,
+      };
 
-
-        default:
-            return state
-    }
-}
-
+    default:
+      return state;
+  }
+};
 ```
+
 5. update the store.js
+
 ```js
-import { configureStore } from '@reduxjs/toolkit';
-import { productReducer, productDetailsReducer} from "./reducers/productReducers"; // import
-import {cartReducer} from "./reducers/cartReducers";
-import { userLoginReducer, userRegisterReducer, userDetailsReducer, userUpdateProfileReducer } from './reducers/userReducers';
-import { orderCreateReducer, orderDetailsReducer } from './reducers/orderReducers';
-const cartItemsFromStorage = localStorage.getItem('cartItems')
-  ? JSON.parse(localStorage.getItem('cartItems'))
+import { configureStore } from "@reduxjs/toolkit";
+import {
+  productReducer,
+  productDetailsReducer,
+} from "./reducers/productReducers"; // import
+import { cartReducer } from "./reducers/cartReducers";
+import {
+  userLoginReducer,
+  userRegisterReducer,
+  userDetailsReducer,
+  userUpdateProfileReducer,
+} from "./reducers/userReducers";
+import {
+  orderCreateReducer,
+  orderDetailsReducer,
+} from "./reducers/orderReducers";
+const cartItemsFromStorage = localStorage.getItem("cartItems")
+  ? JSON.parse(localStorage.getItem("cartItems"))
   : [];
-const userInfoFromStorage = localStorage.getItem('userInfo')
-  ? JSON.parse(localStorage.getItem('userInfo'))
+const userInfoFromStorage = localStorage.getItem("userInfo")
+  ? JSON.parse(localStorage.getItem("userInfo"))
   : null;
- 
-const shippingAddressFromStorage = localStorage.getItem('shippingAddress')
-  ? JSON.parse(localStorage.getItem('shippingAddress'))
-  : {};  
+
+const shippingAddressFromStorage = localStorage.getItem("shippingAddress")
+  ? JSON.parse(localStorage.getItem("shippingAddress"))
+  : {};
 // 👇 初始化 Redux 状态
 const preloadedState = {
   cart: {
@@ -9646,291 +10076,291 @@ const preloadedState = {
   userLogin: {
     userInfo: userInfoFromStorage, // 给 userLogin reducer 赋值
   },
-  
 };
 
 export const store = configureStore({
   reducer: {
-      productList: productReducer,
-      productDetails: productDetailsReducer,
-      cart: cartReducer,
-      userLogin: userLoginReducer,
-      userRegister: userRegisterReducer,
-      userDetails: userDetailsReducer,
-      userUpdateProfile: userUpdateProfileReducer,
-      orderCreate: orderCreateReducer,
-      orderDetails: orderDetailsReducer
+    productList: productReducer,
+    productDetails: productDetailsReducer,
+    cart: cartReducer,
+    userLogin: userLoginReducer,
+    userRegister: userRegisterReducer,
+    userDetails: userDetailsReducer,
+    userUpdateProfile: userUpdateProfileReducer,
+    orderCreate: orderCreateReducer,
+    orderDetails: orderDetailsReducer,
   },
   // ✅ Thunk + DevTools ARE AUTO INCLUDED — NO SETUP NEEDED!
-  preloadedState : preloadedState,
-  middleware: (getDefaultMiddleware) => getDefaultMiddleware({ serializableCheck: false, immutableCheck: false, })
+  preloadedState: preloadedState,
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware({ serializableCheck: false, immutableCheck: false }),
 });
 
 export default store;
-
 ```
+
 6. update orderActions.js
+
 ```js
-import axios from 'axios'
+import axios from "axios";
 import {
-    ORDER_CREATE_REQUEST,
-    ORDER_CREATE_SUCCESS,
-    ORDER_CREATE_FAIL,
- ORDER_DETAILS_REQUEST,
-    ORDER_DETAILS_SUCCESS,
-    ORDER_DETAILS_FAIL,
-  
-} from '../constants/orderConstants'
+  ORDER_CREATE_REQUEST,
+  ORDER_CREATE_SUCCESS,
+  ORDER_CREATE_FAIL,
+  ORDER_DETAILS_REQUEST,
+  ORDER_DETAILS_SUCCESS,
+  ORDER_DETAILS_FAIL,
+} from "../constants/orderConstants";
 
-import { CART_CLEAR_ITEMS } from '../constants/cartConstants'
-
+import { CART_CLEAR_ITEMS } from "../constants/cartConstants";
 
 export const createOrder = (order) => async (dispatch, getState) => {
-    try {
-        dispatch({
-            type: ORDER_CREATE_REQUEST
-        })
+  try {
+    dispatch({
+      type: ORDER_CREATE_REQUEST,
+    });
 
-        const {
-            userLogin: { userInfo },
-        } = getState()
+    const {
+      userLogin: { userInfo },
+    } = getState();
 
-        const config = {
-            headers: {
-                'Content-type': 'application/json',
-                Authorization: `Bearer ${userInfo.token}`
-            }
-        }
+    const config = {
+      headers: {
+        "Content-type": "application/json",
+        Authorization: `Bearer ${userInfo.token}`,
+      },
+    };
 
-        const { data } = await axios.post(
-            `/api/orders/add/`,
-            order,
-            config
-        )
+    const { data } = await axios.post(`/api/orders/add/`, order, config);
 
-        dispatch({
-            type: ORDER_CREATE_SUCCESS,
-            payload: data
-        })
+    dispatch({
+      type: ORDER_CREATE_SUCCESS,
+      payload: data,
+    });
 
-        dispatch({
-            type: CART_CLEAR_ITEMS,
-            payload: data
-        })
+    dispatch({
+      type: CART_CLEAR_ITEMS,
+      payload: data,
+    });
 
-        localStorage.removeItem('cartItems');
-
-
-    } catch (error) {
-        dispatch({
-            type: ORDER_CREATE_FAIL,
-            payload: error.response && error.response.data.detail
-                ? error.response.data.detail
-                : error.message,
-        })
-    }
-}
+    localStorage.removeItem("cartItems");
+  } catch (error) {
+    dispatch({
+      type: ORDER_CREATE_FAIL,
+      payload:
+        error.response && error.response.data.detail
+          ? error.response.data.detail
+          : error.message,
+    });
+  }
+};
 export const getOrderDetails = (id) => async (dispatch, getState) => {
-    try {
-        dispatch({
-            type: ORDER_DETAILS_REQUEST
-        })
+  try {
+    dispatch({
+      type: ORDER_DETAILS_REQUEST,
+    });
 
-        const {
-            userLogin: { userInfo },
-        } = getState()
+    const {
+      userLogin: { userInfo },
+    } = getState();
 
-        const config = {
-            headers: {
-                'Content-type': 'application/json',
-                Authorization: `Bearer ${userInfo.token}`
-            }
-        }
+    const config = {
+      headers: {
+        "Content-type": "application/json",
+        Authorization: `Bearer ${userInfo.token}`,
+      },
+    };
 
-        const { data } = await axios.get(
-            `/api/orders/${id}/`,
-            config
-        )
+    const { data } = await axios.get(`/api/orders/${id}/`, config);
 
-        dispatch({
-            type: ORDER_DETAILS_SUCCESS,
-            payload: data
-        })
-
-
-    } catch (error) {
-        dispatch({
-            type: ORDER_DETAILS_FAIL,
-            payload: error.response && error.response.data.detail
-                ? error.response.data.detail
-                : error.message,
-        })
-    }
-}
-
+    dispatch({
+      type: ORDER_DETAILS_SUCCESS,
+      payload: data,
+    });
+  } catch (error) {
+    dispatch({
+      type: ORDER_DETAILS_FAIL,
+      payload:
+        error.response && error.response.data.detail
+          ? error.response.data.detail
+          : error.message,
+    });
+  }
+};
 ```
+
 7. create orderscreen.jsx
+
 ```jsx
-import  {  useEffect } from 'react'
-import {  Row, Col, ListGroup, Image, Card } from 'react-bootstrap'
-import { Link, useNavigate, useParams } from 'react-router-dom'
-import { useDispatch, useSelector } from 'react-redux'
+import { useEffect } from "react";
+import { Row, Col, ListGroup, Image, Card } from "react-bootstrap";
+import { Link, useNavigate, useParams } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
 // import { PayPalButton } from 'react-paypal-button-v2'
-import Message from '../components/Message'
-import Loader from '../components/Loader'
-import { getOrderDetails } from '../actions/orderActions'
+import Message from "../components/Message";
+import Loader from "../components/Loader";
+import { getOrderDetails } from "../actions/orderActions";
 // import { ORDER_PAY_RESET, ORDER_DELIVER_RESET } from '../constants/orderConstants'
 
 function OrderScreen() {
-    const navigate = useNavigate();
-    const { id: orderId } = useParams();
-    const dispatch = useDispatch();
-    const orderDetails = useSelector(state => state.orderDetails)
-    const { order, error, loading } = orderDetails
+  const navigate = useNavigate();
+  const { id: orderId } = useParams();
+  const dispatch = useDispatch();
+  const orderDetails = useSelector((state) => state.orderDetails);
+  const { order, error, loading } = orderDetails;
 
-    const userLogin = useSelector(state => state.userLogin)
-    const { userInfo } = userLogin
+  const userLogin = useSelector((state) => state.userLogin);
+  const { userInfo } = userLogin;
 
-// orderItems can't declare inside the if block, const will be blocked inside the if and can't be used outside
-    const itemsPrice = !loading && !error
-  ? order.orderItems.reduce((acc, item) => acc + item.price * item.qty, 0).toFixed(2)
-  : 0
+  // orderItems can't declare inside the if block, const will be blocked inside the if and can't be used outside
+  const itemsPrice =
+    !loading && !error
+      ? order.orderItems
+          .reduce((acc, item) => acc + item.price * item.qty, 0)
+          .toFixed(2)
+      : 0;
 
-    useEffect(() => {
+  useEffect(() => {
+    if (!userInfo) {
+      navigate("/login");
+      return;
+    }
 
-        if (!userInfo) {
-            navigate('/login')
-            return;
-        }
+    dispatch(getOrderDetails(orderId));
+  }, [dispatch, navigate, orderId, userInfo]);
 
-      
-            dispatch(getOrderDetails(orderId));
-    }, [ dispatch, navigate, orderId, userInfo])
+  return loading ? (
+    <Loader />
+  ) : error ? (
+    <Message variant="danger">{error}</Message>
+  ) : (
+    <div>
+      <h1>Order: {order._id}</h1>
+      <Row>
+        <Col md={8}>
+          <ListGroup variant="flush">
+            <ListGroup.Item>
+              <h2>Shipping</h2>
+              <p>
+                <strong>Name: </strong> {order.user.name}
+              </p>
+              <p>
+                <strong>Email: </strong>
+                <a href={`mailto:${order.user.email}`}>{order.user.email}</a>
+              </p>
+              <p>
+                <strong>Shipping: </strong>
+                {order.shippingAddress.address}, {order.shippingAddress.city}
+                {"  "}
+                {order.shippingAddress.postalCode},{"  "}
+                {order.shippingAddress.country}
+              </p>
+              {order.isDelivered ? (
+                <Message variant="success">
+                  Delivered on {order.deliveredAt}
+                </Message>
+              ) : (
+                <Message variant="danger">Not Delivered</Message>
+              )}
+            </ListGroup.Item>
 
+            <ListGroup.Item>
+              <h2>Payment Method</h2>
+              <p>
+                <strong>Method: </strong>
+                {order.paymentMethod}
+              </p>
+              {order.isPaid ? (
+                <Message variant="success">Paid on {order.paidAt}</Message>
+              ) : (
+                <Message variant="danger">Not Paid</Message>
+              )}
+            </ListGroup.Item>
 
-    return loading ? (
-        <Loader />
-    ) : error ? (
-        <Message variant='danger'>{error}</Message>
-    ) : (
-                <div>
-                    <h1>Order: {order._id}</h1>
-                    <Row>
-                        <Col md={8}>
-                            <ListGroup variant='flush'>
-                                <ListGroup.Item>
-                                    <h2>Shipping</h2>
-                                    <p><strong>Name: </strong> {order.user.name}</p>
-                                    <p><strong>Email: </strong><a href={`mailto:${order.user.email}`}>{order.user.email}</a></p>
-                                    <p>
-                                        <strong>Shipping: </strong>
-                                        {order.shippingAddress.address},  {order.shippingAddress.city}
-                                        {'  '}
-                                        {order.shippingAddress.postalCode},
-                                {'  '}
-                                        {order.shippingAddress.country}
-                                    </p>
-                                    {order.isDelivered ? (
-                                        <Message variant='success'>Delivered on {order.deliveredAt}</Message>
-                                    ) : (
-                                            <Message variant='danger'>Not Delivered</Message>
-                                        )}
-                                    
-                                </ListGroup.Item>
+            <ListGroup.Item>
+              <h2>Order Items</h2>
+              {order.orderItems.length === 0 ? (
+                <Message variant="info">Order is empty</Message>
+              ) : (
+                <ListGroup variant="flush">
+                  {order.orderItems.map((item, index) => (
+                    <ListGroup.Item key={index}>
+                      <Row>
+                        <Col md={1}>
+                          <Image
+                            src={item.image}
+                            alt={item.name}
+                            fluid
+                            rounded
+                          />
+                        </Col>
 
-                                <ListGroup.Item>
-                                    <h2>Payment Method</h2>
-                                    <p>
-                                        <strong>Method: </strong>
-                                        {order.paymentMethod}
-                                    </p>
-                                    {order.isPaid ? (
-                                        <Message variant='success'>Paid on {order.paidAt}</Message>
-                                    ) : (
-                                            <Message variant='danger'>Not Paid</Message>
-                                        )}
-                                </ListGroup.Item>
-
-                                <ListGroup.Item>
-                                    <h2>Order Items</h2>
-                                    {order.orderItems.length === 0 ? <Message variant='info'>
-                                        Order is empty
-                            </Message> : (
-                                            <ListGroup variant='flush'>
-                                                {order.orderItems.map((item, index) => (
-                                                    <ListGroup.Item key={index}>
-                                                        <Row>
-                                                            <Col md={1}>
-                                                                <Image src={item.image} alt={item.name} fluid rounded />
-                                                            </Col>
-
-                                                            <Col>
-                                                                <Link to={`/product/${item.product}`}>{item.name}</Link>
-                                                            </Col>
-
-                                                            <Col md={4}>
-                                                                {item.qty} X ${item.price} = ${(item.qty * item.price).toFixed(2)}
-                                                            </Col>
-                                                        </Row>
-                                                    </ListGroup.Item>
-                                                ))}
-                                            </ListGroup>
-                                        )}
-                                </ListGroup.Item>
-
-                            </ListGroup>
-
+                        <Col>
+                          <Link to={`/product/${item.product}`}>
+                            {item.name}
+                          </Link>
                         </Col>
 
                         <Col md={4}>
-                            <Card>
-                                <ListGroup variant='flush'>
-                                    <ListGroup.Item>
-                                        <h2>Order Summary</h2>
-                                    </ListGroup.Item>
-
-                                    <ListGroup.Item>
-                                        <Row>
-                                            <Col>Items:</Col>
-                                            <Col>${itemsPrice}</Col>
-                                        </Row>
-                                    </ListGroup.Item>
-
-                                    <ListGroup.Item>
-                                        <Row>
-                                            <Col>Shipping:</Col>
-                                            <Col>${order.shippingPrice}</Col>
-                                        </Row>
-                                    </ListGroup.Item>
-
-                                    <ListGroup.Item>
-                                        <Row>
-                                            <Col>Tax:</Col>
-                                            <Col>${order.taxPrice}</Col>
-                                        </Row>
-                                    </ListGroup.Item>
-
-                                    <ListGroup.Item>
-                                        <Row>
-                                            <Col>Total:</Col>
-                                            <Col>${order.totalPrice}</Col>
-                                        </Row>
-                                    </ListGroup.Item>
-
-
-                                  
-                                </ListGroup>
-                                
-                            </Card>
+                          {item.qty} X ${item.price} = $
+                          {(item.qty * item.price).toFixed(2)}
                         </Col>
-                    </Row>
-                </div>
-            )
+                      </Row>
+                    </ListGroup.Item>
+                  ))}
+                </ListGroup>
+              )}
+            </ListGroup.Item>
+          </ListGroup>
+        </Col>
+
+        <Col md={4}>
+          <Card>
+            <ListGroup variant="flush">
+              <ListGroup.Item>
+                <h2>Order Summary</h2>
+              </ListGroup.Item>
+
+              <ListGroup.Item>
+                <Row>
+                  <Col>Items:</Col>
+                  <Col>${itemsPrice}</Col>
+                </Row>
+              </ListGroup.Item>
+
+              <ListGroup.Item>
+                <Row>
+                  <Col>Shipping:</Col>
+                  <Col>${order.shippingPrice}</Col>
+                </Row>
+              </ListGroup.Item>
+
+              <ListGroup.Item>
+                <Row>
+                  <Col>Tax:</Col>
+                  <Col>${order.taxPrice}</Col>
+                </Row>
+              </ListGroup.Item>
+
+              <ListGroup.Item>
+                <Row>
+                  <Col>Total:</Col>
+                  <Col>${order.totalPrice}</Col>
+                </Row>
+              </ListGroup.Item>
+            </ListGroup>
+          </Card>
+        </Col>
+      </Row>
+    </div>
+  );
 }
 
-export default OrderScreen
+export default OrderScreen;
 ```
+
 8. add into app.js
+
 ```js
 import { Container } from "react-bootstrap";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
@@ -9955,12 +10385,12 @@ function App() {
           <Routes>
             <Route path="/" element={<HomeScreen />} />
             <Route path="/login" element={<LoginScreen />} />
-             <Route path="/register" element={<RegisterScreen />} />
-              <Route path='/profile' element={<ProfileScreen />} />
-              <Route path='/shipping' element={<ShippingScreen />} />
-              <Route path='/payment' element={<PaymentScreen />} />
-              <Route path='/placeorder' element={<PlaceOrderScreen />} />
-              <Route path='/order/:id' element={<OrderScreen />} />
+            <Route path="/register" element={<RegisterScreen />} />
+            <Route path="/profile" element={<ProfileScreen />} />
+            <Route path="/shipping" element={<ShippingScreen />} />
+            <Route path="/payment" element={<PaymentScreen />} />
+            <Route path="/placeorder" element={<PlaceOrderScreen />} />
+            <Route path="/order/:id" element={<OrderScreen />} />
             <Route path="/product/:id" element={<ProductScreen />} />
             <Route path="/cart/:id?" element={<CartScreen />} />
           </Routes>
@@ -9972,9 +10402,10 @@ function App() {
 }
 
 export default App;
-
 ```
+
 9. update paid endpoint at the backend side, order_views.py
+
 ```py
 
 @api_view(['PUT'])
@@ -9990,6 +10421,7 @@ def updateOrderToPaid(request, pk):
 ```
 
 10. update ordr_urls.py
+
 ```py
 from django.urls import path
 from base.views import order_views as views
@@ -10000,138 +10432,155 @@ urlpatterns = [
     path('<str:pk>/pay/', views.updateOrderToPaid, name='pay'),
 ]
 ```
+
 11. back to frontend, update the orderConstants.js
+
 ```js
-export const ORDER_CREATE_REQUEST = 'ORDER_CREATE_REQUEST'
-export const ORDER_CREATE_SUCCESS = 'ORDER_CREATE_SUCCESS'
-export const ORDER_CREATE_FAIL = 'ORDER_CREATE_FAIL'
+export const ORDER_CREATE_REQUEST = "ORDER_CREATE_REQUEST";
+export const ORDER_CREATE_SUCCESS = "ORDER_CREATE_SUCCESS";
+export const ORDER_CREATE_FAIL = "ORDER_CREATE_FAIL";
 
-export const ORDER_CREATE_RESET = 'ORDER_CREATE_RESET'
+export const ORDER_CREATE_RESET = "ORDER_CREATE_RESET";
 
-export const ORDER_DETAILS_REQUEST = 'ORDER_DETAILS_REQUEST'
-export const ORDER_DETAILS_SUCCESS = 'ORDER_DETAILS_SUCCESS'
-export const ORDER_DETAILS_FAIL = 'ORDER_DETAILS_FAIL'
+export const ORDER_DETAILS_REQUEST = "ORDER_DETAILS_REQUEST";
+export const ORDER_DETAILS_SUCCESS = "ORDER_DETAILS_SUCCESS";
+export const ORDER_DETAILS_FAIL = "ORDER_DETAILS_FAIL";
 
-export const ORDER_PAY_REQUEST = 'ORDER_PAY_REQUEST'
-export const ORDER_PAY_SUCCESS = 'ORDER_PAY_SUCCESS'
-export const ORDER_PAY_FAIL = 'ORDER_PAY_FAIL'
-export const ORDER_PAY_RESET = 'ORDER_PAY_RESET'
-
+export const ORDER_PAY_REQUEST = "ORDER_PAY_REQUEST";
+export const ORDER_PAY_SUCCESS = "ORDER_PAY_SUCCESS";
+export const ORDER_PAY_FAIL = "ORDER_PAY_FAIL";
+export const ORDER_PAY_RESET = "ORDER_PAY_RESET";
 ```
+
 12. update orderreducer.js
+
 ```js
 import {
-    ORDER_CREATE_REQUEST,
-    ORDER_CREATE_SUCCESS,
-    ORDER_CREATE_FAIL,
-    ORDER_CREATE_RESET,
-
-    ORDER_DETAILS_REQUEST, 
-    ORDER_DETAILS_SUCCESS,
-    ORDER_DETAILS_FAIL,
-    ORDER_PAY_REQUEST,
-    ORDER_PAY_SUCCESS,
-    ORDER_PAY_FAIL,
-    ORDER_PAY_RESET, 
-} from '../constants/orderConstants'
-
+  ORDER_CREATE_REQUEST,
+  ORDER_CREATE_SUCCESS,
+  ORDER_CREATE_FAIL,
+  ORDER_CREATE_RESET,
+  ORDER_DETAILS_REQUEST,
+  ORDER_DETAILS_SUCCESS,
+  ORDER_DETAILS_FAIL,
+  ORDER_PAY_REQUEST,
+  ORDER_PAY_SUCCESS,
+  ORDER_PAY_FAIL,
+  ORDER_PAY_RESET,
+} from "../constants/orderConstants";
 
 export const orderCreateReducer = (state = {}, action) => {
-    switch (action.type) {
-        case ORDER_CREATE_REQUEST:
-            return {
-                loading: true
-            }
+  switch (action.type) {
+    case ORDER_CREATE_REQUEST:
+      return {
+        loading: true,
+      };
 
-        case ORDER_CREATE_SUCCESS:
-            return {
-                loading: false,
-                success: true,
-                order: action.payload
-            }
+    case ORDER_CREATE_SUCCESS:
+      return {
+        loading: false,
+        success: true,
+        order: action.payload,
+      };
 
-        case ORDER_CREATE_FAIL:
-            return {
-                loading: false,
-                error: action.payload
-            }
+    case ORDER_CREATE_FAIL:
+      return {
+        loading: false,
+        error: action.payload,
+      };
 
-        case ORDER_CREATE_RESET:
-            return {}   
+    case ORDER_CREATE_RESET:
+      return {};
 
-        default:
-            return state
-    }
-}
-export const orderDetailsReducer = (state = { loading: true, orderItems: [], shippingAddress: {} }, action) => {
-    switch (action.type) {
-        case ORDER_DETAILS_REQUEST:
-            return {
-                ...state,
-                loading: true
-            }
+    default:
+      return state;
+  }
+};
+export const orderDetailsReducer = (
+  state = { loading: true, orderItems: [], shippingAddress: {} },
+  action,
+) => {
+  switch (action.type) {
+    case ORDER_DETAILS_REQUEST:
+      return {
+        ...state,
+        loading: true,
+      };
 
-        case ORDER_DETAILS_SUCCESS:
-            return {
-                loading: false,
-                order: action.payload
-            }
+    case ORDER_DETAILS_SUCCESS:
+      return {
+        loading: false,
+        order: action.payload,
+      };
 
-        case ORDER_DETAILS_FAIL:
-            return {
-                loading: false,
-                error: action.payload
-            }
+    case ORDER_DETAILS_FAIL:
+      return {
+        loading: false,
+        error: action.payload,
+      };
 
-
-        default:
-            return state
-    }
-}
+    default:
+      return state;
+  }
+};
 export const orderPayReducer = (state = {}, action) => {
-    switch (action.type) {
-        case ORDER_PAY_REQUEST:
-            return {
-                loading: true
-            }
+  switch (action.type) {
+    case ORDER_PAY_REQUEST:
+      return {
+        loading: true,
+      };
 
-        case ORDER_PAY_SUCCESS:
-            return {
-                loading: false,
-                success: true
-            }
+    case ORDER_PAY_SUCCESS:
+      return {
+        loading: false,
+        success: true,
+      };
 
-        case ORDER_PAY_FAIL:
-            return {
-                loading: false,
-                error: action.payload
-            }
+    case ORDER_PAY_FAIL:
+      return {
+        loading: false,
+        error: action.payload,
+      };
 
-        case ORDER_PAY_RESET:
-            return {}
+    case ORDER_PAY_RESET:
+      return {};
 
-        default:
-            return state
-    }
-}
+    default:
+      return state;
+  }
+};
 ```
+
 13. update store.js
+
 ```js
-import { configureStore } from '@reduxjs/toolkit';
-import { productReducer, productDetailsReducer} from "./reducers/productReducers"; // import
-import {cartReducer} from "./reducers/cartReducers";
-import { userLoginReducer, userRegisterReducer, userDetailsReducer, userUpdateProfileReducer } from './reducers/userReducers';
-import { orderCreateReducer, orderDetailsReducer, orderPayReducer } from './reducers/orderReducers';
-const cartItemsFromStorage = localStorage.getItem('cartItems')
-  ? JSON.parse(localStorage.getItem('cartItems'))
+import { configureStore } from "@reduxjs/toolkit";
+import {
+  productReducer,
+  productDetailsReducer,
+} from "./reducers/productReducers"; // import
+import { cartReducer } from "./reducers/cartReducers";
+import {
+  userLoginReducer,
+  userRegisterReducer,
+  userDetailsReducer,
+  userUpdateProfileReducer,
+} from "./reducers/userReducers";
+import {
+  orderCreateReducer,
+  orderDetailsReducer,
+  orderPayReducer,
+} from "./reducers/orderReducers";
+const cartItemsFromStorage = localStorage.getItem("cartItems")
+  ? JSON.parse(localStorage.getItem("cartItems"))
   : [];
-const userInfoFromStorage = localStorage.getItem('userInfo')
-  ? JSON.parse(localStorage.getItem('userInfo'))
+const userInfoFromStorage = localStorage.getItem("userInfo")
+  ? JSON.parse(localStorage.getItem("userInfo"))
   : null;
- 
-const shippingAddressFromStorage = localStorage.getItem('shippingAddress')
-  ? JSON.parse(localStorage.getItem('shippingAddress'))
-  : {};  
+
+const shippingAddressFromStorage = localStorage.getItem("shippingAddress")
+  ? JSON.parse(localStorage.getItem("shippingAddress"))
+  : {};
 // 👇 初始化 Redux 状态
 const preloadedState = {
   cart: {
@@ -10141,185 +10590,177 @@ const preloadedState = {
   userLogin: {
     userInfo: userInfoFromStorage, // 给 userLogin reducer 赋值
   },
-  
 };
 
 export const store = configureStore({
   reducer: {
-      productList: productReducer,
-      productDetails: productDetailsReducer,
-      cart: cartReducer,
-      userLogin: userLoginReducer,
-      userRegister: userRegisterReducer,
-      userDetails: userDetailsReducer,
-      userUpdateProfile: userUpdateProfileReducer,
-      orderCreate: orderCreateReducer,
-      orderDetails: orderDetailsReducer,
-      orderPay: orderPayReducer
+    productList: productReducer,
+    productDetails: productDetailsReducer,
+    cart: cartReducer,
+    userLogin: userLoginReducer,
+    userRegister: userRegisterReducer,
+    userDetails: userDetailsReducer,
+    userUpdateProfile: userUpdateProfileReducer,
+    orderCreate: orderCreateReducer,
+    orderDetails: orderDetailsReducer,
+    orderPay: orderPayReducer,
   },
   // ✅ Thunk + DevTools ARE AUTO INCLUDED — NO SETUP NEEDED!
-  preloadedState : preloadedState,
-  middleware: (getDefaultMiddleware) => getDefaultMiddleware({ serializableCheck: false, immutableCheck: false, })
+  preloadedState: preloadedState,
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware({ serializableCheck: false, immutableCheck: false }),
 });
 
 export default store;
-
 ```
+
 14. update orderActions.js
+
 ```js
-import axios from 'axios'
+import axios from "axios";
 import {
-    ORDER_CREATE_REQUEST,
-    ORDER_CREATE_SUCCESS,
-    ORDER_CREATE_FAIL,
- ORDER_DETAILS_REQUEST,
-    ORDER_DETAILS_SUCCESS,
-    ORDER_DETAILS_FAIL,
- ORDER_PAY_REQUEST,
-    ORDER_PAY_SUCCESS,
-    ORDER_PAY_FAIL,
-    ORDER_PAY_RESET, 
-} from '../constants/orderConstants'
+  ORDER_CREATE_REQUEST,
+  ORDER_CREATE_SUCCESS,
+  ORDER_CREATE_FAIL,
+  ORDER_DETAILS_REQUEST,
+  ORDER_DETAILS_SUCCESS,
+  ORDER_DETAILS_FAIL,
+  ORDER_PAY_REQUEST,
+  ORDER_PAY_SUCCESS,
+  ORDER_PAY_FAIL,
+  ORDER_PAY_RESET,
+} from "../constants/orderConstants";
 
-import { CART_CLEAR_ITEMS } from '../constants/cartConstants'
-
+import { CART_CLEAR_ITEMS } from "../constants/cartConstants";
 
 export const createOrder = (order) => async (dispatch, getState) => {
-    try {
-        dispatch({
-            type: ORDER_CREATE_REQUEST
-        })
+  try {
+    dispatch({
+      type: ORDER_CREATE_REQUEST,
+    });
 
-        const {
-            userLogin: { userInfo },
-        } = getState()
+    const {
+      userLogin: { userInfo },
+    } = getState();
 
-        const config = {
-            headers: {
-                'Content-type': 'application/json',
-                Authorization: `Bearer ${userInfo.token}`
-            }
-        }
+    const config = {
+      headers: {
+        "Content-type": "application/json",
+        Authorization: `Bearer ${userInfo.token}`,
+      },
+    };
 
-        const { data } = await axios.post(
-            `/api/orders/add/`,
-            order,
-            config
-        )
+    const { data } = await axios.post(`/api/orders/add/`, order, config);
 
-        dispatch({
-            type: ORDER_CREATE_SUCCESS,
-            payload: data
-        })
+    dispatch({
+      type: ORDER_CREATE_SUCCESS,
+      payload: data,
+    });
 
-        dispatch({
-            type: CART_CLEAR_ITEMS,
-            payload: data
-        })
+    dispatch({
+      type: CART_CLEAR_ITEMS,
+      payload: data,
+    });
 
-        localStorage.removeItem('cartItems');
-
-
-    } catch (error) {
-        dispatch({
-            type: ORDER_CREATE_FAIL,
-            payload: error.response && error.response.data.detail
-                ? error.response.data.detail
-                : error.message,
-        })
-    }
-}
+    localStorage.removeItem("cartItems");
+  } catch (error) {
+    dispatch({
+      type: ORDER_CREATE_FAIL,
+      payload:
+        error.response && error.response.data.detail
+          ? error.response.data.detail
+          : error.message,
+    });
+  }
+};
 export const getOrderDetails = (id) => async (dispatch, getState) => {
-    try {
-        dispatch({
-            type: ORDER_DETAILS_REQUEST
-        })
+  try {
+    dispatch({
+      type: ORDER_DETAILS_REQUEST,
+    });
 
-        const {
-            userLogin: { userInfo },
-        } = getState()
+    const {
+      userLogin: { userInfo },
+    } = getState();
 
-        const config = {
-            headers: {
-                'Content-type': 'application/json',
-                Authorization: `Bearer ${userInfo.token}`
-            }
-        }
+    const config = {
+      headers: {
+        "Content-type": "application/json",
+        Authorization: `Bearer ${userInfo.token}`,
+      },
+    };
 
-        const { data } = await axios.get(
-            `/api/orders/${id}/`,
-            config
-        )
+    const { data } = await axios.get(`/api/orders/${id}/`, config);
 
-        dispatch({
-            type: ORDER_DETAILS_SUCCESS,
-            payload: data
-        })
-
-
-    } catch (error) {
-        dispatch({
-            type: ORDER_DETAILS_FAIL,
-            payload: error.response && error.response.data.detail
-                ? error.response.data.detail
-                : error.message,
-        })
-    }
-}
+    dispatch({
+      type: ORDER_DETAILS_SUCCESS,
+      payload: data,
+    });
+  } catch (error) {
+    dispatch({
+      type: ORDER_DETAILS_FAIL,
+      payload:
+        error.response && error.response.data.detail
+          ? error.response.data.detail
+          : error.message,
+    });
+  }
+};
 export const payOrder = (id, paymentResult) => async (dispatch, getState) => {
-    try {
-        dispatch({
-            type: ORDER_PAY_REQUEST
-        })
+  try {
+    dispatch({
+      type: ORDER_PAY_REQUEST,
+    });
 
-        const {
-            userLogin: { userInfo },
-        } = getState()
+    const {
+      userLogin: { userInfo },
+    } = getState();
 
-        const config = {
-            headers: {
-                'Content-type': 'application/json',
-                Authorization: `Bearer ${userInfo.token}`
-            }
-        }
+    const config = {
+      headers: {
+        "Content-type": "application/json",
+        Authorization: `Bearer ${userInfo.token}`,
+      },
+    };
 
-        const { data } = await axios.put(
-            `/api/orders/${id}/pay/`,
-            paymentResult,
-            config
-        )
+    const { data } = await axios.put(
+      `/api/orders/${id}/pay/`,
+      paymentResult,
+      config,
+    );
 
-        dispatch({
-            type: ORDER_PAY_SUCCESS,
-            payload: data
-        })
-
-
-    } catch (error) {
-        dispatch({
-            type: ORDER_PAY_FAIL,
-            payload: error.response && error.response.data.detail
-                ? error.response.data.detail
-                : error.message,
-        })
-    }
-}
+    dispatch({
+      type: ORDER_PAY_SUCCESS,
+      payload: data,
+    });
+  } catch (error) {
+    dispatch({
+      type: ORDER_PAY_FAIL,
+      payload:
+        error.response && error.response.data.detail
+          ? error.response.data.detail
+          : error.message,
+    });
+  }
+};
 ```
-
 
 ## step 33 serilazer function
 
 ### **只要你在 DRF（Django REST Framework）里：**
+
 1. **Model 建好了关联关系**（ForeignKey / OneToOne / ManyToMany）
 2. **Serializer 正确嵌套/返回了关联数据**
 3. API 返回的 JSON 里**包含了关联对象**
 
 ### **那么在 React 前端：**
+
 ✅ **你完全可以直接像 Django 模板一样使用：**
+
 ```js
-order.user.name
-order.shippingAddress.address
-order.product.price
+order.user.name;
+order.shippingAddress.address;
+order.product.price;
 ```
 
 ---
@@ -10327,6 +10768,7 @@ order.product.price
 # 🚀 **完整原理（3 步看懂）**
 
 ## 1. 后端 Django Model（你建关系）
+
 ```python
 # 你写的模型关系
 class Order(models.Model):
@@ -10338,17 +10780,19 @@ class User(models.Model):
 ```
 
 ## 2. 后端 Serializer（你把关系返回）
+
 ```python
 class OrderSerializer(serializers.ModelSerializer):
     user = UserSerializer()  # 嵌套关联
     shippingAddress = AddressSerializer()
-    
+
     class Meta:
         model = Order
         fields = '__all__'
 ```
 
 ## 3. API 返回的 JSON（前端拿到的结构）
+
 ```json
 {
   "id": 1,
@@ -10362,6 +10806,7 @@ class OrderSerializer(serializers.ModelSerializer):
 ```
 
 ## 4. React 前端使用（**和 Django 语法几乎一样**）
+
 ```js
 <h1>{order.user.name}</h1>
 <p>{order.shippingAddress.address}</p>
@@ -10372,6 +10817,7 @@ class OrderSerializer(serializers.ModelSerializer):
 # ✅ **你的理解完全正确！**
 
 你问的：
+
 > **can take it as regular django relationship, using modelname.modelname at the frontend side ?**
 
 ### **答案：YES！完全可以！一模一样！**
@@ -10384,30 +10830,36 @@ class OrderSerializer(serializers.ModelSerializer):
 ---
 
 # ⚠️ **唯一小区别（必须知道）**
+
 1. **Django**：如果字段为空，不会崩溃
 2. **React**：如果 `order` 或 `user` 是 `null/undefined`，会直接报错！
 
 ## 所以前端要加**安全访问符（可选链）**：
+
 ```js
-order?.user?.name
-order?.shippingAddress?.address
+order?.user?.name;
+order?.shippingAddress?.address;
 ```
 
 ---
 
 # 🎉 **总结（你已经完全掌握）**
+
 1. **Model 建关系**
 2. **Serializer 嵌套返回**
 3. **前端直接用 `数据.关联模型.字段`**
 4. **和 Django 模板用法几乎一样**
-**Django Model 关系 → DRF Serializer → React 直接使用**
-**完全正确、标准、工业级用法！**
+   **Django Model 关系 → DRF Serializer → React 直接使用**
+   **完全正确、标准、工业级用法！**
 
 # 🔥 **Serializer 的真正作用：给前端“造”数据结构**
+
 你可以把 **serializer.py** 理解成：
 
 ## **专门为前端 React 设计的“数据桥梁”**
+
 它决定了：
+
 1. 前端**能拿到哪些字段**
 2. 前端**能拿到哪些关联数据**（user / shippingAddress / orderItems 等）
 3. 前端**能用什么格式访问**（`order.user.name`）
@@ -10442,228 +10894,245 @@ class OrderSerializer(serializers.ModelSerializer):
 # 🚀 **前端能怎么用，完全由 Serializer 决定**
 
 你在 serializer 里写：
+
 ```python
 user = UserSerializer()
 ```
 
 前端就能用：
+
 ```js
-order.user.name
-order.user.email
+order.user.name;
+order.user.email;
 ```
 
 你在 serializer 里写：
+
 ```python
 shippingAddress = ShippingAddressSerializer()
 ```
 
 前端就能用：
+
 ```js
-order.shippingAddress.address
-order.shippingAddress.city
+order.shippingAddress.address;
+order.shippingAddress.city;
 ```
 
 ### **Model 定义：数据库之间的关系**
+
 ### **Serializer 定义：前端能使用的关系**
 
-
 ## step 34 paid endpoint
+
 1. create paypal sandbox account, all you need is the client id and secret, get the client id from paypal sandbox
 2. `AZhybHLplgX7KJC5jW9-hRnnSjxWBE9Axu8M2VdygHF1Y5jGcI9M_Dowlg--Fd0ERprgcAUk4mwvlu6l`
 3. update orderscreen.jsx
+
 ```jsx
-import  {  useEffect , useState} from 'react'
-import {  Row, Col, ListGroup, Image, Card } from 'react-bootstrap'
-import { Link, useNavigate, useParams } from 'react-router-dom'
-import { useDispatch, useSelector } from 'react-redux'
+import { useEffect, useState } from "react";
+import { Row, Col, ListGroup, Image, Card } from "react-bootstrap";
+import { Link, useNavigate, useParams } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
 // import { PayPalButton } from 'react-paypal-button-v2'
-import Message from '../components/Message'
-import Loader from '../components/Loader'
-import { getOrderDetails, payOrder } from '../actions/orderActions'
+import Message from "../components/Message";
+import Loader from "../components/Loader";
+import { getOrderDetails, payOrder } from "../actions/orderActions";
 // import { ORDER_PAY_RESET, ORDER_DELIVER_RESET } from '../constants/orderConstants'
 
 function OrderScreen() {
-    const navigate = useNavigate();
-    const { id: orderId } = useParams();
-    const dispatch = useDispatch();
-    const orderDetails = useSelector(state => state.orderDetails)
-    const { order, error, loading } = orderDetails
-    const [sdkReady, setSdkReady] = useState(false)
-    const userLogin = useSelector(state => state.userLogin)
-    const { userInfo } = userLogin
-    const orderPay = useSelector(state => state.orderPay)
-    const { loading: loadingPay, success: successPay } = orderPay
-// orderItems can't declare inside the if block, const will be blocked inside the if and can't be used outside
-    const itemsPrice = !loading && !error
-  ? order.orderItems.reduce((acc, item) => acc + item.price * item.qty, 0).toFixed(2)
-  : 0
+  const navigate = useNavigate();
+  const { id: orderId } = useParams();
+  const dispatch = useDispatch();
+  const orderDetails = useSelector((state) => state.orderDetails);
+  const { order, error, loading } = orderDetails;
+  const [sdkReady, setSdkReady] = useState(false);
+  const userLogin = useSelector((state) => state.userLogin);
+  const { userInfo } = userLogin;
+  const orderPay = useSelector((state) => state.orderPay);
+  const { loading: loadingPay, success: successPay } = orderPay;
+  // orderItems can't declare inside the if block, const will be blocked inside the if and can't be used outside
+  const itemsPrice =
+    !loading && !error
+      ? order.orderItems
+          .reduce((acc, item) => acc + item.price * item.qty, 0)
+          .toFixed(2)
+      : 0;
 
   const addPayPalScript = () => {
-        const script = document.createElement('script')
-        script.type = 'text/javascript'
-        script.src = 'https://www.paypal.com/sdk/js?client-id=AZhybHLplgX7KJC5jW9-hRnnSjxWBE9Axu8M2VdygHF1Y5jGcI9M_Dowlg--Fd0ERprgcAUk4mwvlu6l'
-        script.async = true
-        script.onload = () => {
-            setSdkReady(true)
-        }
-        document.body.appendChild(script)
-    }
+    const script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src =
+      "https://www.paypal.com/sdk/js?client-id=AZhybHLplgX7KJC5jW9-hRnnSjxWBE9Axu8M2VdygHF1Y5jGcI9M_Dowlg--Fd0ERprgcAUk4mwvlu6l";
+    script.async = true;
+    script.onload = () => {
+      setSdkReady(true);
+    };
+    document.body.appendChild(script);
+  };
 
-    useEffect(() => {
-
-       
- if (!order || successPay || order._id !== Number(orderId) ) {
-        dispatch(getOrderDetails(orderId))
-      } else if (!order.isPaid) {
-        if (!window.paypal) {
-            addPayPalScript()
-        } else {
-            setSdkReady(true)
-        }
+  useEffect(() => {
+    if (!order || successPay || order._id !== Number(orderId)) {
+      dispatch(getOrderDetails(orderId));
+    } else if (!order.isPaid) {
+      if (!window.paypal) {
+        addPayPalScript();
+      } else {
+        setSdkReady(true);
       }
-    }, [ dispatch, navigate, orderId, successPay, order])
-
-    const successPaymentHandler = (paymentResult) => {
-        dispatch(payOrder(orderId, paymentResult))
     }
-    return loading ? (
-        <Loader />
-    ) : error ? (
-        <Message variant='danger'>{error}</Message>
-    ) : (
-                <div>
-                    <h1>Order: {order._id}</h1>
-                    <Row>
-                        <Col md={8}>
-                            <ListGroup variant='flush'>
-                                <ListGroup.Item>
-                                    <h2>Shipping</h2>
-                                    <p><strong>Name: </strong> {order.user.name}</p>
-                                    <p><strong>Email: </strong><a href={`mailto:${order.user.email}`}>{order.user.email}</a></p>
-                                    <p>
-                                        <strong>Shipping: </strong>
-                                        {order.shippingAddress.address},  {order.shippingAddress.city}
-                                        {'  '}
-                                        {order.shippingAddress.postalCode},
-                                {'  '}
-                                        {order.shippingAddress.country}
-                                    </p>
-                                    {order.isDelivered ? (
-                                        <Message variant='success'>Delivered on {order.deliveredAt}</Message>
-                                    ) : (
-                                            <Message variant='danger'>Not Delivered</Message>
-                                        )}
-                                    
-                                </ListGroup.Item>
+  }, [dispatch, navigate, orderId, successPay, order]);
 
-                                <ListGroup.Item>
-                                    <h2>Payment Method</h2>
-                                    <p>
-                                        <strong>Method: </strong>
-                                        {order.paymentMethod}
-                                    </p>
-                                    {order.isPaid ? (
-                                        <Message variant='success'>Paid on {order.paidAt}</Message>
-                                    ) : (
-                                            <Message variant='danger'>Not Paid</Message>
-                                        )}
-                                </ListGroup.Item>
+  const successPaymentHandler = (paymentResult) => {
+    dispatch(payOrder(orderId, paymentResult));
+  };
+  return loading ? (
+    <Loader />
+  ) : error ? (
+    <Message variant="danger">{error}</Message>
+  ) : (
+    <div>
+      <h1>Order: {order._id}</h1>
+      <Row>
+        <Col md={8}>
+          <ListGroup variant="flush">
+            <ListGroup.Item>
+              <h2>Shipping</h2>
+              <p>
+                <strong>Name: </strong> {order.user.name}
+              </p>
+              <p>
+                <strong>Email: </strong>
+                <a href={`mailto:${order.user.email}`}>{order.user.email}</a>
+              </p>
+              <p>
+                <strong>Shipping: </strong>
+                {order.shippingAddress.address}, {order.shippingAddress.city}
+                {"  "}
+                {order.shippingAddress.postalCode},{"  "}
+                {order.shippingAddress.country}
+              </p>
+              {order.isDelivered ? (
+                <Message variant="success">
+                  Delivered on {order.deliveredAt}
+                </Message>
+              ) : (
+                <Message variant="danger">Not Delivered</Message>
+              )}
+            </ListGroup.Item>
 
-                                <ListGroup.Item>
-                                    <h2>Order Items</h2>
-                                    {order.orderItems.length === 0 ? <Message variant='info'>
-                                        Order is empty
-                            </Message> : (
-                                            <ListGroup variant='flush'>
-                                                {order.orderItems.map((item, index) => (
-                                                    <ListGroup.Item key={index}>
-                                                        <Row>
-                                                            <Col md={1}>
-                                                                <Image src={item.image} alt={item.name} fluid rounded />
-                                                            </Col>
+            <ListGroup.Item>
+              <h2>Payment Method</h2>
+              <p>
+                <strong>Method: </strong>
+                {order.paymentMethod}
+              </p>
+              {order.isPaid ? (
+                <Message variant="success">Paid on {order.paidAt}</Message>
+              ) : (
+                <Message variant="danger">Not Paid</Message>
+              )}
+            </ListGroup.Item>
 
-                                                            <Col>
-                                                                <Link to={`/product/${item.product}`}>{item.name}</Link>
-                                                            </Col>
+            <ListGroup.Item>
+              <h2>Order Items</h2>
+              {order.orderItems.length === 0 ? (
+                <Message variant="info">Order is empty</Message>
+              ) : (
+                <ListGroup variant="flush">
+                  {order.orderItems.map((item, index) => (
+                    <ListGroup.Item key={index}>
+                      <Row>
+                        <Col md={1}>
+                          <Image
+                            src={item.image}
+                            alt={item.name}
+                            fluid
+                            rounded
+                          />
+                        </Col>
 
-                                                            <Col md={4}>
-                                                                {item.qty} X ${item.price} = ${(item.qty * item.price).toFixed(2)}
-                                                            </Col>
-                                                        </Row>
-                                                    </ListGroup.Item>
-                                                ))}
-                                            </ListGroup>
-                                        )}
-                                </ListGroup.Item>
-
-                            </ListGroup>
-
+                        <Col>
+                          <Link to={`/product/${item.product}`}>
+                            {item.name}
+                          </Link>
                         </Col>
 
                         <Col md={4}>
-                            <Card>
-                                <ListGroup variant='flush'>
-                                    <ListGroup.Item>
-                                        <h2>Order Summary</h2>
-                                    </ListGroup.Item>
-
-                                    <ListGroup.Item>
-                                        <Row>
-                                            <Col>Items:</Col>
-                                            <Col>${itemsPrice}</Col>
-                                        </Row>
-                                    </ListGroup.Item>
-
-                                    <ListGroup.Item>
-                                        <Row>
-                                            <Col>Shipping:</Col>
-                                            <Col>${order.shippingPrice}</Col>
-                                        </Row>
-                                    </ListGroup.Item>
-
-                                    <ListGroup.Item>
-                                        <Row>
-                                            <Col>Tax:</Col>
-                                            <Col>${order.taxPrice}</Col>
-                                        </Row>
-                                    </ListGroup.Item>
-
-                                    <ListGroup.Item>
-                                        <Row>
-                                            <Col>Total:</Col>
-                                            <Col>${order.totalPrice}</Col>
-                                        </Row>
-                                    </ListGroup.Item>
-
-
-                                  
-                                </ListGroup>
-                                
-                            </Card>
+                          {item.qty} X ${item.price} = $
+                          {(item.qty * item.price).toFixed(2)}
                         </Col>
-                    </Row>
-                </div>
-            )
+                      </Row>
+                    </ListGroup.Item>
+                  ))}
+                </ListGroup>
+              )}
+            </ListGroup.Item>
+          </ListGroup>
+        </Col>
+
+        <Col md={4}>
+          <Card>
+            <ListGroup variant="flush">
+              <ListGroup.Item>
+                <h2>Order Summary</h2>
+              </ListGroup.Item>
+
+              <ListGroup.Item>
+                <Row>
+                  <Col>Items:</Col>
+                  <Col>${itemsPrice}</Col>
+                </Row>
+              </ListGroup.Item>
+
+              <ListGroup.Item>
+                <Row>
+                  <Col>Shipping:</Col>
+                  <Col>${order.shippingPrice}</Col>
+                </Row>
+              </ListGroup.Item>
+
+              <ListGroup.Item>
+                <Row>
+                  <Col>Tax:</Col>
+                  <Col>${order.taxPrice}</Col>
+                </Row>
+              </ListGroup.Item>
+
+              <ListGroup.Item>
+                <Row>
+                  <Col>Total:</Col>
+                  <Col>${order.totalPrice}</Col>
+                </Row>
+              </ListGroup.Item>
+            </ListGroup>
+          </Card>
+        </Col>
+      </Row>
+    </div>
+  );
 }
 
-export default OrderScreen
+export default OrderScreen;
 ```
 
 - **getOrderDetails / payOrder**：获取订单、支付订单
 
 # 3. 从 Redux 读取数据
+
 ```js
-const orderDetails = useSelector(state => state.orderDetails)
-const { order, error, loading } = orderDetails
+const orderDetails = useSelector((state) => state.orderDetails);
+const { order, error, loading } = orderDetails;
 
-const userLogin = useSelector(state => state.userLogin)
-const { userInfo } = userLogin
+const userLogin = useSelector((state) => state.userLogin);
+const { userInfo } = userLogin;
 
-const orderPay = useSelector(state => state.orderPay)
-const { loading: loadingPay, success: successPay } = orderPay
+const orderPay = useSelector((state) => state.orderPay);
+const { loading: loadingPay, success: successPay } = orderPay;
 ```
 
 ### 功能：
+
 - **order**：订单详情（商品、地址、价格、用户…）
 - **loading / error**：加载状态、错误信息
 - **userInfo**：当前登录用户
@@ -10672,11 +11141,13 @@ const { loading: loadingPay, success: successPay } = orderPay
 ---
 
 # 4. 状态：PayPal 是否加载完成
+
 ```js
-const [sdkReady, setSdkReady] = useState(false)
+const [sdkReady, setSdkReady] = useState(false);
 ```
 
 ### 功能：
+
 - 控制 PayPal 按钮是否显示
 - `false` = 没加载好
 - `true` = 加载完成，可以显示支付按钮
@@ -10684,26 +11155,33 @@ const [sdkReady, setSdkReady] = useState(false)
 ---
 
 # 5. 计算商品总价
+
 ```js
-const itemsPrice = !loading && !error
-  ? order.orderItems.reduce((acc, item) => acc + item.price * item.qty, 0).toFixed(2)
-  : 0
+const itemsPrice =
+  !loading && !error
+    ? order.orderItems
+        .reduce((acc, item) => acc + item.price * item.qty, 0)
+        .toFixed(2)
+    : 0;
 ```
+
 # 6. 动态加载 PayPal 脚本
+
 ```js
 const addPayPalScript = () => {
-    const script = document.createElement('script')
-    script.type = 'text/javascript'
-    script.src = '...paypal sdk...'
-    script.async = true
-    script.onload = () => {
-        setSdkReady(true)
-    }
-    document.body.appendChild(script)
-}
+  const script = document.createElement("script");
+  script.type = "text/javascript";
+  script.src = "...paypal sdk...";
+  script.async = true;
+  script.onload = () => {
+    setSdkReady(true);
+  };
+  document.body.appendChild(script);
+};
 ```
 
 ### 功能：
+
 - 动态向页面插入 PayPal 支付库
 - 加载完成后 → `sdkReady = true`
 - 然后才能显示支付按钮
@@ -10711,21 +11189,23 @@ const addPayPalScript = () => {
 ---
 
 # 7. 核心逻辑：useEffect（最重要）
+
 ```js
 useEffect(() => {
-    if (!order || successPay || order._id !== Number(orderId)) {
-        dispatch(getOrderDetails(orderId))
-    } else if (!order.isPaid) {
-        if (!window.paypal) {
-            addPayPalScript()
-        } else {
-            setSdkReady(true)
-        }
+  if (!order || successPay || order._id !== Number(orderId)) {
+    dispatch(getOrderDetails(orderId));
+  } else if (!order.isPaid) {
+    if (!window.paypal) {
+      addPayPalScript();
+    } else {
+      setSdkReady(true);
     }
-}, [dispatch, orderId, successPay, order])
+  }
+}, [dispatch, orderId, successPay, order]);
 ```
 
 ### 功能（超级关键）：
+
 1. **如果没有订单 或 刚支付成功 或 订单ID不匹配**
    → 重新获取订单
 2. **如果订单未支付**
@@ -10738,181 +11218,233 @@ useEffect(() => {
 ---
 
 # 8. 支付成功回调
+
 ```js
 const successPaymentHandler = (paymentResult) => {
-    dispatch(payOrder(orderId, paymentResult))
-}
+  dispatch(payOrder(orderId, paymentResult));
+};
 ```
 
 ### 功能：
+
 - 用户在 PayPal 完成支付
 - 发送 `payOrder` 通知后端
 - 后端更新订单为已支付
 
 4. install paypal button `npm install @paypal/react-paypal-js` for react 19
 
-5. update the orderscreen to add paypal button 
+5. update the orderscreen to add paypal button
+
 ```jsx
-import { useEffect } from 'react'
-import { Row, Col, ListGroup, Image, Card } from 'react-bootstrap'
-import { Link, useNavigate, useParams } from 'react-router-dom'
-import { useDispatch, useSelector } from 'react-redux'
-import { PayPalScriptProvider, PayPalButtons } from '@paypal/react-paypal-js'
-import Message from '../components/Message'
-import Loader from '../components/Loader'
-import { getOrderDetails, payOrder } from '../actions/orderActions'
-import { ORDER_PAY_RESET } from '../constants/orderConstants'
+import { useEffect } from "react";
+import { Row, Col, ListGroup, Image, Card } from "react-bootstrap";
+import { Link, useNavigate, useParams } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { PayPalScriptProvider, PayPalButtons } from "@paypal/react-paypal-js";
+import Message from "../components/Message";
+import Loader from "../components/Loader";
+import { getOrderDetails, payOrder } from "../actions/orderActions";
+import { ORDER_PAY_RESET } from "../constants/orderConstants";
 
 function OrderScreen() {
-    const navigate = useNavigate()
-    const { id: orderId } = useParams()
-    const dispatch = useDispatch()
+  const navigate = useNavigate();
+  const { id: orderId } = useParams();
+  const dispatch = useDispatch();
 
-    const orderDetails = useSelector(state => state.orderDetails)
-    const { order, error, loading } = orderDetails
+  const orderDetails = useSelector((state) => state.orderDetails);
+  const { order, error, loading } = orderDetails;
 
-    const userLogin = useSelector(state => state.userLogin)
-    const { userInfo } = userLogin
+  const userLogin = useSelector((state) => state.userLogin);
+  const { userInfo } = userLogin;
 
-    const orderPay = useSelector(state => state.orderPay)
-    const { loading: loadingPay, success: successPay } = orderPay
+  const orderPay = useSelector((state) => state.orderPay);
+  const { loading: loadingPay, success: successPay } = orderPay;
 
-    const itemsPrice = !loading && !error && order
-        ? order.orderItems.reduce((acc, item) => acc + item.price * item.qty, 0).toFixed(2)
-        : 0
+  const itemsPrice =
+    !loading && !error && order
+      ? order.orderItems
+          .reduce((acc, item) => acc + item.price * item.qty, 0)
+          .toFixed(2)
+      : 0;
 
-    useEffect(() => {
+  useEffect(() => {
     if (!userInfo) {
-        navigate('/login');
-        return;
+      navigate("/login");
+      return;
     }
 
     if (successPay || !order || order._id !== orderId) {
-        dispatch({ type: ORDER_PAY_RESET });
-        dispatch(getOrderDetails(orderId));
+      dispatch({ type: ORDER_PAY_RESET });
+      dispatch(getOrderDetails(orderId));
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-}, [dispatch, navigate, orderId, successPay, userInfo])
+  }, [dispatch, navigate, orderId, successPay, userInfo]);
 
-    const createOrderHandler = (data, actions) => {
-        return actions.order.create({
-            purchase_units: [
-                {
-                    amount: {
-                        value: order.totalPrice,
-                    },
-                },
-            ],
-        })
-    }
+  const createOrderHandler = (data, actions) => {
+    return actions.order.create({
+      purchase_units: [
+        {
+          amount: {
+            value: order.totalPrice,
+          },
+        },
+      ],
+    });
+  };
 
-    const successPaymentHandler = (data, actions) => {
-        return actions.order.capture().then((details) => {
-            dispatch(payOrder(orderId, details))
-        })
-    }
+  const successPaymentHandler = (data, actions) => {
+    return actions.order.capture().then((details) => {
+      dispatch(payOrder(orderId, details));
+    });
+  };
 
-    if (loading) return <Loader />
-    if (error) return <Message variant='danger'>{error}</Message>
+  if (loading) return <Loader />;
+  if (error) return <Message variant="danger">{error}</Message>;
 
-    return (
-        <PayPalScriptProvider 
-            options={{
-                clientId: "AZhybHLplgX7KJC5jW9-hRnnSjxWBE9Axu8M2VdygHF1Y5jGcI9M_Dowlg--Fd0ERprgcAUk4mwvlu6l",
-                currency: "USD"
-            }}
-        >
-            <div>
-                <h1>Order: {order._id}</h1>
-                <Row>
-                    <Col md={8}>
-                        <ListGroup variant='flush'>
-                            <ListGroup.Item>
-                                <h2>Shipping</h2>
-                                <p><strong>Name: </strong>{order.user.name}</p>
-                                <p><strong>Email: </strong><a href={`mailto:${order.user.email}`}>{order.user.email}</a></p>
-                                <p>
-                                    {order.shippingAddress.address}, {order.shippingAddress.city}
-                                    {'  '}{order.shippingAddress.postalCode},{'  '}{order.shippingAddress.country}
-                                </p>
-                                {order.isDelivered ? (
-                                    <Message variant='success'>Delivered on {order.deliveredAt}</Message>
-                                ) : (
-                                    <Message variant='danger'>Not Delivered</Message>
-                                )}
-                            </ListGroup.Item>
+  return (
+    <PayPalScriptProvider
+      options={{
+        clientId:
+          "AZhybHLplgX7KJC5jW9-hRnnSjxWBE9Axu8M2VdygHF1Y5jGcI9M_Dowlg--Fd0ERprgcAUk4mwvlu6l",
+        currency: "USD",
+      }}
+    >
+      <div>
+        <h1>Order: {order._id}</h1>
+        <Row>
+          <Col md={8}>
+            <ListGroup variant="flush">
+              <ListGroup.Item>
+                <h2>Shipping</h2>
+                <p>
+                  <strong>Name: </strong>
+                  {order.user.name}
+                </p>
+                <p>
+                  <strong>Email: </strong>
+                  <a href={`mailto:${order.user.email}`}>{order.user.email}</a>
+                </p>
+                <p>
+                  {order.shippingAddress.address}, {order.shippingAddress.city}
+                  {"  "}
+                  {order.shippingAddress.postalCode},{"  "}
+                  {order.shippingAddress.country}
+                </p>
+                {order.isDelivered ? (
+                  <Message variant="success">
+                    Delivered on {order.deliveredAt}
+                  </Message>
+                ) : (
+                  <Message variant="danger">Not Delivered</Message>
+                )}
+              </ListGroup.Item>
 
-                            <ListGroup.Item>
-                                <h2>Payment Method</h2>
-                                <p><strong>Method: </strong>{order.paymentMethod}</p>
-                                {order.isPaid ? (
-                                    <Message variant='success'>Paid on {order.paidAt}</Message>
-                                ) : (
-                                    <Message variant='danger'>Not Paid</Message>
-                                )}
-                            </ListGroup.Item>
+              <ListGroup.Item>
+                <h2>Payment Method</h2>
+                <p>
+                  <strong>Method: </strong>
+                  {order.paymentMethod}
+                </p>
+                {order.isPaid ? (
+                  <Message variant="success">Paid on {order.paidAt}</Message>
+                ) : (
+                  <Message variant="danger">Not Paid</Message>
+                )}
+              </ListGroup.Item>
 
-                            <ListGroup.Item>
-                                <h2>Order Items</h2>
-                                {order.orderItems.length === 0 ? (
-                                    <Message variant='info'>Order is empty</Message>
-                                ) : (
-                                    <ListGroup variant='flush'>
-                                        {order.orderItems.map((item, index) => (
-                                            <ListGroup.Item key={index}>
-                                                <Row>
-                                                    <Col md={1}>
-                                                        <Image src={item.image} alt={item.name} fluid rounded />
-                                                    </Col>
-                                                    <Col>
-                                                        <Link to={`/product/${item.product}`}>{item.name}</Link>
-                                                    </Col>
-                                                    <Col md={4}>
-                                                        {item.qty} X ${item.price} = ${(item.qty * item.price).toFixed(2)}
-                                                    </Col>
-                                                </Row>
-                                            </ListGroup.Item>
-                                        ))}
-                                    </ListGroup>
-                                )}
-                            </ListGroup.Item>
-                        </ListGroup>
-                    </Col>
+              <ListGroup.Item>
+                <h2>Order Items</h2>
+                {order.orderItems.length === 0 ? (
+                  <Message variant="info">Order is empty</Message>
+                ) : (
+                  <ListGroup variant="flush">
+                    {order.orderItems.map((item, index) => (
+                      <ListGroup.Item key={index}>
+                        <Row>
+                          <Col md={1}>
+                            <Image
+                              src={item.image}
+                              alt={item.name}
+                              fluid
+                              rounded
+                            />
+                          </Col>
+                          <Col>
+                            <Link to={`/product/${item.product}`}>
+                              {item.name}
+                            </Link>
+                          </Col>
+                          <Col md={4}>
+                            {item.qty} X ${item.price} = $
+                            {(item.qty * item.price).toFixed(2)}
+                          </Col>
+                        </Row>
+                      </ListGroup.Item>
+                    ))}
+                  </ListGroup>
+                )}
+              </ListGroup.Item>
+            </ListGroup>
+          </Col>
 
-                    <Col md={4}>
-                        <Card>
-                            <ListGroup variant='flush'>
-                                <ListGroup.Item><h2>Order Summary</h2></ListGroup.Item>
-                                <ListGroup.Item><Row><Col>Items:</Col><Col>${itemsPrice}</Col></Row></ListGroup.Item>
-                                <ListGroup.Item><Row><Col>Shipping:</Col><Col>${order.shippingPrice}</Col></Row></ListGroup.Item>
-                                <ListGroup.Item><Row><Col>Tax:</Col><Col>${order.taxPrice}</Col></Row></ListGroup.Item>
-                                <ListGroup.Item><Row><Col>Total:</Col><Col>${order.totalPrice}</Col></Row></ListGroup.Item>
+          <Col md={4}>
+            <Card>
+              <ListGroup variant="flush">
+                <ListGroup.Item>
+                  <h2>Order Summary</h2>
+                </ListGroup.Item>
+                <ListGroup.Item>
+                  <Row>
+                    <Col>Items:</Col>
+                    <Col>${itemsPrice}</Col>
+                  </Row>
+                </ListGroup.Item>
+                <ListGroup.Item>
+                  <Row>
+                    <Col>Shipping:</Col>
+                    <Col>${order.shippingPrice}</Col>
+                  </Row>
+                </ListGroup.Item>
+                <ListGroup.Item>
+                  <Row>
+                    <Col>Tax:</Col>
+                    <Col>${order.taxPrice}</Col>
+                  </Row>
+                </ListGroup.Item>
+                <ListGroup.Item>
+                  <Row>
+                    <Col>Total:</Col>
+                    <Col>${order.totalPrice}</Col>
+                  </Row>
+                </ListGroup.Item>
 
-                                {!order.isPaid && (
-                                    <ListGroup.Item>
-                                        {loadingPay && <Loader />}
-                                        <PayPalButtons
-                                            createOrder={createOrderHandler}
-                                            onApprove={successPaymentHandler}
-                                        />
-                                    </ListGroup.Item>
-                                )}
-                            </ListGroup>
-                        </Card>
-                    </Col>
-                </Row>
-            </div>
-        </PayPalScriptProvider>
-    )
+                {!order.isPaid && (
+                  <ListGroup.Item>
+                    {loadingPay && <Loader />}
+                    <PayPalButtons
+                      createOrder={createOrderHandler}
+                      onApprove={successPaymentHandler}
+                    />
+                  </ListGroup.Item>
+                )}
+              </ListGroup>
+            </Card>
+          </Col>
+        </Row>
+      </div>
+    </PayPalScriptProvider>
+  );
 }
 
-export default OrderScreen
+export default OrderScreen;
 ```
+
 6. we won't use testing paypal for now, we need to create business account on paypal
 
-
 ## step 35 orders in profile
+
 1. back to backend, update the order_views.py
+
 ```py
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
@@ -10923,7 +11455,9 @@ def getMyOrders(request):
     return Response(serializer.data)
 
 ```
+
 2. update order_url.py
+
 ```py
 from django.urls import path
 from base.views import order_views as views
@@ -10935,166 +11469,180 @@ urlpatterns = [
     path('<str:pk>/pay/', views.updateOrderToPaid, name='pay'),
 ]
 ```
+
 3. test under postman
 4. back to frontend, update constants.js
-```js
 
-export const ORDER_LIST_MY_REQUEST = 'ORDER_LIST_MY_REQUEST'
-export const ORDER_LIST_MY_SUCCESS = 'ORDER_LIST_MY_SUCCESS'
-export const ORDER_LIST_MY_FAIL = 'ORDER_LIST_MY_FAIL'
-export const ORDER_LIST_MY_RESET = 'ORDER_LIST_MY_RESET'
+```js
+export const ORDER_LIST_MY_REQUEST = "ORDER_LIST_MY_REQUEST";
+export const ORDER_LIST_MY_SUCCESS = "ORDER_LIST_MY_SUCCESS";
+export const ORDER_LIST_MY_FAIL = "ORDER_LIST_MY_FAIL";
+export const ORDER_LIST_MY_RESET = "ORDER_LIST_MY_RESET";
 ```
+
 5. update orderreducer.js
+
 ```js
 import {
-    ORDER_CREATE_REQUEST,
-    ORDER_CREATE_SUCCESS,
-    ORDER_CREATE_FAIL,
-    ORDER_CREATE_RESET,
-
-    ORDER_DETAILS_REQUEST, 
-    ORDER_DETAILS_SUCCESS,
-    ORDER_DETAILS_FAIL,
-    ORDER_PAY_REQUEST,
-    ORDER_PAY_SUCCESS,
-    ORDER_PAY_FAIL,
-    ORDER_PAY_RESET, 
-
-    ORDER_LIST_MY_REQUEST,
-    ORDER_LIST_MY_SUCCESS,
-    ORDER_LIST_MY_FAIL,
-    ORDER_LIST_MY_RESET,
-
-
-} from '../constants/orderConstants'
-
+  ORDER_CREATE_REQUEST,
+  ORDER_CREATE_SUCCESS,
+  ORDER_CREATE_FAIL,
+  ORDER_CREATE_RESET,
+  ORDER_DETAILS_REQUEST,
+  ORDER_DETAILS_SUCCESS,
+  ORDER_DETAILS_FAIL,
+  ORDER_PAY_REQUEST,
+  ORDER_PAY_SUCCESS,
+  ORDER_PAY_FAIL,
+  ORDER_PAY_RESET,
+  ORDER_LIST_MY_REQUEST,
+  ORDER_LIST_MY_SUCCESS,
+  ORDER_LIST_MY_FAIL,
+  ORDER_LIST_MY_RESET,
+} from "../constants/orderConstants";
 
 export const orderCreateReducer = (state = {}, action) => {
-    switch (action.type) {
-        case ORDER_CREATE_REQUEST:
-            return {
-                loading: true
-            }
+  switch (action.type) {
+    case ORDER_CREATE_REQUEST:
+      return {
+        loading: true,
+      };
 
-        case ORDER_CREATE_SUCCESS:
-            return {
-                loading: false,
-                success: true,
-                order: action.payload
-            }
+    case ORDER_CREATE_SUCCESS:
+      return {
+        loading: false,
+        success: true,
+        order: action.payload,
+      };
 
-        case ORDER_CREATE_FAIL:
-            return {
-                loading: false,
-                error: action.payload
-            }
+    case ORDER_CREATE_FAIL:
+      return {
+        loading: false,
+        error: action.payload,
+      };
 
-        case ORDER_CREATE_RESET:
-            return {}   
+    case ORDER_CREATE_RESET:
+      return {};
 
-        default:
-            return state
-    }
-}
-export const orderDetailsReducer = (state = { loading: true, orderItems: [], shippingAddress: {} }, action) => {
-    switch (action.type) {
-        case ORDER_DETAILS_REQUEST:
-            return {
-                ...state,
-                loading: true
-            }
+    default:
+      return state;
+  }
+};
+export const orderDetailsReducer = (
+  state = { loading: true, orderItems: [], shippingAddress: {} },
+  action,
+) => {
+  switch (action.type) {
+    case ORDER_DETAILS_REQUEST:
+      return {
+        ...state,
+        loading: true,
+      };
 
-        case ORDER_DETAILS_SUCCESS:
-            return {
-                loading: false,
-                order: action.payload
-            }
+    case ORDER_DETAILS_SUCCESS:
+      return {
+        loading: false,
+        order: action.payload,
+      };
 
-        case ORDER_DETAILS_FAIL:
-            return {
-                loading: false,
-                error: action.payload
-            }
+    case ORDER_DETAILS_FAIL:
+      return {
+        loading: false,
+        error: action.payload,
+      };
 
-
-        default:
-            return state
-    }
-}
+    default:
+      return state;
+  }
+};
 export const orderPayReducer = (state = {}, action) => {
-    switch (action.type) {
-        case ORDER_PAY_REQUEST:
-            return {
-                loading: true
-            }
+  switch (action.type) {
+    case ORDER_PAY_REQUEST:
+      return {
+        loading: true,
+      };
 
-        case ORDER_PAY_SUCCESS:
-            return {
-                loading: false,
-                success: true
-            }
+    case ORDER_PAY_SUCCESS:
+      return {
+        loading: false,
+        success: true,
+      };
 
-        case ORDER_PAY_FAIL:
-            return {
-                loading: false,
-                error: action.payload
-            }
+    case ORDER_PAY_FAIL:
+      return {
+        loading: false,
+        error: action.payload,
+      };
 
-        case ORDER_PAY_RESET:
-            return {}
+    case ORDER_PAY_RESET:
+      return {};
 
-        default:
-            return state
-    }
-}
+    default:
+      return state;
+  }
+};
 
 export const orderListMyReducer = (state = { orders: [] }, action) => {
-    switch (action.type) {
-        case ORDER_LIST_MY_REQUEST:
-            return {
-                loading: true
-            }
+  switch (action.type) {
+    case ORDER_LIST_MY_REQUEST:
+      return {
+        loading: true,
+      };
 
-        case ORDER_LIST_MY_SUCCESS:
-            return {
-                loading: false,
-                orders: action.payload
-            }
+    case ORDER_LIST_MY_SUCCESS:
+      return {
+        loading: false,
+        orders: action.payload,
+      };
 
-        case ORDER_LIST_MY_FAIL:
-            return {
-                loading: false,
-                error: action.payload
-            }
+    case ORDER_LIST_MY_FAIL:
+      return {
+        loading: false,
+        error: action.payload,
+      };
 
-        case ORDER_LIST_MY_RESET:
-            return {
-                orders: []
-            }
+    case ORDER_LIST_MY_RESET:
+      return {
+        orders: [],
+      };
 
-        default:
-            return state
-    }
-}
-
+    default:
+      return state;
+  }
+};
 ```
+
 6. update store.js
+
 ```js
-import { configureStore } from '@reduxjs/toolkit';
-import { productReducer, productDetailsReducer} from "./reducers/productReducers"; // import
-import {cartReducer} from "./reducers/cartReducers";
-import { userLoginReducer, userRegisterReducer, userDetailsReducer, userUpdateProfileReducer } from './reducers/userReducers';
-import { orderCreateReducer, orderDetailsReducer, orderPayReducer, orderListMyReducer } from './reducers/orderReducers';
-const cartItemsFromStorage = localStorage.getItem('cartItems')
-  ? JSON.parse(localStorage.getItem('cartItems'))
+import { configureStore } from "@reduxjs/toolkit";
+import {
+  productReducer,
+  productDetailsReducer,
+} from "./reducers/productReducers"; // import
+import { cartReducer } from "./reducers/cartReducers";
+import {
+  userLoginReducer,
+  userRegisterReducer,
+  userDetailsReducer,
+  userUpdateProfileReducer,
+} from "./reducers/userReducers";
+import {
+  orderCreateReducer,
+  orderDetailsReducer,
+  orderPayReducer,
+  orderListMyReducer,
+} from "./reducers/orderReducers";
+const cartItemsFromStorage = localStorage.getItem("cartItems")
+  ? JSON.parse(localStorage.getItem("cartItems"))
   : [];
-const userInfoFromStorage = localStorage.getItem('userInfo')
-  ? JSON.parse(localStorage.getItem('userInfo'))
+const userInfoFromStorage = localStorage.getItem("userInfo")
+  ? JSON.parse(localStorage.getItem("userInfo"))
   : null;
- 
-const shippingAddressFromStorage = localStorage.getItem('shippingAddress')
-  ? JSON.parse(localStorage.getItem('shippingAddress'))
-  : {};  
+
+const shippingAddressFromStorage = localStorage.getItem("shippingAddress")
+  ? JSON.parse(localStorage.getItem("shippingAddress"))
+  : {};
 // 👇 初始化 Redux 状态
 const preloadedState = {
   cart: {
@@ -11104,727 +11652,716 @@ const preloadedState = {
   userLogin: {
     userInfo: userInfoFromStorage, // 给 userLogin reducer 赋值
   },
-  
 };
 
 export const store = configureStore({
   reducer: {
-      productList: productReducer,
-      productDetails: productDetailsReducer,
-      cart: cartReducer,
-      userLogin: userLoginReducer,
-      userRegister: userRegisterReducer,
-      userDetails: userDetailsReducer,
-      userUpdateProfile: userUpdateProfileReducer,
-      orderCreate: orderCreateReducer,
-      orderDetails: orderDetailsReducer,
-      orderPay: orderPayReducer,
-      orderListMy: orderListMyReducer,
+    productList: productReducer,
+    productDetails: productDetailsReducer,
+    cart: cartReducer,
+    userLogin: userLoginReducer,
+    userRegister: userRegisterReducer,
+    userDetails: userDetailsReducer,
+    userUpdateProfile: userUpdateProfileReducer,
+    orderCreate: orderCreateReducer,
+    orderDetails: orderDetailsReducer,
+    orderPay: orderPayReducer,
+    orderListMy: orderListMyReducer,
   },
   // ✅ Thunk + DevTools ARE AUTO INCLUDED — NO SETUP NEEDED!
-  preloadedState : preloadedState,
-  middleware: (getDefaultMiddleware) => getDefaultMiddleware({ serializableCheck: false, immutableCheck: false, })
+  preloadedState: preloadedState,
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware({ serializableCheck: false, immutableCheck: false }),
 });
 
 export default store;
-
 ```
+
 7. update orderaction.js
+
 ```js
-import axios from 'axios'
+import axios from "axios";
 import {
-    ORDER_CREATE_REQUEST,
-    ORDER_CREATE_SUCCESS,
-    ORDER_CREATE_FAIL,
- ORDER_DETAILS_REQUEST,
-    ORDER_DETAILS_SUCCESS,
-    ORDER_DETAILS_FAIL,
- ORDER_PAY_REQUEST,
-    ORDER_PAY_SUCCESS,
-    ORDER_PAY_FAIL,
-    ORDER_PAY_RESET, 
-    ORDER_LIST_MY_REQUEST,
-    ORDER_LIST_MY_SUCCESS,
-    ORDER_LIST_MY_FAIL,
-    ORDER_LIST_MY_RESET,
-} from '../constants/orderConstants'
+  ORDER_CREATE_REQUEST,
+  ORDER_CREATE_SUCCESS,
+  ORDER_CREATE_FAIL,
+  ORDER_DETAILS_REQUEST,
+  ORDER_DETAILS_SUCCESS,
+  ORDER_DETAILS_FAIL,
+  ORDER_PAY_REQUEST,
+  ORDER_PAY_SUCCESS,
+  ORDER_PAY_FAIL,
+  ORDER_PAY_RESET,
+  ORDER_LIST_MY_REQUEST,
+  ORDER_LIST_MY_SUCCESS,
+  ORDER_LIST_MY_FAIL,
+  ORDER_LIST_MY_RESET,
+} from "../constants/orderConstants";
 
-import { CART_CLEAR_ITEMS } from '../constants/cartConstants'
-
+import { CART_CLEAR_ITEMS } from "../constants/cartConstants";
 
 export const createOrder = (order) => async (dispatch, getState) => {
-    try {
-        dispatch({
-            type: ORDER_CREATE_REQUEST
-        })
+  try {
+    dispatch({
+      type: ORDER_CREATE_REQUEST,
+    });
 
-        const {
-            userLogin: { userInfo },
-        } = getState()
+    const {
+      userLogin: { userInfo },
+    } = getState();
 
-        const config = {
-            headers: {
-                'Content-type': 'application/json',
-                Authorization: `Bearer ${userInfo.token}`
-            }
-        }
+    const config = {
+      headers: {
+        "Content-type": "application/json",
+        Authorization: `Bearer ${userInfo.token}`,
+      },
+    };
 
-        const { data } = await axios.post(
-            `/api/orders/add/`,
-            order,
-            config
-        )
+    const { data } = await axios.post(`/api/orders/add/`, order, config);
 
-        dispatch({
-            type: ORDER_CREATE_SUCCESS,
-            payload: data
-        })
+    dispatch({
+      type: ORDER_CREATE_SUCCESS,
+      payload: data,
+    });
 
-        dispatch({
-            type: CART_CLEAR_ITEMS,
-            payload: data
-        })
+    dispatch({
+      type: CART_CLEAR_ITEMS,
+      payload: data,
+    });
 
-        localStorage.removeItem('cartItems');
-
-
-    } catch (error) {
-        dispatch({
-            type: ORDER_CREATE_FAIL,
-            payload: error.response && error.response.data.detail
-                ? error.response.data.detail
-                : error.message,
-        })
-    }
-}
+    localStorage.removeItem("cartItems");
+  } catch (error) {
+    dispatch({
+      type: ORDER_CREATE_FAIL,
+      payload:
+        error.response && error.response.data.detail
+          ? error.response.data.detail
+          : error.message,
+    });
+  }
+};
 export const getOrderDetails = (id) => async (dispatch, getState) => {
-    try {
-        dispatch({
-            type: ORDER_DETAILS_REQUEST
-        })
+  try {
+    dispatch({
+      type: ORDER_DETAILS_REQUEST,
+    });
 
-        const {
-            userLogin: { userInfo },
-        } = getState()
+    const {
+      userLogin: { userInfo },
+    } = getState();
 
-        const config = {
-            headers: {
-                'Content-type': 'application/json',
-                Authorization: `Bearer ${userInfo.token}`
-            }
-        }
+    const config = {
+      headers: {
+        "Content-type": "application/json",
+        Authorization: `Bearer ${userInfo.token}`,
+      },
+    };
 
-        const { data } = await axios.get(
-            `/api/orders/${id}/`,
-            config
-        )
+    const { data } = await axios.get(`/api/orders/${id}/`, config);
 
-        dispatch({
-            type: ORDER_DETAILS_SUCCESS,
-            payload: data
-        })
-
-
-    } catch (error) {
-        dispatch({
-            type: ORDER_DETAILS_FAIL,
-            payload: error.response && error.response.data.detail
-                ? error.response.data.detail
-                : error.message,
-        })
-    }
-}
+    dispatch({
+      type: ORDER_DETAILS_SUCCESS,
+      payload: data,
+    });
+  } catch (error) {
+    dispatch({
+      type: ORDER_DETAILS_FAIL,
+      payload:
+        error.response && error.response.data.detail
+          ? error.response.data.detail
+          : error.message,
+    });
+  }
+};
 export const payOrder = (id, paymentResult) => async (dispatch, getState) => {
-    try {
-        dispatch({
-            type: ORDER_PAY_REQUEST
-        })
+  try {
+    dispatch({
+      type: ORDER_PAY_REQUEST,
+    });
 
-        const {
-            userLogin: { userInfo },
-        } = getState()
+    const {
+      userLogin: { userInfo },
+    } = getState();
 
-        const config = {
-            headers: {
-                'Content-type': 'application/json',
-                Authorization: `Bearer ${userInfo.token}`
-            }
-        }
+    const config = {
+      headers: {
+        "Content-type": "application/json",
+        Authorization: `Bearer ${userInfo.token}`,
+      },
+    };
 
-        const { data } = await axios.put(
-            `/api/orders/${id}/pay/`,
-            paymentResult,
-            config
-        )
+    const { data } = await axios.put(
+      `/api/orders/${id}/pay/`,
+      paymentResult,
+      config,
+    );
 
-        dispatch({
-            type: ORDER_PAY_SUCCESS,
-            payload: data
-        })
-
-
-    } catch (error) {
-        dispatch({
-            type: ORDER_PAY_FAIL,
-            payload: error.response && error.response.data.detail
-                ? error.response.data.detail
-                : error.message,
-        })
-    }
-}
+    dispatch({
+      type: ORDER_PAY_SUCCESS,
+      payload: data,
+    });
+  } catch (error) {
+    dispatch({
+      type: ORDER_PAY_FAIL,
+      payload:
+        error.response && error.response.data.detail
+          ? error.response.data.detail
+          : error.message,
+    });
+  }
+};
 
 export const listMyOrders = () => async (dispatch, getState) => {
-    try {
-        dispatch({
-            type: ORDER_LIST_MY_REQUEST
-        })
+  try {
+    dispatch({
+      type: ORDER_LIST_MY_REQUEST,
+    });
 
-        const {
-            userLogin: { userInfo },
-        } = getState()
+    const {
+      userLogin: { userInfo },
+    } = getState();
 
-        const config = {
-            headers: {
-                'Content-type': 'application/json',
-                Authorization: `Bearer ${userInfo.token}`
-            }
-        }
+    const config = {
+      headers: {
+        "Content-type": "application/json",
+        Authorization: `Bearer ${userInfo.token}`,
+      },
+    };
 
-        const { data } = await axios.get(
-            `/api/orders/myorders/`,
-            config
-        )
+    const { data } = await axios.get(`/api/orders/myorders/`, config);
 
-        dispatch({
-            type: ORDER_LIST_MY_SUCCESS,
-            payload: data
-        })
-
-
-    } catch (error) {
-        dispatch({
-            type: ORDER_LIST_MY_FAIL,
-            payload: error.response && error.response.data.detail
-                ? error.response.data.detail
-                : error.message,
-        })
-    }
-}
+    dispatch({
+      type: ORDER_LIST_MY_SUCCESS,
+      payload: data,
+    });
+  } catch (error) {
+    dispatch({
+      type: ORDER_LIST_MY_FAIL,
+      payload:
+        error.response && error.response.data.detail
+          ? error.response.data.detail
+          : error.message,
+    });
+  }
+};
 ```
+
 8. update useraction.js to add reset
+
 ```js
-import axios from 'axios'
+import axios from "axios";
 import {
-    USER_LOGIN_REQUEST,
-    USER_LOGIN_SUCCESS,
-    USER_LOGIN_FAIL,
+  USER_LOGIN_REQUEST,
+  USER_LOGIN_SUCCESS,
+  USER_LOGIN_FAIL,
+  USER_LOGOUT,
+  USER_REGISTER_REQUEST,
+  USER_REGISTER_SUCCESS,
+  USER_REGISTER_FAIL,
+  USER_DETAILS_REQUEST,
+  USER_DETAILS_SUCCESS,
+  USER_DETAILS_FAIL,
+  USER_DETAILS_RESET,
+  USER_UPDATE_PROFILE_REQUEST,
+  USER_UPDATE_PROFILE_SUCCESS,
+  USER_UPDATE_PROFILE_FAIL,
+  USER_UPDATE_PROFILE_RESET,
+} from "../constants/userConstants";
 
-    USER_LOGOUT,
-    USER_REGISTER_REQUEST,
-    USER_REGISTER_SUCCESS,
-    USER_REGISTER_FAIL,
-
-    USER_DETAILS_REQUEST,
-    USER_DETAILS_SUCCESS,
-    USER_DETAILS_FAIL,
-    USER_DETAILS_RESET,
-
-    USER_UPDATE_PROFILE_REQUEST,
-    USER_UPDATE_PROFILE_SUCCESS,
-    USER_UPDATE_PROFILE_FAIL,
-    USER_UPDATE_PROFILE_RESET,
-
-} from '../constants/userConstants'
-
-import { ORDER_LIST_MY_RESET } from '../constants/orderConstants'
+import { ORDER_LIST_MY_RESET } from "../constants/orderConstants";
 export const login = (email, password) => async (dispatch) => {
-    try {
-        dispatch({
-            type: USER_LOGIN_REQUEST
-        })
+  try {
+    dispatch({
+      type: USER_LOGIN_REQUEST,
+    });
 
-        const config = {
-            headers: {
-                'Content-type': 'application/json'
-            }
-        }
+    const config = {
+      headers: {
+        "Content-type": "application/json",
+      },
+    };
 
-        const { data } = await axios.post(
-            '/api/users/login/',
-            { 'username': email, 'password': password },
-            config
-        )
+    const { data } = await axios.post(
+      "/api/users/login/",
+      { username: email, password: password },
+      config,
+    );
 
-        dispatch({
-            type: USER_LOGIN_SUCCESS,
-            payload: data
-        })
+    dispatch({
+      type: USER_LOGIN_SUCCESS,
+      payload: data,
+    });
 
-        localStorage.setItem('userInfo', JSON.stringify(data))
-
-    } catch (error) {
-        dispatch({
-            type: USER_LOGIN_FAIL,
-            payload: error.response && error.response.data.detail
-                ? error.response.data.detail
-                : error.message,
-        })
-    }
-}
+    localStorage.setItem("userInfo", JSON.stringify(data));
+  } catch (error) {
+    dispatch({
+      type: USER_LOGIN_FAIL,
+      payload:
+        error.response && error.response.data.detail
+          ? error.response.data.detail
+          : error.message,
+    });
+  }
+};
 
 export const logout = () => (dispatch) => {
-    localStorage.removeItem('userInfo')
-    dispatch({ type: USER_LOGOUT })
-    dispatch({ type: USER_DETAILS_RESET })
-    dispatch({ type: ORDER_LIST_MY_RESET })
-}
+  localStorage.removeItem("userInfo");
+  dispatch({ type: USER_LOGOUT });
+  dispatch({ type: USER_DETAILS_RESET });
+  dispatch({ type: ORDER_LIST_MY_RESET });
+};
 
 export const register = (name, email, password) => async (dispatch) => {
-    try {
-        dispatch({
-            type: USER_REGISTER_REQUEST
-        })
+  try {
+    dispatch({
+      type: USER_REGISTER_REQUEST,
+    });
 
-        const config = {
-            headers: {
-                'Content-type': 'application/json'
-            }
-        }
+    const config = {
+      headers: {
+        "Content-type": "application/json",
+      },
+    };
 
-        const { data } = await axios.post(
-            '/api/users/register/',
-            { 'name': name, 'email': email, 'password': password },
-            config
-        )
+    const { data } = await axios.post(
+      "/api/users/register/",
+      { name: name, email: email, password: password },
+      config,
+    );
 
-        dispatch({
-            type: USER_REGISTER_SUCCESS,
-            payload: data
-        })
+    dispatch({
+      type: USER_REGISTER_SUCCESS,
+      payload: data,
+    });
 
-        dispatch({
-            type: USER_LOGIN_SUCCESS,
-            payload: data
-        })
+    dispatch({
+      type: USER_LOGIN_SUCCESS,
+      payload: data,
+    });
 
-        localStorage.setItem('userInfo', JSON.stringify(data))
-
-    } catch (error) {
-        dispatch({
-            type: USER_REGISTER_FAIL,
-            payload: error.response && error.response.data.detail
-                ? error.response.data.detail
-                : error.message,
-        })
-    }
-}
+    localStorage.setItem("userInfo", JSON.stringify(data));
+  } catch (error) {
+    dispatch({
+      type: USER_REGISTER_FAIL,
+      payload:
+        error.response && error.response.data.detail
+          ? error.response.data.detail
+          : error.message,
+    });
+  }
+};
 
 export const getUserDetails = (id) => async (dispatch, getState) => {
-    try {
-        dispatch({
-            type: USER_DETAILS_REQUEST
-        })
+  try {
+    dispatch({
+      type: USER_DETAILS_REQUEST,
+    });
 
-        const {
-            userLogin: { userInfo },
-        } = getState()
+    const {
+      userLogin: { userInfo },
+    } = getState();
 
-        const config = {
-            headers: {
-                'Content-type': 'application/json',
-                Authorization: `Bearer ${userInfo.token}`
-            }
-        }
+    const config = {
+      headers: {
+        "Content-type": "application/json",
+        Authorization: `Bearer ${userInfo.token}`,
+      },
+    };
 
-        const { data } = await axios.get(
-            `/api/users/${id}/`,
-            config
-        )
+    const { data } = await axios.get(`/api/users/${id}/`, config);
 
-        dispatch({
-            type: USER_DETAILS_SUCCESS,
-            payload: data
-        })
-
-
-    } catch (error) {
-        dispatch({
-            type: USER_DETAILS_FAIL,
-            payload: error.response && error.response.data.detail
-                ? error.response.data.detail
-                : error.message,
-        })
-    }
-}
+    dispatch({
+      type: USER_DETAILS_SUCCESS,
+      payload: data,
+    });
+  } catch (error) {
+    dispatch({
+      type: USER_DETAILS_FAIL,
+      payload:
+        error.response && error.response.data.detail
+          ? error.response.data.detail
+          : error.message,
+    });
+  }
+};
 
 export const updateUserProfile = (user) => async (dispatch, getState) => {
-    try {
-        dispatch({
-            type: USER_UPDATE_PROFILE_REQUEST
-        })
+  try {
+    dispatch({
+      type: USER_UPDATE_PROFILE_REQUEST,
+    });
 
-        const {
-            userLogin: { userInfo },
-        } = getState()
+    const {
+      userLogin: { userInfo },
+    } = getState();
 
-        const config = {
-            headers: {
-                'Content-type': 'application/json',
-                Authorization: `Bearer ${userInfo.token}`
-            }
-        }
+    const config = {
+      headers: {
+        "Content-type": "application/json",
+        Authorization: `Bearer ${userInfo.token}`,
+      },
+    };
 
-        const { data } = await axios.put(
-            `/api/users/profile/update/`,
-            user,
-            config
-        )
+    const { data } = await axios.put(
+      `/api/users/profile/update/`,
+      user,
+      config,
+    );
 
-        dispatch({
-            type: USER_UPDATE_PROFILE_SUCCESS,
-            payload: data
-        })
+    dispatch({
+      type: USER_UPDATE_PROFILE_SUCCESS,
+      payload: data,
+    });
 
-        dispatch({
-            type: USER_LOGIN_SUCCESS,
-            payload: data
-        })
+    dispatch({
+      type: USER_LOGIN_SUCCESS,
+      payload: data,
+    });
 
-        localStorage.setItem('userInfo', JSON.stringify(data))
-
-    } catch (error) {
-        dispatch({
-            type: USER_UPDATE_PROFILE_FAIL,
-            payload: error.response && error.response.data.detail
-                ? error.response.data.detail
-                : error.message,
-        })
-    }
-}
-
+    localStorage.setItem("userInfo", JSON.stringify(data));
+  } catch (error) {
+    dispatch({
+      type: USER_UPDATE_PROFILE_FAIL,
+      payload:
+        error.response && error.response.data.detail
+          ? error.response.data.detail
+          : error.message,
+    });
+  }
+};
 ```
+
 9. update profilescreen.jsx
+
 ```jsx
-import React, { useState, useEffect } from 'react'
-import { useNavigate } from 'react-router-dom'
-import { Form, Button, Row, Col, Table } from 'react-bootstrap'
-import { LinkContainer } from 'react-router-bootstrap'
-import { useDispatch, useSelector } from 'react-redux'
-import Loader from '../components/Loader'
-import Message from '../components/Message'
-import { getUserDetails, updateUserProfile } from '../actions/userActions'
-import { USER_UPDATE_PROFILE_RESET } from '../constants/userConstants'
-import { listMyOrders } from '../actions/orderActions'
+import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { Form, Button, Row, Col, Table } from "react-bootstrap";
+import { LinkContainer } from "react-router-bootstrap";
+import { useDispatch, useSelector } from "react-redux";
+import Loader from "../components/Loader";
+import Message from "../components/Message";
+import { getUserDetails, updateUserProfile } from "../actions/userActions";
+import { USER_UPDATE_PROFILE_RESET } from "../constants/userConstants";
+import { listMyOrders } from "../actions/orderActions";
 function ProfileScreen() {
-    const navigate = useNavigate()
-    const [name, setName] = useState('')
-    const [email, setEmail] = useState('')
-    const [password, setPassword] = useState('')
-    const [confirmPassword, setConfirmPassword] = useState('')
-    const [message, setMessage] = useState('')
+  const navigate = useNavigate();
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [message, setMessage] = useState("");
 
-    const dispatch = useDispatch()
+  const dispatch = useDispatch();
 
-    const userDetails = useSelector(state => state.userDetails)
-    const { error, loading, user } = userDetails
+  const userDetails = useSelector((state) => state.userDetails);
+  const { error, loading, user } = userDetails;
 
-    const userLogin = useSelector(state => state.userLogin)
-    const { userInfo } = userLogin
+  const userLogin = useSelector((state) => state.userLogin);
+  const { userInfo } = userLogin;
 
-  const userUpdateProfile = useSelector(state => state.userUpdateProfile)
-  const { success } = userUpdateProfile
+  const userUpdateProfile = useSelector((state) => state.userUpdateProfile);
+  const { success } = userUpdateProfile;
 
-    const orderListMy = useSelector(state => state.orderListMy)
-    const { loading: loadingOrders, error: errorOrders, orders } = orderListMy
+  const orderListMy = useSelector((state) => state.orderListMy);
+  const { loading: loadingOrders, error: errorOrders, orders } = orderListMy;
 
-    useEffect(() => {
-        if (!userInfo) {
-            navigate('/login')
-        } else {
-            if (!user || !user.name || success) {
-               dispatch({ type: USER_UPDATE_PROFILE_RESET })
-                dispatch(getUserDetails('profile'))
-                dispatch(listMyOrders())
-            } else {
-                setName(user.name)
-                setEmail(user.email)
-            }
-        }
-    }, [dispatch, navigate, userInfo, user, success])
-
-    const submitHandler = (e) => {
-        e.preventDefault()
-
-        if (password !== confirmPassword) {
-            setMessage('Passwords do not match')
-        } else {
-           dispatch(updateUserProfile({ id: user._id, name, email, password }))
-           setMessage("")
-        }
-
+  useEffect(() => {
+    if (!userInfo) {
+      navigate("/login");
+    } else {
+      if (!user || !user.name || success) {
+        dispatch({ type: USER_UPDATE_PROFILE_RESET });
+        dispatch(getUserDetails("profile"));
+        dispatch(listMyOrders());
+      } else {
+        setName(user.name);
+        setEmail(user.email);
+      }
     }
-    return (
-        <Row>
-            <Col md={3}>
-                <h2>User Profile</h2>
+  }, [dispatch, navigate, userInfo, user, success]);
 
-                {message && <Message variant='danger'>{message}</Message>}
-                {error && <Message variant='danger'>{error}</Message>}
-                {loading && <Loader />}
-                <Form onSubmit={submitHandler}>
+  const submitHandler = (e) => {
+    e.preventDefault();
 
-                    <Form.Group controlId='name'>
-                        <Form.Label>Name</Form.Label>
-                        <Form.Control
-                            required
-                            type='name'
-                            placeholder='Enter name'
-                            value={name}
-                            onChange={(e) => setName(e.target.value)}
-                        >
-                        </Form.Control>
-                    </Form.Group>
+    if (password !== confirmPassword) {
+      setMessage("Passwords do not match");
+    } else {
+      dispatch(updateUserProfile({ id: user._id, name, email, password }));
+      setMessage("");
+    }
+  };
+  return (
+    <Row>
+      <Col md={3}>
+        <h2>User Profile</h2>
 
-                    <Form.Group controlId='email'>
-                        <Form.Label>Email Address</Form.Label>
-                        <Form.Control
-                            required
-                            type='email'
-                            placeholder='Enter Email'
-                            value={email}
-                            onChange={(e) => setEmail(e.target.value)}
-                        >
-                        </Form.Control>
-                    </Form.Group>
+        {message && <Message variant="danger">{message}</Message>}
+        {error && <Message variant="danger">{error}</Message>}
+        {loading && <Loader />}
+        <Form onSubmit={submitHandler}>
+          <Form.Group controlId="name">
+            <Form.Label>Name</Form.Label>
+            <Form.Control
+              required
+              type="name"
+              placeholder="Enter name"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+            ></Form.Control>
+          </Form.Group>
 
-                    <Form.Group controlId='password'>
-                        <Form.Label>Password</Form.Label>
-                        <Form.Control
+          <Form.Group controlId="email">
+            <Form.Label>Email Address</Form.Label>
+            <Form.Control
+              required
+              type="email"
+              placeholder="Enter Email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+            ></Form.Control>
+          </Form.Group>
 
-                            type='password'
-                            placeholder='Enter Password'
-                            value={password}
-                            onChange={(e) => setPassword(e.target.value)}
-                        >
-                        </Form.Control>
-                    </Form.Group>
+          <Form.Group controlId="password">
+            <Form.Label>Password</Form.Label>
+            <Form.Control
+              type="password"
+              placeholder="Enter Password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+            ></Form.Control>
+          </Form.Group>
 
-                    <Form.Group controlId='passwordConfirm'>
-                        <Form.Label>Confirm Password</Form.Label>
-                        <Form.Control
+          <Form.Group controlId="passwordConfirm">
+            <Form.Label>Confirm Password</Form.Label>
+            <Form.Control
+              type="password"
+              placeholder="Confirm Password"
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+            ></Form.Control>
+          </Form.Group>
 
-                            type='password'
-                            placeholder='Confirm Password'
-                            value={confirmPassword}
-                            onChange={(e) => setConfirmPassword(e.target.value)}
-                        >
-                        </Form.Control>
-                    </Form.Group>
+          <Button type="submit" variant="primary">
+            Update
+          </Button>
+        </Form>
+      </Col>
 
-                    <Button type='submit' variant='primary'>
-                        Update
-                </Button>
+      <Col md={9}>
+        <h2>My Orders</h2>
+        {loadingOrders ? (
+          <Loader />
+        ) : errorOrders ? (
+          <Message variant="danger">{errorOrders}</Message>
+        ) : (
+          <Table striped responsive className="table-sm">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Date</th>
+                <th>Total</th>
+                <th>Paid</th>
+                <th>Delivered</th>
+                <th></th>
+              </tr>
+            </thead>
 
-                </Form>
-            </Col>
-
-            <Col md={9}>
-                <h2>My Orders</h2>
-           {loadingOrders ? (
-                    <Loader />
-                ) : errorOrders ? (
-                    <Message variant='danger'>{errorOrders}</Message>
-                ) : (
-                            <Table striped responsive className='table-sm'>
-                                <thead>
-                                    <tr>
-                                        <th>ID</th>
-                                        <th>Date</th>
-                                        <th>Total</th>
-                                        <th>Paid</th>
-                                        <th>Delivered</th>
-                                        <th></th>
-                                    </tr>
-                                </thead>
-
-                                <tbody>
-                                    {orders.map(order => (
-                                        <tr key={order._id}>
-                                            <td>{order._id}</td>
-                                            <td>{order.createdAt.substring(0, 10)}</td>
-                                            <td>${order.totalPrice}</td>
-                                            <td>{order.isPaid ? order.paidAt.substring(0, 10) : (
-                                                <i className='fas fa-times' style={{ color: 'red' }}></i>
-                                            )}</td>
-                                            <td>
-                                                <LinkContainer to={`/order/${order._id}`}>
-                                                    <Button className='btn-sm'>Details</Button>
-                                                </LinkContainer>
-                                            </td>
-                                        </tr>
-                                    ))}
-                                </tbody>
-                            </Table>
-                        )}
-            </Col>
-        </Row>
-    )
+            <tbody>
+              {orders.map((order) => (
+                <tr key={order._id}>
+                  <td>{order._id}</td>
+                  <td>{order.createdAt.substring(0, 10)}</td>
+                  <td>${order.totalPrice}</td>
+                  <td>
+                    {order.isPaid ? (
+                      order.paidAt.substring(0, 10)
+                    ) : (
+                      <i className="fas fa-times" style={{ color: "red" }}></i>
+                    )}
+                  </td>
+                  <td>
+                    <LinkContainer to={`/order/${order._id}`}>
+                      <Button className="btn-sm">Details</Button>
+                    </LinkContainer>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </Table>
+        )}
+      </Col>
+    </Row>
+  );
 }
 
-export default ProfileScreenxs
+export default ProfileScreenxs;
 ```
 
 ## step 36 admin link
 
 1. in the backend, we have the getusers routes
 2. we can work on the frontend side, add the constants inside userConstants.js
+
 ```js
-export const USER_LIST_REQUEST = 'USER_LIST_REQUEST'
-export const USER_LIST_SUCCESS = 'USER_LIST_SUCCESS'
-export const USER_LIST_FAIL = 'USER_LIST_FAIL'
-export const USER_LIST_RESET = 'USER_LIST_RESET'
+export const USER_LIST_REQUEST = "USER_LIST_REQUEST";
+export const USER_LIST_SUCCESS = "USER_LIST_SUCCESS";
+export const USER_LIST_FAIL = "USER_LIST_FAIL";
+export const USER_LIST_RESET = "USER_LIST_RESET";
 ```
+
 3. update userReducer.js
+
 ```js
 import {
-    USER_LOGIN_REQUEST,
-    USER_LOGIN_SUCCESS,
-    USER_LOGIN_FAIL,
-
-    USER_LOGOUT,
-    USER_REGISTER_REQUEST,
-    USER_REGISTER_SUCCESS,
-    USER_REGISTER_FAIL,
-    USER_DETAILS_REQUEST,
-    USER_DETAILS_SUCCESS,
-    USER_DETAILS_FAIL,
-    USER_DETAILS_RESET,
-
-    USER_UPDATE_PROFILE_REQUEST,
-    USER_UPDATE_PROFILE_SUCCESS,
-    USER_UPDATE_PROFILE_FAIL,
-    USER_UPDATE_PROFILE_RESET,
-
-    USER_LIST_REQUEST,
-    USER_LIST_SUCCESS,
-    USER_LIST_FAIL,
-    USER_LIST_RESET,
-
-} from '../constants/userConstants'
-
+  USER_LOGIN_REQUEST,
+  USER_LOGIN_SUCCESS,
+  USER_LOGIN_FAIL,
+  USER_LOGOUT,
+  USER_REGISTER_REQUEST,
+  USER_REGISTER_SUCCESS,
+  USER_REGISTER_FAIL,
+  USER_DETAILS_REQUEST,
+  USER_DETAILS_SUCCESS,
+  USER_DETAILS_FAIL,
+  USER_DETAILS_RESET,
+  USER_UPDATE_PROFILE_REQUEST,
+  USER_UPDATE_PROFILE_SUCCESS,
+  USER_UPDATE_PROFILE_FAIL,
+  USER_UPDATE_PROFILE_RESET,
+  USER_LIST_REQUEST,
+  USER_LIST_SUCCESS,
+  USER_LIST_FAIL,
+  USER_LIST_RESET,
+} from "../constants/userConstants";
 
 export const userLoginReducer = (state = {}, action) => {
-    switch (action.type) {
-        case USER_LOGIN_REQUEST:
-            return { loading: true }
+  switch (action.type) {
+    case USER_LOGIN_REQUEST:
+      return { loading: true };
 
-        case USER_LOGIN_SUCCESS:
-            return { loading: false, userInfo: action.payload }
+    case USER_LOGIN_SUCCESS:
+      return { loading: false, userInfo: action.payload };
 
-        case USER_LOGIN_FAIL:
-            return { loading: false, error: action.payload }
+    case USER_LOGIN_FAIL:
+      return { loading: false, error: action.payload };
 
-        case USER_LOGOUT:
-            return {}
+    case USER_LOGOUT:
+      return {};
 
-        default:
-            return state
-    }
-}
+    default:
+      return state;
+  }
+};
 export const userRegisterReducer = (state = {}, action) => {
-    switch (action.type) {
-        case USER_REGISTER_REQUEST:
-            return { loading: true }
+  switch (action.type) {
+    case USER_REGISTER_REQUEST:
+      return { loading: true };
 
-        case USER_REGISTER_SUCCESS:
-            return { loading: false, userInfo: action.payload }
+    case USER_REGISTER_SUCCESS:
+      return { loading: false, userInfo: action.payload };
 
-        case USER_REGISTER_FAIL:
-            return { loading: false, error: action.payload }
+    case USER_REGISTER_FAIL:
+      return { loading: false, error: action.payload };
 
-        case USER_LOGOUT:
-            return {}
+    case USER_LOGOUT:
+      return {};
 
-        default:
-            return state
-    }
-}
+    default:
+      return state;
+  }
+};
 
 export const userDetailsReducer = (state = { user: {} }, action) => {
-    switch (action.type) {
-        case USER_DETAILS_REQUEST:
-            return { ...state, loading: true }
+  switch (action.type) {
+    case USER_DETAILS_REQUEST:
+      return { ...state, loading: true };
 
-        case USER_DETAILS_SUCCESS:
-            return { loading: false, user: action.payload }
+    case USER_DETAILS_SUCCESS:
+      return { loading: false, user: action.payload };
 
-        case USER_DETAILS_FAIL:
-            return { loading: false, error: action.payload }
+    case USER_DETAILS_FAIL:
+      return { loading: false, error: action.payload };
 
-        case USER_DETAILS_RESET:
-            return { user: {} }
+    case USER_DETAILS_RESET:
+      return { user: {} };
 
-
-        default:
-            return state
-    }
-}
+    default:
+      return state;
+  }
+};
 
 export const userUpdateProfileReducer = (state = {}, action) => {
-    switch (action.type) {
-        case USER_UPDATE_PROFILE_REQUEST:
-            return { loading: true }
+  switch (action.type) {
+    case USER_UPDATE_PROFILE_REQUEST:
+      return { loading: true };
 
-        case USER_UPDATE_PROFILE_SUCCESS:
-            return { loading: false, success: true, userInfo: action.payload }
+    case USER_UPDATE_PROFILE_SUCCESS:
+      return { loading: false, success: true, userInfo: action.payload };
 
-        case USER_UPDATE_PROFILE_FAIL:
-            return { loading: false, error: action.payload }
+    case USER_UPDATE_PROFILE_FAIL:
+      return { loading: false, error: action.payload };
 
-        case USER_UPDATE_PROFILE_RESET:
-            return {}
+    case USER_UPDATE_PROFILE_RESET:
+      return {};
 
-        default:
-            return state
-    }
-}
+    default:
+      return state;
+  }
+};
 
 export const userListReducer = (state = { users: [] }, action) => {
-    switch (action.type) {
-        case USER_LIST_REQUEST:
-            return { loading: true }
+  switch (action.type) {
+    case USER_LIST_REQUEST:
+      return { loading: true };
 
-        case USER_LIST_SUCCESS:
-            return { loading: false, users: action.payload }
+    case USER_LIST_SUCCESS:
+      return { loading: false, users: action.payload };
 
-        case USER_LIST_FAIL:
-            return { loading: false, error: action.payload }
+    case USER_LIST_FAIL:
+      return { loading: false, error: action.payload };
 
-        case USER_LIST_RESET:
-            return { users: [] }
+    case USER_LIST_RESET:
+      return { users: [] };
 
-        default:
-            return state
-    }
-}
+    default:
+      return state;
+  }
+};
 ```
+
 4. update store.js
+
 ```js
-import { configureStore } from '@reduxjs/toolkit';
-import { productReducer, productDetailsReducer} from "./reducers/productReducers"; // import
-import {cartReducer} from "./reducers/cartReducers";
-import { userLoginReducer, userRegisterReducer, userDetailsReducer, userUpdateProfileReducer, userListReducer } from './reducers/userReducers';
-import { orderCreateReducer, orderDetailsReducer, orderPayReducer, orderListMyReducer } from './reducers/orderReducers';
-const cartItemsFromStorage = localStorage.getItem('cartItems')
-  ? JSON.parse(localStorage.getItem('cartItems'))
+import { configureStore } from "@reduxjs/toolkit";
+import {
+  productReducer,
+  productDetailsReducer,
+} from "./reducers/productReducers"; // import
+import { cartReducer } from "./reducers/cartReducers";
+import {
+  userLoginReducer,
+  userRegisterReducer,
+  userDetailsReducer,
+  userUpdateProfileReducer,
+  userListReducer,
+} from "./reducers/userReducers";
+import {
+  orderCreateReducer,
+  orderDetailsReducer,
+  orderPayReducer,
+  orderListMyReducer,
+} from "./reducers/orderReducers";
+const cartItemsFromStorage = localStorage.getItem("cartItems")
+  ? JSON.parse(localStorage.getItem("cartItems"))
   : [];
-const userInfoFromStorage = localStorage.getItem('userInfo')
-  ? JSON.parse(localStorage.getItem('userInfo'))
+const userInfoFromStorage = localStorage.getItem("userInfo")
+  ? JSON.parse(localStorage.getItem("userInfo"))
   : null;
- 
-const shippingAddressFromStorage = localStorage.getItem('shippingAddress')
-  ? JSON.parse(localStorage.getItem('shippingAddress'))
-  : {};  
+
+const shippingAddressFromStorage = localStorage.getItem("shippingAddress")
+  ? JSON.parse(localStorage.getItem("shippingAddress"))
+  : {};
 // 👇 初始化 Redux 状态
 const preloadedState = {
   cart: {
@@ -11834,360 +12371,353 @@ const preloadedState = {
   userLogin: {
     userInfo: userInfoFromStorage, // 给 userLogin reducer 赋值
   },
-  
 };
 
 export const store = configureStore({
   reducer: {
-      productList: productReducer,
-      productDetails: productDetailsReducer,
-      cart: cartReducer,
-      userLogin: userLoginReducer,
-      userRegister: userRegisterReducer,
-      userDetails: userDetailsReducer,
-      userUpdateProfile: userUpdateProfileReducer,
-      orderCreate: orderCreateReducer,
-      orderDetails: orderDetailsReducer,
-      orderPay: orderPayReducer,
-      orderListMy: orderListMyReducer,
-      userList: userListReducer,
+    productList: productReducer,
+    productDetails: productDetailsReducer,
+    cart: cartReducer,
+    userLogin: userLoginReducer,
+    userRegister: userRegisterReducer,
+    userDetails: userDetailsReducer,
+    userUpdateProfile: userUpdateProfileReducer,
+    orderCreate: orderCreateReducer,
+    orderDetails: orderDetailsReducer,
+    orderPay: orderPayReducer,
+    orderListMy: orderListMyReducer,
+    userList: userListReducer,
   },
   // ✅ Thunk + DevTools ARE AUTO INCLUDED — NO SETUP NEEDED!
-  preloadedState : preloadedState,
-  middleware: (getDefaultMiddleware) => getDefaultMiddleware({ serializableCheck: false, immutableCheck: false, })
+  preloadedState: preloadedState,
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware({ serializableCheck: false, immutableCheck: false }),
 });
 
 export default store;
-
 ```
+
 5. update useraction.js
+
 ```js
-import axios from 'axios'
+import axios from "axios";
 import {
-    USER_LOGIN_REQUEST,
-    USER_LOGIN_SUCCESS,
-    USER_LOGIN_FAIL,
+  USER_LOGIN_REQUEST,
+  USER_LOGIN_SUCCESS,
+  USER_LOGIN_FAIL,
+  USER_LOGOUT,
+  USER_REGISTER_REQUEST,
+  USER_REGISTER_SUCCESS,
+  USER_REGISTER_FAIL,
+  USER_DETAILS_REQUEST,
+  USER_DETAILS_SUCCESS,
+  USER_DETAILS_FAIL,
+  USER_DETAILS_RESET,
+  USER_UPDATE_PROFILE_REQUEST,
+  USER_UPDATE_PROFILE_SUCCESS,
+  USER_UPDATE_PROFILE_FAIL,
+  USER_UPDATE_PROFILE_RESET,
+  USER_LIST_REQUEST,
+  USER_LIST_SUCCESS,
+  USER_LIST_FAIL,
+  USER_LIST_RESET,
+} from "../constants/userConstants";
 
-    USER_LOGOUT,
-    USER_REGISTER_REQUEST,
-    USER_REGISTER_SUCCESS,
-    USER_REGISTER_FAIL,
-
-    USER_DETAILS_REQUEST,
-    USER_DETAILS_SUCCESS,
-    USER_DETAILS_FAIL,
-    USER_DETAILS_RESET,
-
-    USER_UPDATE_PROFILE_REQUEST,
-    USER_UPDATE_PROFILE_SUCCESS,
-    USER_UPDATE_PROFILE_FAIL,
-    USER_UPDATE_PROFILE_RESET,
-
-    USER_LIST_REQUEST,
-    USER_LIST_SUCCESS,
-    USER_LIST_FAIL,
-    USER_LIST_RESET,
-
-} from '../constants/userConstants'
-
-import { ORDER_LIST_MY_RESET } from '../constants/orderConstants'
+import { ORDER_LIST_MY_RESET } from "../constants/orderConstants";
 export const login = (email, password) => async (dispatch) => {
-    try {
-        dispatch({
-            type: USER_LOGIN_REQUEST
-        })
+  try {
+    dispatch({
+      type: USER_LOGIN_REQUEST,
+    });
 
-        const config = {
-            headers: {
-                'Content-type': 'application/json'
-            }
-        }
+    const config = {
+      headers: {
+        "Content-type": "application/json",
+      },
+    };
 
-        const { data } = await axios.post(
-            '/api/users/login/',
-            { 'username': email, 'password': password },
-            config
-        )
+    const { data } = await axios.post(
+      "/api/users/login/",
+      { username: email, password: password },
+      config,
+    );
 
-        dispatch({
-            type: USER_LOGIN_SUCCESS,
-            payload: data
-        })
+    dispatch({
+      type: USER_LOGIN_SUCCESS,
+      payload: data,
+    });
 
-        localStorage.setItem('userInfo', JSON.stringify(data))
-
-    } catch (error) {
-        dispatch({
-            type: USER_LOGIN_FAIL,
-            payload: error.response && error.response.data.detail
-                ? error.response.data.detail
-                : error.message,
-        })
-    }
-}
+    localStorage.setItem("userInfo", JSON.stringify(data));
+  } catch (error) {
+    dispatch({
+      type: USER_LOGIN_FAIL,
+      payload:
+        error.response && error.response.data.detail
+          ? error.response.data.detail
+          : error.message,
+    });
+  }
+};
 
 export const logout = () => (dispatch) => {
-    localStorage.removeItem('userInfo')
-    dispatch({ type: USER_LOGOUT })
-    dispatch({ type: USER_DETAILS_RESET })
-    dispatch({ type: ORDER_LIST_MY_RESET })
-    dispatch({ type: USER_LIST_RESET })   // update this line
-}
+  localStorage.removeItem("userInfo");
+  dispatch({ type: USER_LOGOUT });
+  dispatch({ type: USER_DETAILS_RESET });
+  dispatch({ type: ORDER_LIST_MY_RESET });
+  dispatch({ type: USER_LIST_RESET }); // update this line
+};
 
 export const register = (name, email, password) => async (dispatch) => {
-    try {
-        dispatch({
-            type: USER_REGISTER_REQUEST
-        })
+  try {
+    dispatch({
+      type: USER_REGISTER_REQUEST,
+    });
 
-        const config = {
-            headers: {
-                'Content-type': 'application/json'
-            }
-        }
+    const config = {
+      headers: {
+        "Content-type": "application/json",
+      },
+    };
 
-        const { data } = await axios.post(
-            '/api/users/register/',
-            { 'name': name, 'email': email, 'password': password },
-            config
-        )
+    const { data } = await axios.post(
+      "/api/users/register/",
+      { name: name, email: email, password: password },
+      config,
+    );
 
-        dispatch({
-            type: USER_REGISTER_SUCCESS,
-            payload: data
-        })
+    dispatch({
+      type: USER_REGISTER_SUCCESS,
+      payload: data,
+    });
 
-        dispatch({
-            type: USER_LOGIN_SUCCESS,
-            payload: data
-        })
+    dispatch({
+      type: USER_LOGIN_SUCCESS,
+      payload: data,
+    });
 
-        localStorage.setItem('userInfo', JSON.stringify(data))
-
-    } catch (error) {
-        dispatch({
-            type: USER_REGISTER_FAIL,
-            payload: error.response && error.response.data.detail
-                ? error.response.data.detail
-                : error.message,
-        })
-    }
-}
+    localStorage.setItem("userInfo", JSON.stringify(data));
+  } catch (error) {
+    dispatch({
+      type: USER_REGISTER_FAIL,
+      payload:
+        error.response && error.response.data.detail
+          ? error.response.data.detail
+          : error.message,
+    });
+  }
+};
 
 export const getUserDetails = (id) => async (dispatch, getState) => {
-    try {
-        dispatch({
-            type: USER_DETAILS_REQUEST
-        })
+  try {
+    dispatch({
+      type: USER_DETAILS_REQUEST,
+    });
 
-        const {
-            userLogin: { userInfo },
-        } = getState()
+    const {
+      userLogin: { userInfo },
+    } = getState();
 
-        const config = {
-            headers: {
-                'Content-type': 'application/json',
-                Authorization: `Bearer ${userInfo.token}`
-            }
-        }
+    const config = {
+      headers: {
+        "Content-type": "application/json",
+        Authorization: `Bearer ${userInfo.token}`,
+      },
+    };
 
-        const { data } = await axios.get(
-            `/api/users/${id}/`,
-            config
-        )
+    const { data } = await axios.get(`/api/users/${id}/`, config);
 
-        dispatch({
-            type: USER_DETAILS_SUCCESS,
-            payload: data
-        })
-
-
-    } catch (error) {
-        dispatch({
-            type: USER_DETAILS_FAIL,
-            payload: error.response && error.response.data.detail
-                ? error.response.data.detail
-                : error.message,
-        })
-    }
-}
+    dispatch({
+      type: USER_DETAILS_SUCCESS,
+      payload: data,
+    });
+  } catch (error) {
+    dispatch({
+      type: USER_DETAILS_FAIL,
+      payload:
+        error.response && error.response.data.detail
+          ? error.response.data.detail
+          : error.message,
+    });
+  }
+};
 
 export const updateUserProfile = (user) => async (dispatch, getState) => {
-    try {
-        dispatch({
-            type: USER_UPDATE_PROFILE_REQUEST
-        })
+  try {
+    dispatch({
+      type: USER_UPDATE_PROFILE_REQUEST,
+    });
 
-        const {
-            userLogin: { userInfo },
-        } = getState()
+    const {
+      userLogin: { userInfo },
+    } = getState();
 
-        const config = {
-            headers: {
-                'Content-type': 'application/json',
-                Authorization: `Bearer ${userInfo.token}`
-            }
-        }
+    const config = {
+      headers: {
+        "Content-type": "application/json",
+        Authorization: `Bearer ${userInfo.token}`,
+      },
+    };
 
-        const { data } = await axios.put(
-            `/api/users/profile/update/`,
-            user,
-            config
-        )
+    const { data } = await axios.put(
+      `/api/users/profile/update/`,
+      user,
+      config,
+    );
 
-        dispatch({
-            type: USER_UPDATE_PROFILE_SUCCESS,
-            payload: data
-        })
+    dispatch({
+      type: USER_UPDATE_PROFILE_SUCCESS,
+      payload: data,
+    });
 
-        dispatch({
-            type: USER_LOGIN_SUCCESS,
-            payload: data
-        })
+    dispatch({
+      type: USER_LOGIN_SUCCESS,
+      payload: data,
+    });
 
-        localStorage.setItem('userInfo', JSON.stringify(data))
-
-    } catch (error) {
-        dispatch({
-            type: USER_UPDATE_PROFILE_FAIL,
-            payload: error.response && error.response.data.detail
-                ? error.response.data.detail
-                : error.message,
-        })
-    }
-}
+    localStorage.setItem("userInfo", JSON.stringify(data));
+  } catch (error) {
+    dispatch({
+      type: USER_UPDATE_PROFILE_FAIL,
+      payload:
+        error.response && error.response.data.detail
+          ? error.response.data.detail
+          : error.message,
+    });
+  }
+};
 export const listUsers = () => async (dispatch, getState) => {
-    try {
-        dispatch({
-            type: USER_LIST_REQUEST
-        })
+  try {
+    dispatch({
+      type: USER_LIST_REQUEST,
+    });
 
-        const {
-            userLogin: { userInfo },
-        } = getState()
+    const {
+      userLogin: { userInfo },
+    } = getState();
 
-        const config = {
-            headers: {
-                'Content-type': 'application/json',
-                Authorization: `Bearer ${userInfo.token}`
-            }
-        }
+    const config = {
+      headers: {
+        "Content-type": "application/json",
+        Authorization: `Bearer ${userInfo.token}`,
+      },
+    };
 
-        const { data } = await axios.get(
-            `/api/users/`,
-            config
-        )
+    const { data } = await axios.get(`/api/users/`, config);
 
-        dispatch({
-            type: USER_LIST_SUCCESS,
-            payload: data
-        })
-
-
-    } catch (error) {
-        dispatch({
-            type: USER_LIST_FAIL,
-            payload: error.response && error.response.data.detail
-                ? error.response.data.detail
-                : error.message,
-        })
-    }
-}
+    dispatch({
+      type: USER_LIST_SUCCESS,
+      payload: data,
+    });
+  } catch (error) {
+    dispatch({
+      type: USER_LIST_FAIL,
+      payload:
+        error.response && error.response.data.detail
+          ? error.response.data.detail
+          : error.message,
+    });
+  }
+};
 ```
+
 6. create userlistscreen.jsx
+
 ```jsx
-import React, { useState, useEffect } from 'react'
-import { LinkContainer } from 'react-router-bootstrap'
-import { Table, Button } from 'react-bootstrap'
-import { useDispatch, useSelector } from 'react-redux'
-import { useNavigate } from 'react-router-dom'
-import Loader from '../components/Loader'
-import Message from '../components/Message'
-import { listUsers, deleteUser } from '../actions/userActions'
+import React, { useState, useEffect } from "react";
+import { LinkContainer } from "react-router-bootstrap";
+import { Table, Button } from "react-bootstrap";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import Loader from "../components/Loader";
+import Message from "../components/Message";
+import { listUsers, deleteUser } from "../actions/userActions";
 
 function UserListScreen() {
-    const navigate = useNavigate()
-    const dispatch = useDispatch()
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
 
-    const userList = useSelector(state => state.userList)
-    const { loading, error, users } = userList
+  const userList = useSelector((state) => state.userList);
+  const { loading, error, users } = userList;
 
-    const userLogin = useSelector(state => state.userLogin)
-    const { userInfo } = userLogin
+  const userLogin = useSelector((state) => state.userLogin);
+  const { userInfo } = userLogin;
 
-    // const userDelete = useSelector(state => state.userDelete)
-    // const { success: successDelete } = userDelete
+  // const userDelete = useSelector(state => state.userDelete)
+  // const { success: successDelete } = userDelete
 
+  useEffect(() => {
+    dispatch(listUsers());
+  }, [dispatch, navigate, userInfo]);
 
-    useEffect(() => {
-        
-            dispatch(listUsers())
-       
+  const deleteHandler = (id) => {
+    console.log("something");
+    // if (window.confirm('Are you sure you want to delete this user?')) {
+    //     dispatch(deleteUser(id))
+    //}
+  };
 
-    }, [dispatch, navigate,  userInfo])
+  return (
+    <div>
+      <h1>Users</h1>
+      {loading ? (
+        <Loader />
+      ) : error ? (
+        <Message variant="danger">{error}</Message>
+      ) : (
+        <Table striped bordered hover responsive className="table-sm">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>NAME</th>
+              <th>EMAIL</th>
+              <th>ADMIN</th>
+              <th></th>
+            </tr>
+          </thead>
 
+          <tbody>
+            {users.map((user) => (
+              <tr key={user._id}>
+                <td>{user._id}</td>
+                <td>{user.name}</td>
+                <td>{user.email}</td>
+                <td>
+                  {user.isAdmin ? (
+                    <i className="fas fa-check" style={{ color: "green" }}></i>
+                  ) : (
+                    <i className="fas fa-check" style={{ color: "red" }}></i>
+                  )}
+                </td>
 
-    const deleteHandler = (id) => {
-        console.log("something")
-        // if (window.confirm('Are you sure you want to delete this user?')) {
-        //     dispatch(deleteUser(id))
-        //}
-    }
+                <td>
+                  <LinkContainer to={`/admin/user/${user._id}/edit`}>
+                    <Button variant="light" className="btn-sm">
+                      <i className="fas fa-edit"></i>
+                    </Button>
+                  </LinkContainer>
 
-    return (
-        <div>
-            <h1>Users</h1>
-            {loading
-                ? (<Loader />)
-                : error
-                    ? (<Message variant='danger'>{error}</Message>)
-                    : (
-                        <Table striped bordered hover responsive className='table-sm'>
-                            <thead>
-                                <tr>
-                                    <th>ID</th>
-                                    <th>NAME</th>
-                                    <th>EMAIL</th>
-                                    <th>ADMIN</th>
-                                    <th></th>
-                                </tr>
-                            </thead>
-
-                            <tbody>
-                                {users.map(user => (
-                                    <tr key={user._id}>
-                                        <td>{user._id}</td>
-                                        <td>{user.name}</td>
-                                        <td>{user.email}</td>
-                                        <td>{user.isAdmin ? (
-                                            <i className='fas fa-check' style={{ color: 'green' }}></i>
-                                        ) : (
-                                                <i className='fas fa-check' style={{ color: 'red' }}></i>
-                                            )}</td>
-
-                                        <td>
-                                            <LinkContainer to={`/admin/user/${user._id}/edit`}>
-                                                <Button variant='light' className='btn-sm'>
-                                                    <i className='fas fa-edit'></i>
-                                                </Button>
-                                            </LinkContainer>
-
-                                            <Button variant='danger' className='btn-sm' onClick={() => deleteHandler(user._id)}>
-                                                <i className='fas fa-trash'></i>
-                                            </Button>
-                                        </td>
-                                    </tr>
-                                ))}
-                            </tbody>
-                        </Table>
-                    )}
-        </div>
-    )
+                  <Button
+                    variant="danger"
+                    className="btn-sm"
+                    onClick={() => deleteHandler(user._id)}
+                  >
+                    <i className="fas fa-trash"></i>
+                  </Button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </Table>
+      )}
+    </div>
+  );
 }
 
-export default UserListScreen
+export default UserListScreen;
 ```
+
 7. update app.js
+
 ```js
 import { Container } from "react-bootstrap";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
@@ -12211,20 +12741,19 @@ function App() {
       <main className="py-3">
         <Container>
           <Routes>
-             <Route path="/admin/userlist" element={<UserListScreen />} /> // router 6 admin should be at the top
-
+            <Route path="/admin/userlist" element={<UserListScreen />} /> //
+            router 6 admin should be at the top
             {/* PUBLIC ROUTES */}
             <Route path="/" element={<HomeScreen />} />
             <Route path="/login" element={<LoginScreen />} />
             <Route path="/register" element={<RegisterScreen />} />
-            <Route path='/profile' element={<ProfileScreen />} />
-            <Route path='/shipping' element={<ShippingScreen />} />
-            <Route path='/payment' element={<PaymentScreen />} />
-            <Route path='/placeorder' element={<PlaceOrderScreen />} />
-            <Route path='/order/:id' element={<OrderScreen />} />
+            <Route path="/profile" element={<ProfileScreen />} />
+            <Route path="/shipping" element={<ShippingScreen />} />
+            <Route path="/payment" element={<PaymentScreen />} />
+            <Route path="/placeorder" element={<PlaceOrderScreen />} />
+            <Route path="/order/:id" element={<OrderScreen />} />
             <Route path="/product/:id" element={<ProductScreen />} />
             <Route path="/cart/:id?" element={<CartScreen />} />
-           
           </Routes>
         </Container>
       </main>
@@ -12234,21 +12763,22 @@ function App() {
 }
 
 export default App;
-
 ```
+
 8. update header.jsx
+
 ```jsx
 import { Container, Navbar, Nav, NavDropdown } from "react-bootstrap";
 import { LinkContainer } from "react-router-bootstrap";
-import { useDispatch, useSelector } from 'react-redux';
-import { logout } from '../actions/userActions'
+import { useDispatch, useSelector } from "react-redux";
+import { logout } from "../actions/userActions";
 const Header = () => {
-   const userLogin = useSelector(state => state.userLogin)
-    const { userInfo } = userLogin
-    const dispatch = useDispatch()
-   const logoutHandler = () => {
-        dispatch(logout())
-    }
+  const userLogin = useSelector((state) => state.userLogin);
+  const { userInfo } = userLogin;
+  const dispatch = useDispatch();
+  const logoutHandler = () => {
+    dispatch(logout());
+  };
 
   return (
     <header>
@@ -12266,35 +12796,37 @@ const Header = () => {
                 </Nav.Link>
               </LinkContainer>
               {userInfo ? (
-                <NavDropdown title={userInfo.name} id='username'>
-                    <LinkContainer to='/profile'>
-                        <NavDropdown.Item>Profile</NavDropdown.Item>
-                    </LinkContainer>
-                    <NavDropdown.Item onClick={logoutHandler} >Logout</NavDropdown.Item>
+                <NavDropdown title={userInfo.name} id="username">
+                  <LinkContainer to="/profile">
+                    <NavDropdown.Item>Profile</NavDropdown.Item>
+                  </LinkContainer>
+                  <NavDropdown.Item onClick={logoutHandler}>
+                    Logout
+                  </NavDropdown.Item>
                 </NavDropdown>
               ) : (
-                    <LinkContainer to='/login'>
-                        <Nav.Link><i className="fas fa-user"></i>Login</Nav.Link>
-                    </LinkContainer>
-                )}
+                <LinkContainer to="/login">
+                  <Nav.Link>
+                    <i className="fas fa-user"></i>Login
+                  </Nav.Link>
+                </LinkContainer>
+              )}
 
-                 {userInfo && userInfo.isAdmin && (
-                                <NavDropdown title='Admin' id='adminmenue'>
-                                    <LinkContainer to='/admin/userlist'>
-                                        <NavDropdown.Item>Users</NavDropdown.Item>
-                                    </LinkContainer>
+              {userInfo && userInfo.isAdmin && (
+                <NavDropdown title="Admin" id="adminmenue">
+                  <LinkContainer to="/admin/userlist">
+                    <NavDropdown.Item>Users</NavDropdown.Item>
+                  </LinkContainer>
 
-                                    <LinkContainer to='/admin/productlist'>
-                                        <NavDropdown.Item>Products</NavDropdown.Item>
-                                    </LinkContainer>
+                  <LinkContainer to="/admin/productlist">
+                    <NavDropdown.Item>Products</NavDropdown.Item>
+                  </LinkContainer>
 
-                                    <LinkContainer to='/admin/orderlist'>
-                                        <NavDropdown.Item>Orders</NavDropdown.Item>
-                                    </LinkContainer>
-
-                                </NavDropdown>
-                            )}
-
+                  <LinkContainer to="/admin/orderlist">
+                    <NavDropdown.Item>Orders</NavDropdown.Item>
+                  </LinkContainer>
+                </NavDropdown>
+              )}
             </Nav>
           </Navbar.Collapse>
         </Container>
@@ -12304,109 +12836,112 @@ const Header = () => {
 };
 
 export default Header;
-
 ```
+
 9. after having admin is set, update the userlistscreen.js, only user is admin then show the dropdown menu
+
 ```jsx
-import React, { useState, useEffect } from 'react'
-import { LinkContainer } from 'react-router-bootstrap'
-import { Table, Button } from 'react-bootstrap'
-import { useDispatch, useSelector } from 'react-redux'
-import { useNavigate } from 'react-router-dom'
-import Loader from '../components/Loader'
-import Message from '../components/Message'
-import { listUsers, deleteUser } from '../actions/userActions'
+import React, { useState, useEffect } from "react";
+import { LinkContainer } from "react-router-bootstrap";
+import { Table, Button } from "react-bootstrap";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import Loader from "../components/Loader";
+import Message from "../components/Message";
+import { listUsers, deleteUser } from "../actions/userActions";
 
 function UserListScreen() {
-    const navigate = useNavigate()
-    const dispatch = useDispatch()
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
 
-    const userList = useSelector(state => state.userList)
-    const { loading, error, users } = userList
+  const userList = useSelector((state) => state.userList);
+  const { loading, error, users } = userList;
 
-    const userLogin = useSelector(state => state.userLogin)
-    const { userInfo } = userLogin
+  const userLogin = useSelector((state) => state.userLogin);
+  const { userInfo } = userLogin;
 
-    // const userDelete = useSelector(state => state.userDelete)
-    // const { success: successDelete } = userDelete
+  // const userDelete = useSelector(state => state.userDelete)
+  // const { success: successDelete } = userDelete
 
-
-    useEffect(() => {
-       if (userInfo || userInfo.isAdmin) {
-            dispatch(listUsers())
-       } else {
-            navigate('/login')
-       }
-           
-       
-
-    }, [dispatch, navigate,  userInfo])
-
-
-    const deleteHandler = (id) => {
-        console.log("something")
-        // if (window.confirm('Are you sure you want to delete this user?')) {
-        //     dispatch(deleteUser(id))
-        //}
+  useEffect(() => {
+    if (userInfo || userInfo.isAdmin) {
+      dispatch(listUsers());
+    } else {
+      navigate("/login");
     }
+  }, [dispatch, navigate, userInfo]);
 
-    return (
-        <div>
-            <h1>Users</h1>
-            {loading
-                ? (<Loader />)
-                : error
-                    ? (<Message variant='danger'>{error}</Message>)
-                    : (
-                        <Table striped bordered hover responsive className='table-sm'>
-                            <thead>
-                                <tr>
-                                    <th>ID</th>
-                                    <th>NAME</th>
-                                    <th>EMAIL</th>
-                                    <th>ADMIN</th>
-                                    <th></th>
-                                </tr>
-                            </thead>
+  const deleteHandler = (id) => {
+    console.log("something");
+    // if (window.confirm('Are you sure you want to delete this user?')) {
+    //     dispatch(deleteUser(id))
+    //}
+  };
 
-                            <tbody>
-                                {users.map(user => (
-                                    <tr key={user._id}>
-                                        <td>{user._id}</td>
-                                        <td>{user.name}</td>
-                                        <td>{user.email}</td>
-                                        <td>{user.isAdmin ? (
-                                            <i className='fas fa-check' style={{ color: 'green' }}></i>
-                                        ) : (
-                                                <i className='fas fa-check' style={{ color: 'red' }}></i>
-                                            )}</td>
+  return (
+    <div>
+      <h1>Users</h1>
+      {loading ? (
+        <Loader />
+      ) : error ? (
+        <Message variant="danger">{error}</Message>
+      ) : (
+        <Table striped bordered hover responsive className="table-sm">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>NAME</th>
+              <th>EMAIL</th>
+              <th>ADMIN</th>
+              <th></th>
+            </tr>
+          </thead>
 
-                                        <td>
-                                            <LinkContainer to={`/admin/user/${user._id}/edit`}>
-                                                <Button variant='light' className='btn-sm'>
-                                                    <i className='fas fa-edit'></i>
-                                                </Button>
-                                            </LinkContainer>
+          <tbody>
+            {users.map((user) => (
+              <tr key={user._id}>
+                <td>{user._id}</td>
+                <td>{user.name}</td>
+                <td>{user.email}</td>
+                <td>
+                  {user.isAdmin ? (
+                    <i className="fas fa-check" style={{ color: "green" }}></i>
+                  ) : (
+                    <i className="fas fa-check" style={{ color: "red" }}></i>
+                  )}
+                </td>
 
-                                            <Button variant='danger' className='btn-sm' onClick={() => deleteHandler(user._id)}>
-                                                <i className='fas fa-trash'></i>
-                                            </Button>
-                                        </td>
-                                    </tr>
-                                ))}
-                            </tbody>
-                        </Table>
-                    )}
-        </div>
-    )
+                <td>
+                  <LinkContainer to={`/admin/user/${user._id}/edit`}>
+                    <Button variant="light" className="btn-sm">
+                      <i className="fas fa-edit"></i>
+                    </Button>
+                  </LinkContainer>
+
+                  <Button
+                    variant="danger"
+                    className="btn-sm"
+                    onClick={() => deleteHandler(user._id)}
+                  >
+                    <i className="fas fa-trash"></i>
+                  </Button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </Table>
+      )}
+    </div>
+  );
 }
 
-export default UserListScreen
+export default UserListScreen;
 ```
 
-
 ## Step 37 delete user
+
 1. back to backend, update user_views.py
+
 ```py
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
@@ -12449,7 +12984,7 @@ def registerUser(request):
         return Response(serializer.data)
     except:
         message = {'detail': 'User with this email already exists'}
-        return Response(message, status=status.HTTP_400_BAD_REQUEST)    
+        return Response(message, status=status.HTTP_400_BAD_REQUEST)
 
 @api_view(['PUT'])
 @permission_classes([IsAuthenticated])
@@ -12490,7 +13025,9 @@ def deleteUser(request, pk):
     userForDeletion.delete()
     return Response('User was deleted')
 ```
+
 2. update user_url.py
+
 ```py
 from django.urls import path
 from base.views import user_views as views
@@ -12508,175 +13045,187 @@ urlpatterns = [
      path('delete/<str:pk>/', views.deleteUser, name='user-delete'),
 ]
 ```
+
 3. backto frontend, update constants.js
+
 ```js
-
-export const USER_DELETE_REQUEST = 'USER_DELETE_REQUEST'
-export const USER_DELETE_SUCCESS = 'USER_DELETE_SUCCESS'
-export const USER_DELETE_FAIL = 'USER_DELETE_FAIL'
-
+export const USER_DELETE_REQUEST = "USER_DELETE_REQUEST";
+export const USER_DELETE_SUCCESS = "USER_DELETE_SUCCESS";
+export const USER_DELETE_FAIL = "USER_DELETE_FAIL";
 ```
+
 4. update userReducers.js
+
 ```js
 import {
-    USER_LOGIN_REQUEST,
-    USER_LOGIN_SUCCESS,
-    USER_LOGIN_FAIL,
-
-    USER_LOGOUT,
-    USER_REGISTER_REQUEST,
-    USER_REGISTER_SUCCESS,
-    USER_REGISTER_FAIL,
-    USER_DETAILS_REQUEST,
-    USER_DETAILS_SUCCESS,
-    USER_DETAILS_FAIL,
-    USER_DETAILS_RESET,
-
-    USER_UPDATE_PROFILE_REQUEST,
-    USER_UPDATE_PROFILE_SUCCESS,
-    USER_UPDATE_PROFILE_FAIL,
-    USER_UPDATE_PROFILE_RESET,
-
-    USER_LIST_REQUEST,
-    USER_LIST_SUCCESS,
-    USER_LIST_FAIL,
-    USER_LIST_RESET,
-
-     USER_DELETE_REQUEST,
-    USER_DELETE_SUCCESS,
-    USER_DELETE_FAIL,
-
-} from '../constants/userConstants'
-
+  USER_LOGIN_REQUEST,
+  USER_LOGIN_SUCCESS,
+  USER_LOGIN_FAIL,
+  USER_LOGOUT,
+  USER_REGISTER_REQUEST,
+  USER_REGISTER_SUCCESS,
+  USER_REGISTER_FAIL,
+  USER_DETAILS_REQUEST,
+  USER_DETAILS_SUCCESS,
+  USER_DETAILS_FAIL,
+  USER_DETAILS_RESET,
+  USER_UPDATE_PROFILE_REQUEST,
+  USER_UPDATE_PROFILE_SUCCESS,
+  USER_UPDATE_PROFILE_FAIL,
+  USER_UPDATE_PROFILE_RESET,
+  USER_LIST_REQUEST,
+  USER_LIST_SUCCESS,
+  USER_LIST_FAIL,
+  USER_LIST_RESET,
+  USER_DELETE_REQUEST,
+  USER_DELETE_SUCCESS,
+  USER_DELETE_FAIL,
+} from "../constants/userConstants";
 
 export const userLoginReducer = (state = {}, action) => {
-    switch (action.type) {
-        case USER_LOGIN_REQUEST:
-            return { loading: true }
+  switch (action.type) {
+    case USER_LOGIN_REQUEST:
+      return { loading: true };
 
-        case USER_LOGIN_SUCCESS:
-            return { loading: false, userInfo: action.payload }
+    case USER_LOGIN_SUCCESS:
+      return { loading: false, userInfo: action.payload };
 
-        case USER_LOGIN_FAIL:
-            return { loading: false, error: action.payload }
+    case USER_LOGIN_FAIL:
+      return { loading: false, error: action.payload };
 
-        case USER_LOGOUT:
-            return {}
+    case USER_LOGOUT:
+      return {};
 
-        default:
-            return state
-    }
-}
+    default:
+      return state;
+  }
+};
 export const userRegisterReducer = (state = {}, action) => {
-    switch (action.type) {
-        case USER_REGISTER_REQUEST:
-            return { loading: true }
+  switch (action.type) {
+    case USER_REGISTER_REQUEST:
+      return { loading: true };
 
-        case USER_REGISTER_SUCCESS:
-            return { loading: false, userInfo: action.payload }
+    case USER_REGISTER_SUCCESS:
+      return { loading: false, userInfo: action.payload };
 
-        case USER_REGISTER_FAIL:
-            return { loading: false, error: action.payload }
+    case USER_REGISTER_FAIL:
+      return { loading: false, error: action.payload };
 
-        case USER_LOGOUT:
-            return {}
+    case USER_LOGOUT:
+      return {};
 
-        default:
-            return state
-    }
-}
+    default:
+      return state;
+  }
+};
 
 export const userDetailsReducer = (state = { user: {} }, action) => {
-    switch (action.type) {
-        case USER_DETAILS_REQUEST:
-            return { ...state, loading: true }
+  switch (action.type) {
+    case USER_DETAILS_REQUEST:
+      return { ...state, loading: true };
 
-        case USER_DETAILS_SUCCESS:
-            return { loading: false, user: action.payload }
+    case USER_DETAILS_SUCCESS:
+      return { loading: false, user: action.payload };
 
-        case USER_DETAILS_FAIL:
-            return { loading: false, error: action.payload }
+    case USER_DETAILS_FAIL:
+      return { loading: false, error: action.payload };
 
-        case USER_DETAILS_RESET:
-            return { user: {} }
+    case USER_DETAILS_RESET:
+      return { user: {} };
 
-
-        default:
-            return state
-    }
-}
+    default:
+      return state;
+  }
+};
 
 export const userUpdateProfileReducer = (state = {}, action) => {
-    switch (action.type) {
-        case USER_UPDATE_PROFILE_REQUEST:
-            return { loading: true }
+  switch (action.type) {
+    case USER_UPDATE_PROFILE_REQUEST:
+      return { loading: true };
 
-        case USER_UPDATE_PROFILE_SUCCESS:
-            return { loading: false, success: true, userInfo: action.payload }
+    case USER_UPDATE_PROFILE_SUCCESS:
+      return { loading: false, success: true, userInfo: action.payload };
 
-        case USER_UPDATE_PROFILE_FAIL:
-            return { loading: false, error: action.payload }
+    case USER_UPDATE_PROFILE_FAIL:
+      return { loading: false, error: action.payload };
 
-        case USER_UPDATE_PROFILE_RESET:
-            return {}
+    case USER_UPDATE_PROFILE_RESET:
+      return {};
 
-        default:
-            return state
-    }
-}
+    default:
+      return state;
+  }
+};
 
 export const userListReducer = (state = { users: [] }, action) => {
-    switch (action.type) {
-        case USER_LIST_REQUEST:
-            return { loading: true }
+  switch (action.type) {
+    case USER_LIST_REQUEST:
+      return { loading: true };
 
-        case USER_LIST_SUCCESS:
-            return { loading: false, users: action.payload }
+    case USER_LIST_SUCCESS:
+      return { loading: false, users: action.payload };
 
-        case USER_LIST_FAIL:
-            return { loading: false, error: action.payload }
+    case USER_LIST_FAIL:
+      return { loading: false, error: action.payload };
 
-        case USER_LIST_RESET:
-            return { users: [] }
+    case USER_LIST_RESET:
+      return { users: [] };
 
-        default:
-            return state
-    }
-}
+    default:
+      return state;
+  }
+};
 
 export const userDeleteReducer = (state = {}, action) => {
-    switch (action.type) {
-        case USER_DELETE_REQUEST:
-            return { loading: true }
+  switch (action.type) {
+    case USER_DELETE_REQUEST:
+      return { loading: true };
 
-        case USER_DELETE_SUCCESS:
-            return { loading: false, success: true }
+    case USER_DELETE_SUCCESS:
+      return { loading: false, success: true };
 
-        case USER_DELETE_FAIL:
-            return { loading: false, error: action.payload }
+    case USER_DELETE_FAIL:
+      return { loading: false, error: action.payload };
 
-        default:
-            return state
-    }
-}
+    default:
+      return state;
+  }
+};
 ```
+
 5. update store.js
+
 ```js
-import { configureStore } from '@reduxjs/toolkit';
-import { productReducer, productDetailsReducer} from "./reducers/productReducers"; // import
-import {cartReducer} from "./reducers/cartReducers";
-import { userLoginReducer, userRegisterReducer, userDetailsReducer, userUpdateProfileReducer, userListReducer, userDeleteReducer } from './reducers/userReducers';
-import { orderCreateReducer, orderDetailsReducer, orderPayReducer, orderListMyReducer } from './reducers/orderReducers';
-const cartItemsFromStorage = localStorage.getItem('cartItems')
-  ? JSON.parse(localStorage.getItem('cartItems'))
+import { configureStore } from "@reduxjs/toolkit";
+import {
+  productReducer,
+  productDetailsReducer,
+} from "./reducers/productReducers"; // import
+import { cartReducer } from "./reducers/cartReducers";
+import {
+  userLoginReducer,
+  userRegisterReducer,
+  userDetailsReducer,
+  userUpdateProfileReducer,
+  userListReducer,
+  userDeleteReducer,
+} from "./reducers/userReducers";
+import {
+  orderCreateReducer,
+  orderDetailsReducer,
+  orderPayReducer,
+  orderListMyReducer,
+} from "./reducers/orderReducers";
+const cartItemsFromStorage = localStorage.getItem("cartItems")
+  ? JSON.parse(localStorage.getItem("cartItems"))
   : [];
-const userInfoFromStorage = localStorage.getItem('userInfo')
-  ? JSON.parse(localStorage.getItem('userInfo'))
+const userInfoFromStorage = localStorage.getItem("userInfo")
+  ? JSON.parse(localStorage.getItem("userInfo"))
   : null;
- 
-const shippingAddressFromStorage = localStorage.getItem('shippingAddress')
-  ? JSON.parse(localStorage.getItem('shippingAddress'))
-  : {};  
+
+const shippingAddressFromStorage = localStorage.getItem("shippingAddress")
+  ? JSON.parse(localStorage.getItem("shippingAddress"))
+  : {};
 // 👇 初始化 Redux 状态
 const preloadedState = {
   cart: {
@@ -12686,410 +13235,396 @@ const preloadedState = {
   userLogin: {
     userInfo: userInfoFromStorage, // 给 userLogin reducer 赋值
   },
-  
 };
 
 export const store = configureStore({
   reducer: {
-      productList: productReducer,
-      productDetails: productDetailsReducer,
-      cart: cartReducer,
-      userLogin: userLoginReducer,
-      userRegister: userRegisterReducer,
-      userDetails: userDetailsReducer,
-      userUpdateProfile: userUpdateProfileReducer,
-     userList: userListReducer, 
-      orderCreate: orderCreateReducer,
-      orderDetails: orderDetailsReducer,
-      orderPay: orderPayReducer,
-      orderListMy: orderListMyReducer,
-      userDelete: userDeleteReducer
+    productList: productReducer,
+    productDetails: productDetailsReducer,
+    cart: cartReducer,
+    userLogin: userLoginReducer,
+    userRegister: userRegisterReducer,
+    userDetails: userDetailsReducer,
+    userUpdateProfile: userUpdateProfileReducer,
+    userList: userListReducer,
+    orderCreate: orderCreateReducer,
+    orderDetails: orderDetailsReducer,
+    orderPay: orderPayReducer,
+    orderListMy: orderListMyReducer,
+    userDelete: userDeleteReducer,
   },
   // ✅ Thunk + DevTools ARE AUTO INCLUDED — NO SETUP NEEDED!
-  preloadedState : preloadedState,
-  middleware: (getDefaultMiddleware) => getDefaultMiddleware({ serializableCheck: false, immutableCheck: false, })
+  preloadedState: preloadedState,
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware({ serializableCheck: false, immutableCheck: false }),
 });
 
 export default store;
-
 ```
+
 6. update useractions.js
+
 ```js
-import axios from 'axios'
+import axios from "axios";
 import {
-    USER_LOGIN_REQUEST,
-    USER_LOGIN_SUCCESS,
-    USER_LOGIN_FAIL,
+  USER_LOGIN_REQUEST,
+  USER_LOGIN_SUCCESS,
+  USER_LOGIN_FAIL,
+  USER_LOGOUT,
+  USER_REGISTER_REQUEST,
+  USER_REGISTER_SUCCESS,
+  USER_REGISTER_FAIL,
+  USER_DETAILS_REQUEST,
+  USER_DETAILS_SUCCESS,
+  USER_DETAILS_FAIL,
+  USER_DETAILS_RESET,
+  USER_UPDATE_PROFILE_REQUEST,
+  USER_UPDATE_PROFILE_SUCCESS,
+  USER_UPDATE_PROFILE_FAIL,
+  USER_UPDATE_PROFILE_RESET,
+  USER_LIST_REQUEST,
+  USER_LIST_SUCCESS,
+  USER_LIST_FAIL,
+  USER_LIST_RESET,
+  USER_DELETE_REQUEST,
+  USER_DELETE_SUCCESS,
+  USER_DELETE_FAIL,
+} from "../constants/userConstants";
 
-    USER_LOGOUT,
-    USER_REGISTER_REQUEST,
-    USER_REGISTER_SUCCESS,
-    USER_REGISTER_FAIL,
-
-    USER_DETAILS_REQUEST,
-    USER_DETAILS_SUCCESS,
-    USER_DETAILS_FAIL,
-    USER_DETAILS_RESET,
-
-    USER_UPDATE_PROFILE_REQUEST,
-    USER_UPDATE_PROFILE_SUCCESS,
-    USER_UPDATE_PROFILE_FAIL,
-    USER_UPDATE_PROFILE_RESET,
-
-    USER_LIST_REQUEST,
-    USER_LIST_SUCCESS,
-    USER_LIST_FAIL,
-    USER_LIST_RESET,
-
-    USER_DELETE_REQUEST,
-    USER_DELETE_SUCCESS,
-    USER_DELETE_FAIL,
-
-
-} from '../constants/userConstants'
-
-import { ORDER_LIST_MY_RESET } from '../constants/orderConstants'
+import { ORDER_LIST_MY_RESET } from "../constants/orderConstants";
 export const login = (email, password) => async (dispatch) => {
-    try {
-        dispatch({
-            type: USER_LOGIN_REQUEST
-        })
+  try {
+    dispatch({
+      type: USER_LOGIN_REQUEST,
+    });
 
-        const config = {
-            headers: {
-                'Content-type': 'application/json'
-            }
-        }
+    const config = {
+      headers: {
+        "Content-type": "application/json",
+      },
+    };
 
-        const { data } = await axios.post(
-            '/api/users/login/',
-            { 'username': email, 'password': password },
-            config
-        )
+    const { data } = await axios.post(
+      "/api/users/login/",
+      { username: email, password: password },
+      config,
+    );
 
-        dispatch({
-            type: USER_LOGIN_SUCCESS,
-            payload: data
-        })
+    dispatch({
+      type: USER_LOGIN_SUCCESS,
+      payload: data,
+    });
 
-        localStorage.setItem('userInfo', JSON.stringify(data))
-
-    } catch (error) {
-        dispatch({
-            type: USER_LOGIN_FAIL,
-            payload: error.response && error.response.data.detail
-                ? error.response.data.detail
-                : error.message,
-        })
-    }
-}
+    localStorage.setItem("userInfo", JSON.stringify(data));
+  } catch (error) {
+    dispatch({
+      type: USER_LOGIN_FAIL,
+      payload:
+        error.response && error.response.data.detail
+          ? error.response.data.detail
+          : error.message,
+    });
+  }
+};
 
 export const logout = () => (dispatch) => {
-    localStorage.removeItem('userInfo')
-    dispatch({ type: USER_LOGOUT })
-    dispatch({ type: USER_DETAILS_RESET })
-    dispatch({ type: ORDER_LIST_MY_RESET })
-    dispatch({ type: USER_LIST_RESET })
-}
+  localStorage.removeItem("userInfo");
+  dispatch({ type: USER_LOGOUT });
+  dispatch({ type: USER_DETAILS_RESET });
+  dispatch({ type: ORDER_LIST_MY_RESET });
+  dispatch({ type: USER_LIST_RESET });
+};
 
 export const register = (name, email, password) => async (dispatch) => {
-    try {
-        dispatch({
-            type: USER_REGISTER_REQUEST
-        })
+  try {
+    dispatch({
+      type: USER_REGISTER_REQUEST,
+    });
 
-        const config = {
-            headers: {
-                'Content-type': 'application/json'
-            }
-        }
+    const config = {
+      headers: {
+        "Content-type": "application/json",
+      },
+    };
 
-        const { data } = await axios.post(
-            '/api/users/register/',
-            { 'name': name, 'email': email, 'password': password },
-            config
-        )
+    const { data } = await axios.post(
+      "/api/users/register/",
+      { name: name, email: email, password: password },
+      config,
+    );
 
-        dispatch({
-            type: USER_REGISTER_SUCCESS,
-            payload: data
-        })
+    dispatch({
+      type: USER_REGISTER_SUCCESS,
+      payload: data,
+    });
 
-        dispatch({
-            type: USER_LOGIN_SUCCESS,
-            payload: data
-        })
+    dispatch({
+      type: USER_LOGIN_SUCCESS,
+      payload: data,
+    });
 
-        localStorage.setItem('userInfo', JSON.stringify(data))
-
-    } catch (error) {
-        dispatch({
-            type: USER_REGISTER_FAIL,
-            payload: error.response && error.response.data.detail
-                ? error.response.data.detail
-                : error.message,
-        })
-    }
-}
+    localStorage.setItem("userInfo", JSON.stringify(data));
+  } catch (error) {
+    dispatch({
+      type: USER_REGISTER_FAIL,
+      payload:
+        error.response && error.response.data.detail
+          ? error.response.data.detail
+          : error.message,
+    });
+  }
+};
 
 export const getUserDetails = (id) => async (dispatch, getState) => {
-    try {
-        dispatch({
-            type: USER_DETAILS_REQUEST
-        })
+  try {
+    dispatch({
+      type: USER_DETAILS_REQUEST,
+    });
 
-        const {
-            userLogin: { userInfo },
-        } = getState()
+    const {
+      userLogin: { userInfo },
+    } = getState();
 
-        const config = {
-            headers: {
-                'Content-type': 'application/json',
-                Authorization: `Bearer ${userInfo.token}`
-            }
-        }
+    const config = {
+      headers: {
+        "Content-type": "application/json",
+        Authorization: `Bearer ${userInfo.token}`,
+      },
+    };
 
-        const { data } = await axios.get(
-            `/api/users/${id}/`,
-            config
-        )
+    const { data } = await axios.get(`/api/users/${id}/`, config);
 
-        dispatch({
-            type: USER_DETAILS_SUCCESS,
-            payload: data
-        })
-
-
-    } catch (error) {
-        dispatch({
-            type: USER_DETAILS_FAIL,
-            payload: error.response && error.response.data.detail
-                ? error.response.data.detail
-                : error.message,
-        })
-    }
-}
+    dispatch({
+      type: USER_DETAILS_SUCCESS,
+      payload: data,
+    });
+  } catch (error) {
+    dispatch({
+      type: USER_DETAILS_FAIL,
+      payload:
+        error.response && error.response.data.detail
+          ? error.response.data.detail
+          : error.message,
+    });
+  }
+};
 
 export const updateUserProfile = (user) => async (dispatch, getState) => {
-    try {
-        dispatch({
-            type: USER_UPDATE_PROFILE_REQUEST
-        })
+  try {
+    dispatch({
+      type: USER_UPDATE_PROFILE_REQUEST,
+    });
 
-        const {
-            userLogin: { userInfo },
-        } = getState()
+    const {
+      userLogin: { userInfo },
+    } = getState();
 
-        const config = {
-            headers: {
-                'Content-type': 'application/json',
-                Authorization: `Bearer ${userInfo.token}`
-            }
-        }
+    const config = {
+      headers: {
+        "Content-type": "application/json",
+        Authorization: `Bearer ${userInfo.token}`,
+      },
+    };
 
-        const { data } = await axios.put(
-            `/api/users/profile/update/`,
-            user,
-            config
-        )
+    const { data } = await axios.put(
+      `/api/users/profile/update/`,
+      user,
+      config,
+    );
 
-        dispatch({
-            type: USER_UPDATE_PROFILE_SUCCESS,
-            payload: data
-        })
+    dispatch({
+      type: USER_UPDATE_PROFILE_SUCCESS,
+      payload: data,
+    });
 
-        dispatch({
-            type: USER_LOGIN_SUCCESS,
-            payload: data
-        })
+    dispatch({
+      type: USER_LOGIN_SUCCESS,
+      payload: data,
+    });
 
-        localStorage.setItem('userInfo', JSON.stringify(data))
-
-    } catch (error) {
-        dispatch({
-            type: USER_UPDATE_PROFILE_FAIL,
-            payload: error.response && error.response.data.detail
-                ? error.response.data.detail
-                : error.message,
-        })
-    }
-}
+    localStorage.setItem("userInfo", JSON.stringify(data));
+  } catch (error) {
+    dispatch({
+      type: USER_UPDATE_PROFILE_FAIL,
+      payload:
+        error.response && error.response.data.detail
+          ? error.response.data.detail
+          : error.message,
+    });
+  }
+};
 export const listUsers = () => async (dispatch, getState) => {
-    try {
-        dispatch({
-            type: USER_LIST_REQUEST
-        })
+  try {
+    dispatch({
+      type: USER_LIST_REQUEST,
+    });
 
-        const {
-            userLogin: { userInfo },
-        } = getState()
+    const {
+      userLogin: { userInfo },
+    } = getState();
 
-        const config = {
-            headers: {
-                'Content-type': 'application/json',
-                Authorization: `Bearer ${userInfo.token}`
-            }
-        }
+    const config = {
+      headers: {
+        "Content-type": "application/json",
+        Authorization: `Bearer ${userInfo.token}`,
+      },
+    };
 
-        const { data } = await axios.get(
-            `/api/users/`,
-            config
-        )
+    const { data } = await axios.get(`/api/users/`, config);
 
-        dispatch({
-            type: USER_LIST_SUCCESS,
-            payload: data
-        })
-
-
-    } catch (error) {
-        dispatch({
-            type: USER_LIST_FAIL,
-            payload: error.response && error.response.data.detail
-                ? error.response.data.detail
-                : error.message,
-        })
-    }
-}
+    dispatch({
+      type: USER_LIST_SUCCESS,
+      payload: data,
+    });
+  } catch (error) {
+    dispatch({
+      type: USER_LIST_FAIL,
+      payload:
+        error.response && error.response.data.detail
+          ? error.response.data.detail
+          : error.message,
+    });
+  }
+};
 
 export const deleteUser = (id) => async (dispatch, getState) => {
-    try {
-        dispatch({
-            type: USER_DELETE_REQUEST
-        })
+  try {
+    dispatch({
+      type: USER_DELETE_REQUEST,
+    });
 
-        const {
-            userLogin: { userInfo },
-        } = getState()
+    const {
+      userLogin: { userInfo },
+    } = getState();
 
-        const config = {
-            headers: {
-                'Content-type': 'application/json',
-                Authorization: `Bearer ${userInfo.token}`
-            }
-        }
+    const config = {
+      headers: {
+        "Content-type": "application/json",
+        Authorization: `Bearer ${userInfo.token}`,
+      },
+    };
 
-        const { data } = await axios.delete(
-            `/api/users/delete/${id}/`,
-            config
-        )
+    const { data } = await axios.delete(`/api/users/delete/${id}/`, config);
 
-        dispatch({
-            type: USER_DELETE_SUCCESS,
-            payload: data
-        })
-
-
-    } catch (error) {
-        dispatch({
-            type: USER_DELETE_FAIL,
-            payload: error.response && error.response.data.detail
-                ? error.response.data.detail
-                : error.message,
-        })
-    }
-}
+    dispatch({
+      type: USER_DELETE_SUCCESS,
+      payload: data,
+    });
+  } catch (error) {
+    dispatch({
+      type: USER_DELETE_FAIL,
+      payload:
+        error.response && error.response.data.detail
+          ? error.response.data.detail
+          : error.message,
+    });
+  }
+};
 ```
+
 7. update userListScreen.jsx
+
 ```jsx
-import React, { useState, useEffect } from 'react'
-import { LinkContainer } from 'react-router-bootstrap'
-import { Table, Button } from 'react-bootstrap'
-import { useDispatch, useSelector } from 'react-redux'
-import { useNavigate } from 'react-router-dom'
-import Loader from '../components/Loader'
-import Message from '../components/Message'
-import { listUsers, deleteUser } from '../actions/userActions'
+import React, { useState, useEffect } from "react";
+import { LinkContainer } from "react-router-bootstrap";
+import { Table, Button } from "react-bootstrap";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import Loader from "../components/Loader";
+import Message from "../components/Message";
+import { listUsers, deleteUser } from "../actions/userActions";
 
 function UserListScreen() {
-    const navigate = useNavigate()
-    const dispatch = useDispatch()
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
 
-    const userList = useSelector(state => state.userList)
-    const { loading, error, users } = userList
+  const userList = useSelector((state) => state.userList);
+  const { loading, error, users } = userList;
 
-    const userLogin = useSelector(state => state.userLogin)
-    const { userInfo } = userLogin
+  const userLogin = useSelector((state) => state.userLogin);
+  const { userInfo } = userLogin;
 
-    const userDelete = useSelector(state => state.userDelete)
-    const { success: successDelete } = userDelete
+  const userDelete = useSelector((state) => state.userDelete);
+  const { success: successDelete } = userDelete;
 
-
-    useEffect(() => {
-       if (userInfo || userInfo.isAdmin) {
-            dispatch(listUsers())
-       } else {
-            navigate('/login')
-       }
-           
-       
-
-    }, [dispatch, navigate,  userInfo, successDelete])
-
-
-    const deleteHandler = (id) => {
-       
-        if (window.confirm('Are you sure you want to delete this user?')) {
-            dispatch(deleteUser(id))
-        }
+  useEffect(() => {
+    if (userInfo || userInfo.isAdmin) {
+      dispatch(listUsers());
+    } else {
+      navigate("/login");
     }
+  }, [dispatch, navigate, userInfo, successDelete]);
 
-    return (
-        <div>
-            <h1>Users</h1>
-            {loading
-                ? (<Loader />)
-                : error
-                    ? (<Message variant='danger'>{error}</Message>)
-                    : (
-                        <Table striped bordered hover responsive className='table-sm'>
-                            <thead>
-                                <tr>
-                                    <th>ID</th>
-                                    <th>NAME</th>
-                                    <th>EMAIL</th>
-                                    <th>ADMIN</th>
-                                    <th></th>
-                                </tr>
-                            </thead>
+  const deleteHandler = (id) => {
+    if (window.confirm("Are you sure you want to delete this user?")) {
+      dispatch(deleteUser(id));
+    }
+  };
 
-                            <tbody>
-                                {users.map(user => (
-                                    <tr key={user._id}>
-                                        <td>{user._id}</td>
-                                        <td>{user.name}</td>
-                                        <td>{user.email}</td>
-                                        <td>{user.isAdmin ? (
-                                            <i className='fas fa-check' style={{ color: 'green' }}></i>
-                                        ) : (
-                                                <i className='fas fa-check' style={{ color: 'red' }}></i>
-                                            )}</td>
+  return (
+    <div>
+      <h1>Users</h1>
+      {loading ? (
+        <Loader />
+      ) : error ? (
+        <Message variant="danger">{error}</Message>
+      ) : (
+        <Table striped bordered hover responsive className="table-sm">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>NAME</th>
+              <th>EMAIL</th>
+              <th>ADMIN</th>
+              <th></th>
+            </tr>
+          </thead>
 
-                                        <td>
-                                            <LinkContainer to={`/admin/user/${user._id}/edit`}>
-                                                <Button variant='light' className='btn-sm'>
-                                                    <i className='fas fa-edit'></i>
-                                                </Button>
-                                            </LinkContainer>
+          <tbody>
+            {users.map((user) => (
+              <tr key={user._id}>
+                <td>{user._id}</td>
+                <td>{user.name}</td>
+                <td>{user.email}</td>
+                <td>
+                  {user.isAdmin ? (
+                    <i className="fas fa-check" style={{ color: "green" }}></i>
+                  ) : (
+                    <i className="fas fa-check" style={{ color: "red" }}></i>
+                  )}
+                </td>
 
-                                            <Button variant='danger' className='btn-sm' onClick={() => deleteHandler(user._id)}>
-                                                <i className='fas fa-trash'></i>
-                                            </Button>
-                                        </td>
-                                    </tr>
-                                ))}
-                            </tbody>
-                        </Table>
-                    )}
-        </div>
-    )
+                <td>
+                  <LinkContainer to={`/admin/user/${user._id}/edit`}>
+                    <Button variant="light" className="btn-sm">
+                      <i className="fas fa-edit"></i>
+                    </Button>
+                  </LinkContainer>
+
+                  <Button
+                    variant="danger"
+                    className="btn-sm"
+                    onClick={() => deleteHandler(user._id)}
+                  >
+                    <i className="fas fa-trash"></i>
+                  </Button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </Table>
+      )}
+    </div>
+  );
 }
 
-export default UserListScreen
+export default UserListScreen;
 ```
 
 ## step 38 update user
+
 1. update user_view.py
+
 ```py
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
@@ -13132,7 +13667,7 @@ def registerUser(request):
         return Response(serializer.data)
     except:
         message = {'detail': 'User with this email already exists'}
-        return Response(message, status=status.HTTP_400_BAD_REQUEST)    
+        return Response(message, status=status.HTTP_400_BAD_REQUEST)
 
 @api_view(['PUT'])
 @permission_classes([IsAuthenticated])
@@ -13200,7 +13735,9 @@ def updateUser(request, pk):
 
 
 ```
+
 2. update user_url.py
+
 ```py
 from django.urls import path
 from base.views import user_views as views
@@ -13221,104 +13758,96 @@ urlpatterns = [
     path('update/<str:pk>/', views.updateUser, name='user-update'),
 ]
 ```
+
 3. back to frontend, create UserEditScreen.jsx
+
 ```jsx
-import React, { useState, useEffect } from 'react'
-import { Link, useNavigate, useParams } from 'react-router-dom'
-import { Form, Button } from 'react-bootstrap'
-import { useDispatch, useSelector } from 'react-redux'
-import Loader from '../components/Loader'
-import Message from '../components/Message'
-import FormContainer from '../components/FormContainer'
-import { getUserDetails, updateUser } from '../actions/userActions'
-import { USER_UPDATE_RESET } from '../constants/userConstants'
+import React, { useState, useEffect } from "react";
+import { Link, useNavigate, useParams } from "react-router-dom";
+import { Form, Button } from "react-bootstrap";
+import { useDispatch, useSelector } from "react-redux";
+import Loader from "../components/Loader";
+import Message from "../components/Message";
+import FormContainer from "../components/FormContainer";
+import { getUserDetails, updateUser } from "../actions/userActions";
+import { USER_UPDATE_RESET } from "../constants/userConstants";
 
 function UserEditScreen() {
-    const navigate = useNavigate()
-    const userId = useParams().id
+  const navigate = useNavigate();
+  const userId = useParams().id;
 
-    const [name, setName] = useState('')
-    const [email, setEmail] = useState('')
-    const [isAdmin, setIsAdmin] = useState(false)
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [isAdmin, setIsAdmin] = useState(false);
 
-    const dispatch = useDispatch()
+  const dispatch = useDispatch();
 
-    const userDetails = useSelector(state => state.userDetails)
-    const { error, loading, user } = userDetails
+  const userDetails = useSelector((state) => state.userDetails);
+  const { error, loading, user } = userDetails;
 
+  useEffect(() => {}, [user, userId, navigate, dispatch]);
 
-    useEffect(() => {
+  const submitHandler = (e) => {
+    e.preventDefault();
+  };
 
+  return (
+    <div>
+      <Link to="/admin/userlist">Go Back</Link>
 
-    }, [user, userId, navigate, dispatch])
+      <FormContainer>
+        <h1>Edit User</h1>
 
-    const submitHandler = (e) => {
-        e.preventDefault()
-      
-    }
+        {loading ? (
+          <Loader />
+        ) : error ? (
+          <Message variant="danger">{error}</Message>
+        ) : (
+          <Form onSubmit={submitHandler}>
+            <Form.Group controlId="name">
+              <Form.Label>Name</Form.Label>
+              <Form.Control
+                type="name"
+                placeholder="Enter name"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+              ></Form.Control>
+            </Form.Group>
 
-    return (
-        <div>
-            <Link to='/admin/userlist'>
-                Go Back
-            </Link>
+            <Form.Group controlId="email">
+              <Form.Label>Email Address</Form.Label>
+              <Form.Control
+                type="email"
+                placeholder="Enter Email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+              ></Form.Control>
+            </Form.Group>
 
-            <FormContainer>
-                <h1>Edit User</h1>
+            <Form.Group controlId="isadmin">
+              <Form.Check
+                type="checkbox"
+                label="Is Admin"
+                checked={isAdmin}
+                onChange={(e) => setIsAdmin(e.target.checked)}
+              ></Form.Check>
+            </Form.Group>
 
-                {loading ? <Loader /> : error ? <Message variant='danger'>{error}</Message>
-                    : (
-                        <Form onSubmit={submitHandler}>
-
-                            <Form.Group controlId='name'>
-                                <Form.Label>Name</Form.Label>
-                                <Form.Control
-
-                                    type='name'
-                                    placeholder='Enter name'
-                                    value={name}
-                                    onChange={(e) => setName(e.target.value)}
-                                >
-                                </Form.Control>
-                            </Form.Group>
-
-                            <Form.Group controlId='email'>
-                                <Form.Label>Email Address</Form.Label>
-                                <Form.Control
-                                    type='email'
-                                    placeholder='Enter Email'
-                                    value={email}
-                                    onChange={(e) => setEmail(e.target.value)}
-                                >
-                                </Form.Control>
-                            </Form.Group>
-
-                            <Form.Group controlId='isadmin'>
-                                <Form.Check
-                                    type='checkbox'
-                                    label='Is Admin'
-                                    checked={isAdmin}
-                                    onChange={(e) => setIsAdmin(e.target.checked)}
-                                >
-                                </Form.Check>
-                            </Form.Group>
-
-                            <Button type='submit' variant='primary'>
-                                Update
-                        </Button>
-
-                        </Form>
-                    )}
-
-            </FormContainer >
-        </div>
-
-    )
+            <Button type="submit" variant="primary">
+              Update
+            </Button>
+          </Form>
+        )}
+      </FormContainer>
+    </div>
+  );
 }
 
-export default UserEditScreen
+export default UserEditScreen;
 ```
+
 4. update app.js
+
 ```js
 import { Container } from "react-bootstrap";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
@@ -13344,16 +13873,16 @@ function App() {
         <Container>
           <Routes>
             <Route path="/admin/userlist" element={<UserListScreen />} />
-            <Route path='/admin/user/:id/edit' element={<UserEditScreen />} /> 
+            <Route path="/admin/user/:id/edit" element={<UserEditScreen />} />
             {/* PUBLIC ROUTES */}
             <Route path="/" element={<HomeScreen />} />
             <Route path="/login" element={<LoginScreen />} />
             <Route path="/register" element={<RegisterScreen />} />
-            <Route path='/profile' element={<ProfileScreen />} />
-            <Route path='/shipping' element={<ShippingScreen />} />
-            <Route path='/payment' element={<PaymentScreen />} />
-            <Route path='/placeorder' element={<PlaceOrderScreen />} />
-            <Route path='/order/:id' element={<OrderScreen />} />
+            <Route path="/profile" element={<ProfileScreen />} />
+            <Route path="/shipping" element={<ShippingScreen />} />
+            <Route path="/payment" element={<PaymentScreen />} />
+            <Route path="/placeorder" element={<PlaceOrderScreen />} />
+            <Route path="/order/:id" element={<OrderScreen />} />
             <Route path="/product/:id" element={<ProductScreen />} />
             <Route path="/cart/:id?" element={<CartScreen />} />
           </Routes>
@@ -13365,485 +13894,489 @@ function App() {
 }
 
 export default App;
-
 ```
+
 5. should see the form is loaded
 6. update the usereditscreen to load user data
+
 ```jsx
-import React, { useState, useEffect } from 'react'
-import { Link, useNavigate, useParams } from 'react-router-dom'
-import { Form, Button } from 'react-bootstrap'
-import { useDispatch, useSelector } from 'react-redux'
-import Loader from '../components/Loader'
-import Message from '../components/Message'
-import FormContainer from '../components/FormContainer'
-import { getUserDetails, updateUser } from '../actions/userActions'
-import { USER_UPDATE_RESET } from '../constants/userConstants'
+import React, { useState, useEffect } from "react";
+import { Link, useNavigate, useParams } from "react-router-dom";
+import { Form, Button } from "react-bootstrap";
+import { useDispatch, useSelector } from "react-redux";
+import Loader from "../components/Loader";
+import Message from "../components/Message";
+import FormContainer from "../components/FormContainer";
+import { getUserDetails, updateUser } from "../actions/userActions";
+import { USER_UPDATE_RESET } from "../constants/userConstants";
 
 function UserEditScreen() {
-    const navigate = useNavigate()
-    const userId = useParams().id
+  const navigate = useNavigate();
+  const userId = useParams().id;
 
-    const [name, setName] = useState('')
-    const [email, setEmail] = useState('')
-    const [isAdmin, setIsAdmin] = useState(false)
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [isAdmin, setIsAdmin] = useState(false);
 
-    const dispatch = useDispatch()
+  const dispatch = useDispatch();
 
-    const userDetails = useSelector(state => state.userDetails)
-    const { error, loading, user } = userDetails
+  const userDetails = useSelector((state) => state.userDetails);
+  const { error, loading, user } = userDetails;
 
-    // const userUpdate = useSelector(state => state.userUpdate)
-    // const { error: errorUpdate, loading: loadingUpdate, success: successUpdate } = userUpdate
+  // const userUpdate = useSelector(state => state.userUpdate)
+  // const { error: errorUpdate, loading: loadingUpdate, success: successUpdate } = userUpdate
 
-    useEffect(() => {
+  useEffect(() => {
+    // if (successUpdate) {
+    //     dispatch({ type: USER_UPDATE_RESET })
+    //     navigate('/admin/userlist')
+    // } else {
 
-        // if (successUpdate) {
-        //     dispatch({ type: USER_UPDATE_RESET })
-        //     navigate('/admin/userlist')
-        // } else {
-
-            if (!user || !user.name || user._id !== Number(userId)) {
-                dispatch(getUserDetails(userId))
-            } else {
-                setName(user.name)
-                setEmail(user.email)
-                setIsAdmin(user.isAdmin)
-            }
-        // }
-
-    }, [user, userId, navigate, dispatch])
-
-    const submitHandler = (e) => {
-        e.preventDefault()
-        // dispatch(updateUser({ _id: user._id, name, email, isAdmin }))
+    if (!user || !user.name || user._id !== Number(userId)) {
+      dispatch(getUserDetails(userId));
+    } else {
+      setName(user.name);
+      setEmail(user.email);
+      setIsAdmin(user.isAdmin);
     }
+    // }
+  }, [user, userId, navigate, dispatch]);
 
-    return (
-        <div>
-            <Link to='/admin/userlist'>
-                Go Back
-            </Link>
+  const submitHandler = (e) => {
+    e.preventDefault();
+    // dispatch(updateUser({ _id: user._id, name, email, isAdmin }))
+  };
 
-            <FormContainer>
-                <h1>Edit User</h1>
-                {/* {loadingUpdate && <Loader />}
+  return (
+    <div>
+      <Link to="/admin/userlist">Go Back</Link>
+
+      <FormContainer>
+        <h1>Edit User</h1>
+        {/* {loadingUpdate && <Loader />}
                 {errorUpdate && <Message variant='danger'>{errorUpdate}</Message>} */}
 
-                {loading ? <Loader /> : error ? <Message variant='danger'>{error}</Message>
-                    : (
-                        <Form onSubmit={submitHandler}>
+        {loading ? (
+          <Loader />
+        ) : error ? (
+          <Message variant="danger">{error}</Message>
+        ) : (
+          <Form onSubmit={submitHandler}>
+            <Form.Group controlId="name">
+              <Form.Label>Name</Form.Label>
+              <Form.Control
+                type="name"
+                placeholder="Enter name"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+              ></Form.Control>
+            </Form.Group>
 
-                            <Form.Group controlId='name'>
-                                <Form.Label>Name</Form.Label>
-                                <Form.Control
+            <Form.Group controlId="email">
+              <Form.Label>Email Address</Form.Label>
+              <Form.Control
+                type="email"
+                placeholder="Enter Email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+              ></Form.Control>
+            </Form.Group>
 
-                                    type='name'
-                                    placeholder='Enter name'
-                                    value={name}
-                                    onChange={(e) => setName(e.target.value)}
-                                >
-                                </Form.Control>
-                            </Form.Group>
+            <Form.Group controlId="isadmin">
+              <Form.Check
+                type="checkbox"
+                label="Is Admin"
+                checked={isAdmin}
+                onChange={(e) => setIsAdmin(e.target.checked)}
+              ></Form.Check>
+            </Form.Group>
 
-                            <Form.Group controlId='email'>
-                                <Form.Label>Email Address</Form.Label>
-                                <Form.Control
-                                    type='email'
-                                    placeholder='Enter Email'
-                                    value={email}
-                                    onChange={(e) => setEmail(e.target.value)}
-                                >
-                                </Form.Control>
-                            </Form.Group>
-
-                            <Form.Group controlId='isadmin'>
-                                <Form.Check
-                                    type='checkbox'
-                                    label='Is Admin'
-                                    checked={isAdmin}
-                                    onChange={(e) => setIsAdmin(e.target.checked)}
-                                >
-                                </Form.Check>
-                            </Form.Group>
-
-                            <Button type='submit' variant='primary'>
-                                Update
-                        </Button>
-
-                        </Form>
-                    )}
-
-            </FormContainer >
-        </div>
-
-    )
+            <Button type="submit" variant="primary">
+              Update
+            </Button>
+          </Form>
+        )}
+      </FormContainer>
+    </div>
+  );
 }
 
-export default UserEditScreen
+export default UserEditScreen;
 ```
+
 6. there is bug for user info, need to go to profilescreen to in sync the userinfo
+
 ```jsx
-import React, { useState, useEffect } from 'react'
-import { useNavigate } from 'react-router-dom'
-import { Form, Button, Row, Col, Table } from 'react-bootstrap'
-import { LinkContainer } from 'react-router-bootstrap'
-import { useDispatch, useSelector } from 'react-redux'
-import Loader from '../components/Loader'
-import Message from '../components/Message'
-import { getUserDetails, updateUserProfile } from '../actions/userActions'
-import { USER_UPDATE_PROFILE_RESET } from '../constants/userConstants'
-import { listMyOrders } from '../actions/orderActions'
+import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { Form, Button, Row, Col, Table } from "react-bootstrap";
+import { LinkContainer } from "react-router-bootstrap";
+import { useDispatch, useSelector } from "react-redux";
+import Loader from "../components/Loader";
+import Message from "../components/Message";
+import { getUserDetails, updateUserProfile } from "../actions/userActions";
+import { USER_UPDATE_PROFILE_RESET } from "../constants/userConstants";
+import { listMyOrders } from "../actions/orderActions";
 function ProfileScreen() {
-    const navigate = useNavigate()
-    const [name, setName] = useState('')
-    const [email, setEmail] = useState('')
-    const [password, setPassword] = useState('')
-    const [confirmPassword, setConfirmPassword] = useState('')
-    const [message, setMessage] = useState('')
+  const navigate = useNavigate();
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [message, setMessage] = useState("");
 
-    const dispatch = useDispatch()
+  const dispatch = useDispatch();
 
-    const userDetails = useSelector(state => state.userDetails)
-    const { error, loading, user } = userDetails
+  const userDetails = useSelector((state) => state.userDetails);
+  const { error, loading, user } = userDetails;
 
-    const userLogin = useSelector(state => state.userLogin)
-    const { userInfo } = userLogin
+  const userLogin = useSelector((state) => state.userLogin);
+  const { userInfo } = userLogin;
 
-  const userUpdateProfile = useSelector(state => state.userUpdateProfile)
-  const { success } = userUpdateProfile
+  const userUpdateProfile = useSelector((state) => state.userUpdateProfile);
+  const { success } = userUpdateProfile;
 
-    const orderListMy = useSelector(state => state.orderListMy)
-    const { loading: loadingOrders, error: errorOrders, orders } = orderListMy
+  const orderListMy = useSelector((state) => state.orderListMy);
+  const { loading: loadingOrders, error: errorOrders, orders } = orderListMy;
 
-    useEffect(() => {
-        if (!userInfo) {
-            navigate('/login')
-        } else {
-            if (!user || !user.name || success || userInfo._id !== user._id) { // check userinfo and user id
-               dispatch({ type: USER_UPDATE_PROFILE_RESET })
-                dispatch(getUserDetails('profile'))
-                dispatch(listMyOrders())
-            } else {
-                setName(user.name)
-                setEmail(user.email)
-            }
-        }
-    }, [dispatch, navigate, userInfo, user, success])
-
-    const submitHandler = (e) => {
-        e.preventDefault()
-
-        if (password !== confirmPassword) {
-            setMessage('Passwords do not match')
-        } else {
-           dispatch(updateUserProfile({ id: user._id, name, email, password }))
-           setMessage("")
-        }
-
+  useEffect(() => {
+    if (!userInfo) {
+      navigate("/login");
+    } else {
+      if (!user || !user.name || success || userInfo._id !== user._id) {
+        // check userinfo and user id
+        dispatch({ type: USER_UPDATE_PROFILE_RESET });
+        dispatch(getUserDetails("profile"));
+        dispatch(listMyOrders());
+      } else {
+        setName(user.name);
+        setEmail(user.email);
+      }
     }
-    return (
-        <Row>
-            <Col md={3}>
-                <h2>User Profile</h2>
+  }, [dispatch, navigate, userInfo, user, success]);
 
-                {message && <Message variant='danger'>{message}</Message>}
-                {error && <Message variant='danger'>{error}</Message>}
-                {loading && <Loader />}
-                <Form onSubmit={submitHandler}>
+  const submitHandler = (e) => {
+    e.preventDefault();
 
-                    <Form.Group controlId='name'>
-                        <Form.Label>Name</Form.Label>
-                        <Form.Control
-                            required
-                            type='name'
-                            placeholder='Enter name'
-                            value={name}
-                            onChange={(e) => setName(e.target.value)}
-                        >
-                        </Form.Control>
-                    </Form.Group>
+    if (password !== confirmPassword) {
+      setMessage("Passwords do not match");
+    } else {
+      dispatch(updateUserProfile({ id: user._id, name, email, password }));
+      setMessage("");
+    }
+  };
+  return (
+    <Row>
+      <Col md={3}>
+        <h2>User Profile</h2>
 
-                    <Form.Group controlId='email'>
-                        <Form.Label>Email Address</Form.Label>
-                        <Form.Control
-                            required
-                            type='email'
-                            placeholder='Enter Email'
-                            value={email}
-                            onChange={(e) => setEmail(e.target.value)}
-                        >
-                        </Form.Control>
-                    </Form.Group>
+        {message && <Message variant="danger">{message}</Message>}
+        {error && <Message variant="danger">{error}</Message>}
+        {loading && <Loader />}
+        <Form onSubmit={submitHandler}>
+          <Form.Group controlId="name">
+            <Form.Label>Name</Form.Label>
+            <Form.Control
+              required
+              type="name"
+              placeholder="Enter name"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+            ></Form.Control>
+          </Form.Group>
 
-                    <Form.Group controlId='password'>
-                        <Form.Label>Password</Form.Label>
-                        <Form.Control
+          <Form.Group controlId="email">
+            <Form.Label>Email Address</Form.Label>
+            <Form.Control
+              required
+              type="email"
+              placeholder="Enter Email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+            ></Form.Control>
+          </Form.Group>
 
-                            type='password'
-                            placeholder='Enter Password'
-                            value={password}
-                            onChange={(e) => setPassword(e.target.value)}
-                        >
-                        </Form.Control>
-                    </Form.Group>
+          <Form.Group controlId="password">
+            <Form.Label>Password</Form.Label>
+            <Form.Control
+              type="password"
+              placeholder="Enter Password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+            ></Form.Control>
+          </Form.Group>
 
-                    <Form.Group controlId='passwordConfirm'>
-                        <Form.Label>Confirm Password</Form.Label>
-                        <Form.Control
+          <Form.Group controlId="passwordConfirm">
+            <Form.Label>Confirm Password</Form.Label>
+            <Form.Control
+              type="password"
+              placeholder="Confirm Password"
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+            ></Form.Control>
+          </Form.Group>
 
-                            type='password'
-                            placeholder='Confirm Password'
-                            value={confirmPassword}
-                            onChange={(e) => setConfirmPassword(e.target.value)}
-                        >
-                        </Form.Control>
-                    </Form.Group>
+          <Button type="submit" variant="primary">
+            Update
+          </Button>
+        </Form>
+      </Col>
 
-                    <Button type='submit' variant='primary'>
-                        Update
-                </Button>
+      <Col md={9}>
+        <h2>My Orders</h2>
+        {loadingOrders ? (
+          <Loader />
+        ) : errorOrders ? (
+          <Message variant="danger">{errorOrders}</Message>
+        ) : (
+          <Table striped responsive className="table-sm">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Date</th>
+                <th>Total</th>
+                <th>Paid</th>
+                <th>Delivered</th>
+                <th></th>
+              </tr>
+            </thead>
 
-                </Form>
-            </Col>
-
-            <Col md={9}>
-                <h2>My Orders</h2>
-           {loadingOrders ? (
-                    <Loader />
-                ) : errorOrders ? (
-                    <Message variant='danger'>{errorOrders}</Message>
-                ) : (
-                            <Table striped responsive className='table-sm'>
-                                <thead>
-                                    <tr>
-                                        <th>ID</th>
-                                        <th>Date</th>
-                                        <th>Total</th>
-                                        <th>Paid</th>
-                                        <th>Delivered</th>
-                                        <th></th>
-                                    </tr>
-                                </thead>
-
-                                <tbody>
-                                    {orders.map(order => (
-                                        <tr key={order._id}>
-                                            <td>{order._id}</td>
-                                            <td>{order.createdAt.substring(0, 10)}</td>
-                                            <td>${order.totalPrice}</td>
-                                            <td>{order.isPaid ? order.paidAt.substring(0, 10) : (
-                                                <i className='fas fa-times' style={{ color: 'red' }}></i>
-                                            )}</td>
-                                            <td>
-                                                <LinkContainer to={`/order/${order._id}`}>
-                                                    <Button className='btn-sm'>Details</Button>
-                                                </LinkContainer>
-                                            </td>
-                                        </tr>
-                                    ))}
-                                </tbody>
-                            </Table>
-                        )}
-            </Col>
-        </Row>
-    )
+            <tbody>
+              {orders.map((order) => (
+                <tr key={order._id}>
+                  <td>{order._id}</td>
+                  <td>{order.createdAt.substring(0, 10)}</td>
+                  <td>${order.totalPrice}</td>
+                  <td>
+                    {order.isPaid ? (
+                      order.paidAt.substring(0, 10)
+                    ) : (
+                      <i className="fas fa-times" style={{ color: "red" }}></i>
+                    )}
+                  </td>
+                  <td>
+                    <LinkContainer to={`/order/${order._id}`}>
+                      <Button className="btn-sm">Details</Button>
+                    </LinkContainer>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </Table>
+        )}
+      </Col>
+    </Row>
+  );
 }
 
-export default ProfileScreen
+export default ProfileScreen;
 ```
-7. form is ready, add function to the update button then update reducer related function, update userConstants.js
-```js
 
-export const USER_UPDATE_REQUEST = 'USER_UPDATE_REQUEST'
-export const USER_UPDATE_SUCCESS = 'USER_UPDATE_SUCCESS'
-export const USER_UPDATE_FAIL = 'USER_UPDATE_FAIL'
-export const USER_UPDATE_RESET = 'USER_UPDATE_RESET'
+7. form is ready, add function to the update button then update reducer related function, update userConstants.js
+
+```js
+export const USER_UPDATE_REQUEST = "USER_UPDATE_REQUEST";
+export const USER_UPDATE_SUCCESS = "USER_UPDATE_SUCCESS";
+export const USER_UPDATE_FAIL = "USER_UPDATE_FAIL";
+export const USER_UPDATE_RESET = "USER_UPDATE_RESET";
 ```
+
 8. update userReducer.js
+
 ```js
 import {
-    USER_LOGIN_REQUEST,
-    USER_LOGIN_SUCCESS,
-    USER_LOGIN_FAIL,
-
-    USER_LOGOUT,
-    USER_REGISTER_REQUEST,
-    USER_REGISTER_SUCCESS,
-    USER_REGISTER_FAIL,
-    USER_DETAILS_REQUEST,
-    USER_DETAILS_SUCCESS,
-    USER_DETAILS_FAIL,
-    USER_DETAILS_RESET,
-
-    USER_UPDATE_PROFILE_REQUEST,
-    USER_UPDATE_PROFILE_SUCCESS,
-    USER_UPDATE_PROFILE_FAIL,
-    USER_UPDATE_PROFILE_RESET,
-
-    USER_LIST_REQUEST,
-    USER_LIST_SUCCESS,
-    USER_LIST_FAIL,
-    USER_LIST_RESET,
-
-     USER_DELETE_REQUEST,
-    USER_DELETE_SUCCESS,
-    USER_DELETE_FAIL,
-    USER_UPDATE_REQUEST,
-    USER_UPDATE_SUCCESS,
-    USER_UPDATE_FAIL,
-    USER_UPDATE_RESET,
-
-} from '../constants/userConstants'
-
+  USER_LOGIN_REQUEST,
+  USER_LOGIN_SUCCESS,
+  USER_LOGIN_FAIL,
+  USER_LOGOUT,
+  USER_REGISTER_REQUEST,
+  USER_REGISTER_SUCCESS,
+  USER_REGISTER_FAIL,
+  USER_DETAILS_REQUEST,
+  USER_DETAILS_SUCCESS,
+  USER_DETAILS_FAIL,
+  USER_DETAILS_RESET,
+  USER_UPDATE_PROFILE_REQUEST,
+  USER_UPDATE_PROFILE_SUCCESS,
+  USER_UPDATE_PROFILE_FAIL,
+  USER_UPDATE_PROFILE_RESET,
+  USER_LIST_REQUEST,
+  USER_LIST_SUCCESS,
+  USER_LIST_FAIL,
+  USER_LIST_RESET,
+  USER_DELETE_REQUEST,
+  USER_DELETE_SUCCESS,
+  USER_DELETE_FAIL,
+  USER_UPDATE_REQUEST,
+  USER_UPDATE_SUCCESS,
+  USER_UPDATE_FAIL,
+  USER_UPDATE_RESET,
+} from "../constants/userConstants";
 
 export const userLoginReducer = (state = {}, action) => {
-    switch (action.type) {
-        case USER_LOGIN_REQUEST:
-            return { loading: true }
+  switch (action.type) {
+    case USER_LOGIN_REQUEST:
+      return { loading: true };
 
-        case USER_LOGIN_SUCCESS:
-            return { loading: false, userInfo: action.payload }
+    case USER_LOGIN_SUCCESS:
+      return { loading: false, userInfo: action.payload };
 
-        case USER_LOGIN_FAIL:
-            return { loading: false, error: action.payload }
+    case USER_LOGIN_FAIL:
+      return { loading: false, error: action.payload };
 
-        case USER_LOGOUT:
-            return {}
+    case USER_LOGOUT:
+      return {};
 
-        default:
-            return state
-    }
-}
+    default:
+      return state;
+  }
+};
 export const userRegisterReducer = (state = {}, action) => {
-    switch (action.type) {
-        case USER_REGISTER_REQUEST:
-            return { loading: true }
+  switch (action.type) {
+    case USER_REGISTER_REQUEST:
+      return { loading: true };
 
-        case USER_REGISTER_SUCCESS:
-            return { loading: false, userInfo: action.payload }
+    case USER_REGISTER_SUCCESS:
+      return { loading: false, userInfo: action.payload };
 
-        case USER_REGISTER_FAIL:
-            return { loading: false, error: action.payload }
+    case USER_REGISTER_FAIL:
+      return { loading: false, error: action.payload };
 
-        case USER_LOGOUT:
-            return {}
+    case USER_LOGOUT:
+      return {};
 
-        default:
-            return state
-    }
-}
+    default:
+      return state;
+  }
+};
 
 export const userDetailsReducer = (state = { user: {} }, action) => {
-    switch (action.type) {
-        case USER_DETAILS_REQUEST:
-            return { ...state, loading: true }
+  switch (action.type) {
+    case USER_DETAILS_REQUEST:
+      return { ...state, loading: true };
 
-        case USER_DETAILS_SUCCESS:
-            return { loading: false, user: action.payload }
+    case USER_DETAILS_SUCCESS:
+      return { loading: false, user: action.payload };
 
-        case USER_DETAILS_FAIL:
-            return { loading: false, error: action.payload }
+    case USER_DETAILS_FAIL:
+      return { loading: false, error: action.payload };
 
-        case USER_DETAILS_RESET:
-            return { user: {} }
+    case USER_DETAILS_RESET:
+      return { user: {} };
 
-
-        default:
-            return state
-    }
-}
+    default:
+      return state;
+  }
+};
 
 export const userUpdateProfileReducer = (state = {}, action) => {
-    switch (action.type) {
-        case USER_UPDATE_PROFILE_REQUEST:
-            return { loading: true }
+  switch (action.type) {
+    case USER_UPDATE_PROFILE_REQUEST:
+      return { loading: true };
 
-        case USER_UPDATE_PROFILE_SUCCESS:
-            return { loading: false, success: true, userInfo: action.payload }
+    case USER_UPDATE_PROFILE_SUCCESS:
+      return { loading: false, success: true, userInfo: action.payload };
 
-        case USER_UPDATE_PROFILE_FAIL:
-            return { loading: false, error: action.payload }
+    case USER_UPDATE_PROFILE_FAIL:
+      return { loading: false, error: action.payload };
 
-        case USER_UPDATE_PROFILE_RESET:
-            return {}
+    case USER_UPDATE_PROFILE_RESET:
+      return {};
 
-        default:
-            return state
-    }
-}
+    default:
+      return state;
+  }
+};
 
 export const userListReducer = (state = { users: [] }, action) => {
-    switch (action.type) {
-        case USER_LIST_REQUEST:
-            return { loading: true }
+  switch (action.type) {
+    case USER_LIST_REQUEST:
+      return { loading: true };
 
-        case USER_LIST_SUCCESS:
-            return { loading: false, users: action.payload }
+    case USER_LIST_SUCCESS:
+      return { loading: false, users: action.payload };
 
-        case USER_LIST_FAIL:
-            return { loading: false, error: action.payload }
+    case USER_LIST_FAIL:
+      return { loading: false, error: action.payload };
 
-        case USER_LIST_RESET:
-            return { users: [] }
+    case USER_LIST_RESET:
+      return { users: [] };
 
-        default:
-            return state
-    }
-}
+    default:
+      return state;
+  }
+};
 
 export const userDeleteReducer = (state = {}, action) => {
-    switch (action.type) {
-        case USER_DELETE_REQUEST:
-            return { loading: true }
+  switch (action.type) {
+    case USER_DELETE_REQUEST:
+      return { loading: true };
 
-        case USER_DELETE_SUCCESS:
-            return { loading: false, success: true }
+    case USER_DELETE_SUCCESS:
+      return { loading: false, success: true };
 
-        case USER_DELETE_FAIL:
-            return { loading: false, error: action.payload }
+    case USER_DELETE_FAIL:
+      return { loading: false, error: action.payload };
 
-        default:
-            return state
-    }
-}
+    default:
+      return state;
+  }
+};
 
 export const userUpdateReducer = (state = { user: {} }, action) => {
-    switch (action.type) {
-        case USER_UPDATE_REQUEST:
-            return { loading: true }
+  switch (action.type) {
+    case USER_UPDATE_REQUEST:
+      return { loading: true };
 
-        case USER_UPDATE_SUCCESS:
-            return { loading: false, success: true }
+    case USER_UPDATE_SUCCESS:
+      return { loading: false, success: true };
 
-        case USER_UPDATE_FAIL:
-            return { loading: false, error: action.payload }
+    case USER_UPDATE_FAIL:
+      return { loading: false, error: action.payload };
 
-        case USER_UPDATE_RESET:
-            return { user: {} }
+    case USER_UPDATE_RESET:
+      return { user: {} };
 
-        default:
-            return state
-    }
-}
+    default:
+      return state;
+  }
+};
 ```
+
 9. update store.js
+
 ```js
-import { configureStore } from '@reduxjs/toolkit';
-import { productReducer, productDetailsReducer} from "./reducers/productReducers"; // import
-import {cartReducer} from "./reducers/cartReducers";
-import { userLoginReducer, userRegisterReducer, userDetailsReducer, userUpdateProfileReducer, userListReducer, userDeleteReducer, userUpdateReducer } from './reducers/userReducers';
-import { orderCreateReducer, orderDetailsReducer, orderPayReducer, orderListMyReducer } from './reducers/orderReducers';
-const cartItemsFromStorage = localStorage.getItem('cartItems')
-  ? JSON.parse(localStorage.getItem('cartItems'))
+import { configureStore } from "@reduxjs/toolkit";
+import {
+  productReducer,
+  productDetailsReducer,
+} from "./reducers/productReducers"; // import
+import { cartReducer } from "./reducers/cartReducers";
+import {
+  userLoginReducer,
+  userRegisterReducer,
+  userDetailsReducer,
+  userUpdateProfileReducer,
+  userListReducer,
+  userDeleteReducer,
+  userUpdateReducer,
+} from "./reducers/userReducers";
+import {
+  orderCreateReducer,
+  orderDetailsReducer,
+  orderPayReducer,
+  orderListMyReducer,
+} from "./reducers/orderReducers";
+const cartItemsFromStorage = localStorage.getItem("cartItems")
+  ? JSON.parse(localStorage.getItem("cartItems"))
   : [];
-const userInfoFromStorage = localStorage.getItem('userInfo')
-  ? JSON.parse(localStorage.getItem('userInfo'))
+const userInfoFromStorage = localStorage.getItem("userInfo")
+  ? JSON.parse(localStorage.getItem("userInfo"))
   : null;
- 
-const shippingAddressFromStorage = localStorage.getItem('shippingAddress')
-  ? JSON.parse(localStorage.getItem('shippingAddress'))
-  : {};  
+
+const shippingAddressFromStorage = localStorage.getItem("shippingAddress")
+  ? JSON.parse(localStorage.getItem("shippingAddress"))
+  : {};
 // 👇 初始化 Redux 状态
 const preloadedState = {
   cart: {
@@ -13853,583 +14386,564 @@ const preloadedState = {
   userLogin: {
     userInfo: userInfoFromStorage, // 给 userLogin reducer 赋值
   },
-  
 };
 
 export const store = configureStore({
   reducer: {
-      productList: productReducer,
-      productDetails: productDetailsReducer,
-      cart: cartReducer,
-      userLogin: userLoginReducer,
-      userRegister: userRegisterReducer,
-      userDetails: userDetailsReducer,
-      userUpdateProfile: userUpdateProfileReducer,
-     userList: userListReducer, 
-      orderCreate: orderCreateReducer,
-      orderDetails: orderDetailsReducer,
-      orderPay: orderPayReducer,
-      orderListMy: orderListMyReducer,
-      userDelete: userDeleteReducer,
-      userUpdate: userUpdateReducer
+    productList: productReducer,
+    productDetails: productDetailsReducer,
+    cart: cartReducer,
+    userLogin: userLoginReducer,
+    userRegister: userRegisterReducer,
+    userDetails: userDetailsReducer,
+    userUpdateProfile: userUpdateProfileReducer,
+    userList: userListReducer,
+    orderCreate: orderCreateReducer,
+    orderDetails: orderDetailsReducer,
+    orderPay: orderPayReducer,
+    orderListMy: orderListMyReducer,
+    userDelete: userDeleteReducer,
+    userUpdate: userUpdateReducer,
   },
   // ✅ Thunk + DevTools ARE AUTO INCLUDED — NO SETUP NEEDED!
-  preloadedState : preloadedState,
-  middleware: (getDefaultMiddleware) => getDefaultMiddleware({ serializableCheck: false, immutableCheck: false, })
+  preloadedState: preloadedState,
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware({ serializableCheck: false, immutableCheck: false }),
 });
 
 export default store;
-
 ```
+
 10. update userActions.js
+
 ```js
-import axios from 'axios'
+import axios from "axios";
 import {
-    USER_LOGIN_REQUEST,
-    USER_LOGIN_SUCCESS,
-    USER_LOGIN_FAIL,
+  USER_LOGIN_REQUEST,
+  USER_LOGIN_SUCCESS,
+  USER_LOGIN_FAIL,
+  USER_LOGOUT,
+  USER_REGISTER_REQUEST,
+  USER_REGISTER_SUCCESS,
+  USER_REGISTER_FAIL,
+  USER_DETAILS_REQUEST,
+  USER_DETAILS_SUCCESS,
+  USER_DETAILS_FAIL,
+  USER_DETAILS_RESET,
+  USER_UPDATE_PROFILE_REQUEST,
+  USER_UPDATE_PROFILE_SUCCESS,
+  USER_UPDATE_PROFILE_FAIL,
+  USER_UPDATE_PROFILE_RESET,
+  USER_LIST_REQUEST,
+  USER_LIST_SUCCESS,
+  USER_LIST_FAIL,
+  USER_LIST_RESET,
+  USER_DELETE_REQUEST,
+  USER_DELETE_SUCCESS,
+  USER_DELETE_FAIL,
+  USER_UPDATE_REQUEST,
+  USER_UPDATE_SUCCESS,
+  USER_UPDATE_FAIL,
+} from "../constants/userConstants";
 
-    USER_LOGOUT,
-    USER_REGISTER_REQUEST,
-    USER_REGISTER_SUCCESS,
-    USER_REGISTER_FAIL,
-
-    USER_DETAILS_REQUEST,
-    USER_DETAILS_SUCCESS,
-    USER_DETAILS_FAIL,
-    USER_DETAILS_RESET,
-
-    USER_UPDATE_PROFILE_REQUEST,
-    USER_UPDATE_PROFILE_SUCCESS,
-    USER_UPDATE_PROFILE_FAIL,
-    USER_UPDATE_PROFILE_RESET,
-
-    USER_LIST_REQUEST,
-    USER_LIST_SUCCESS,
-    USER_LIST_FAIL,
-    USER_LIST_RESET,
-
-    USER_DELETE_REQUEST,
-    USER_DELETE_SUCCESS,
-    USER_DELETE_FAIL,
-    USER_UPDATE_REQUEST,
-    USER_UPDATE_SUCCESS,
-    USER_UPDATE_FAIL,
-
-} from '../constants/userConstants'
-
-import { ORDER_LIST_MY_RESET } from '../constants/orderConstants'
+import { ORDER_LIST_MY_RESET } from "../constants/orderConstants";
 export const login = (email, password) => async (dispatch) => {
-    try {
-        dispatch({
-            type: USER_LOGIN_REQUEST
-        })
+  try {
+    dispatch({
+      type: USER_LOGIN_REQUEST,
+    });
 
-        const config = {
-            headers: {
-                'Content-type': 'application/json'
-            }
-        }
+    const config = {
+      headers: {
+        "Content-type": "application/json",
+      },
+    };
 
-        const { data } = await axios.post(
-            '/api/users/login/',
-            { 'username': email, 'password': password },
-            config
-        )
+    const { data } = await axios.post(
+      "/api/users/login/",
+      { username: email, password: password },
+      config,
+    );
 
-        dispatch({
-            type: USER_LOGIN_SUCCESS,
-            payload: data
-        })
+    dispatch({
+      type: USER_LOGIN_SUCCESS,
+      payload: data,
+    });
 
-        localStorage.setItem('userInfo', JSON.stringify(data))
-
-    } catch (error) {
-        dispatch({
-            type: USER_LOGIN_FAIL,
-            payload: error.response && error.response.data.detail
-                ? error.response.data.detail
-                : error.message,
-        })
-    }
-}
+    localStorage.setItem("userInfo", JSON.stringify(data));
+  } catch (error) {
+    dispatch({
+      type: USER_LOGIN_FAIL,
+      payload:
+        error.response && error.response.data.detail
+          ? error.response.data.detail
+          : error.message,
+    });
+  }
+};
 
 export const logout = () => (dispatch) => {
-    localStorage.removeItem('userInfo')
-    dispatch({ type: USER_LOGOUT })
-    dispatch({ type: USER_DETAILS_RESET })
-    dispatch({ type: ORDER_LIST_MY_RESET })
-    dispatch({ type: USER_LIST_RESET })
-}
+  localStorage.removeItem("userInfo");
+  dispatch({ type: USER_LOGOUT });
+  dispatch({ type: USER_DETAILS_RESET });
+  dispatch({ type: ORDER_LIST_MY_RESET });
+  dispatch({ type: USER_LIST_RESET });
+};
 
 export const register = (name, email, password) => async (dispatch) => {
-    try {
-        dispatch({
-            type: USER_REGISTER_REQUEST
-        })
+  try {
+    dispatch({
+      type: USER_REGISTER_REQUEST,
+    });
 
-        const config = {
-            headers: {
-                'Content-type': 'application/json'
-            }
-        }
+    const config = {
+      headers: {
+        "Content-type": "application/json",
+      },
+    };
 
-        const { data } = await axios.post(
-            '/api/users/register/',
-            { 'name': name, 'email': email, 'password': password },
-            config
-        )
+    const { data } = await axios.post(
+      "/api/users/register/",
+      { name: name, email: email, password: password },
+      config,
+    );
 
-        dispatch({
-            type: USER_REGISTER_SUCCESS,
-            payload: data
-        })
+    dispatch({
+      type: USER_REGISTER_SUCCESS,
+      payload: data,
+    });
 
-        dispatch({
-            type: USER_LOGIN_SUCCESS,
-            payload: data
-        })
+    dispatch({
+      type: USER_LOGIN_SUCCESS,
+      payload: data,
+    });
 
-        localStorage.setItem('userInfo', JSON.stringify(data))
-
-    } catch (error) {
-        dispatch({
-            type: USER_REGISTER_FAIL,
-            payload: error.response && error.response.data.detail
-                ? error.response.data.detail
-                : error.message,
-        })
-    }
-}
+    localStorage.setItem("userInfo", JSON.stringify(data));
+  } catch (error) {
+    dispatch({
+      type: USER_REGISTER_FAIL,
+      payload:
+        error.response && error.response.data.detail
+          ? error.response.data.detail
+          : error.message,
+    });
+  }
+};
 
 export const getUserDetails = (id) => async (dispatch, getState) => {
-    try {
-        dispatch({
-            type: USER_DETAILS_REQUEST
-        })
+  try {
+    dispatch({
+      type: USER_DETAILS_REQUEST,
+    });
 
-        const {
-            userLogin: { userInfo },
-        } = getState()
+    const {
+      userLogin: { userInfo },
+    } = getState();
 
-        const config = {
-            headers: {
-                'Content-type': 'application/json',
-                Authorization: `Bearer ${userInfo.token}`
-            }
-        }
+    const config = {
+      headers: {
+        "Content-type": "application/json",
+        Authorization: `Bearer ${userInfo.token}`,
+      },
+    };
 
-        const { data } = await axios.get(
-            `/api/users/${id}/`,
-            config
-        )
+    const { data } = await axios.get(`/api/users/${id}/`, config);
 
-        dispatch({
-            type: USER_DETAILS_SUCCESS,
-            payload: data
-        })
-
-
-    } catch (error) {
-        dispatch({
-            type: USER_DETAILS_FAIL,
-            payload: error.response && error.response.data.detail
-                ? error.response.data.detail
-                : error.message,
-        })
-    }
-}
+    dispatch({
+      type: USER_DETAILS_SUCCESS,
+      payload: data,
+    });
+  } catch (error) {
+    dispatch({
+      type: USER_DETAILS_FAIL,
+      payload:
+        error.response && error.response.data.detail
+          ? error.response.data.detail
+          : error.message,
+    });
+  }
+};
 
 export const updateUserProfile = (user) => async (dispatch, getState) => {
-    try {
-        dispatch({
-            type: USER_UPDATE_PROFILE_REQUEST
-        })
+  try {
+    dispatch({
+      type: USER_UPDATE_PROFILE_REQUEST,
+    });
 
-        const {
-            userLogin: { userInfo },
-        } = getState()
+    const {
+      userLogin: { userInfo },
+    } = getState();
 
-        const config = {
-            headers: {
-                'Content-type': 'application/json',
-                Authorization: `Bearer ${userInfo.token}`
-            }
-        }
+    const config = {
+      headers: {
+        "Content-type": "application/json",
+        Authorization: `Bearer ${userInfo.token}`,
+      },
+    };
 
-        const { data } = await axios.put(
-            `/api/users/profile/update/`,
-            user,
-            config
-        )
+    const { data } = await axios.put(
+      `/api/users/profile/update/`,
+      user,
+      config,
+    );
 
-        dispatch({
-            type: USER_UPDATE_PROFILE_SUCCESS,
-            payload: data
-        })
+    dispatch({
+      type: USER_UPDATE_PROFILE_SUCCESS,
+      payload: data,
+    });
 
-        dispatch({
-            type: USER_LOGIN_SUCCESS,
-            payload: data
-        })
+    dispatch({
+      type: USER_LOGIN_SUCCESS,
+      payload: data,
+    });
 
-        localStorage.setItem('userInfo', JSON.stringify(data))
-
-    } catch (error) {
-        dispatch({
-            type: USER_UPDATE_PROFILE_FAIL,
-            payload: error.response && error.response.data.detail
-                ? error.response.data.detail
-                : error.message,
-        })
-    }
-}
+    localStorage.setItem("userInfo", JSON.stringify(data));
+  } catch (error) {
+    dispatch({
+      type: USER_UPDATE_PROFILE_FAIL,
+      payload:
+        error.response && error.response.data.detail
+          ? error.response.data.detail
+          : error.message,
+    });
+  }
+};
 export const listUsers = () => async (dispatch, getState) => {
-    try {
-        dispatch({
-            type: USER_LIST_REQUEST
-        })
+  try {
+    dispatch({
+      type: USER_LIST_REQUEST,
+    });
 
-        const {
-            userLogin: { userInfo },
-        } = getState()
+    const {
+      userLogin: { userInfo },
+    } = getState();
 
-        const config = {
-            headers: {
-                'Content-type': 'application/json',
-                Authorization: `Bearer ${userInfo.token}`
-            }
-        }
+    const config = {
+      headers: {
+        "Content-type": "application/json",
+        Authorization: `Bearer ${userInfo.token}`,
+      },
+    };
 
-        const { data } = await axios.get(
-            `/api/users/`,
-            config
-        )
+    const { data } = await axios.get(`/api/users/`, config);
 
-        dispatch({
-            type: USER_LIST_SUCCESS,
-            payload: data
-        })
-
-
-    } catch (error) {
-        dispatch({
-            type: USER_LIST_FAIL,
-            payload: error.response && error.response.data.detail
-                ? error.response.data.detail
-                : error.message,
-        })
-    }
-}
+    dispatch({
+      type: USER_LIST_SUCCESS,
+      payload: data,
+    });
+  } catch (error) {
+    dispatch({
+      type: USER_LIST_FAIL,
+      payload:
+        error.response && error.response.data.detail
+          ? error.response.data.detail
+          : error.message,
+    });
+  }
+};
 
 export const deleteUser = (id) => async (dispatch, getState) => {
-    try {
-        dispatch({
-            type: USER_DELETE_REQUEST
-        })
+  try {
+    dispatch({
+      type: USER_DELETE_REQUEST,
+    });
 
-        const {
-            userLogin: { userInfo },
-        } = getState()
+    const {
+      userLogin: { userInfo },
+    } = getState();
 
-        const config = {
-            headers: {
-                'Content-type': 'application/json',
-                Authorization: `Bearer ${userInfo.token}`
-            }
-        }
+    const config = {
+      headers: {
+        "Content-type": "application/json",
+        Authorization: `Bearer ${userInfo.token}`,
+      },
+    };
 
-        const { data } = await axios.delete(
-            `/api/users/delete/${id}/`,
-            config
-        )
+    const { data } = await axios.delete(`/api/users/delete/${id}/`, config);
 
-        dispatch({
-            type: USER_DELETE_SUCCESS,
-            payload: data
-        })
-
-
-    } catch (error) {
-        dispatch({
-            type: USER_DELETE_FAIL,
-            payload: error.response && error.response.data.detail
-                ? error.response.data.detail
-                : error.message,
-        })
-    }
-}
+    dispatch({
+      type: USER_DELETE_SUCCESS,
+      payload: data,
+    });
+  } catch (error) {
+    dispatch({
+      type: USER_DELETE_FAIL,
+      payload:
+        error.response && error.response.data.detail
+          ? error.response.data.detail
+          : error.message,
+    });
+  }
+};
 export const updateUser = (user) => async (dispatch, getState) => {
-    try {
-        dispatch({
-            type: USER_UPDATE_REQUEST
-        })
+  try {
+    dispatch({
+      type: USER_UPDATE_REQUEST,
+    });
 
-        const {
-            userLogin: { userInfo },
-        } = getState()
+    const {
+      userLogin: { userInfo },
+    } = getState();
 
-        const config = {
-            headers: {
-                'Content-type': 'application/json',
-                Authorization: `Bearer ${userInfo.token}`
-            }
-        }
+    const config = {
+      headers: {
+        "Content-type": "application/json",
+        Authorization: `Bearer ${userInfo.token}`,
+      },
+    };
 
-        const { data } = await axios.put(
-            `/api/users/update/${user._id}/`,
-            user,
-            config
-        )
+    const { data } = await axios.put(
+      `/api/users/update/${user._id}/`,
+      user,
+      config,
+    );
 
-        dispatch({
-            type: USER_UPDATE_SUCCESS,
-        })
+    dispatch({
+      type: USER_UPDATE_SUCCESS,
+    });
 
-        dispatch({
-            type: USER_DETAILS_SUCCESS,
-            payload: data
-        })
-
-
-    } catch (error) {
-        dispatch({
-            type: USER_UPDATE_FAIL,
-            payload: error.response && error.response.data.detail
-                ? error.response.data.detail
-                : error.message,
-        })
-    }
-}
+    dispatch({
+      type: USER_DETAILS_SUCCESS,
+      payload: data,
+    });
+  } catch (error) {
+    dispatch({
+      type: USER_UPDATE_FAIL,
+      payload:
+        error.response && error.response.data.detail
+          ? error.response.data.detail
+          : error.message,
+    });
+  }
+};
 ```
+
 11. update usereditscreen.jsx
+
 ```jsx
-import React, { useState, useEffect } from 'react'
-import { Link, useNavigate, useParams } from 'react-router-dom'
-import { Form, Button } from 'react-bootstrap'
-import { useDispatch, useSelector } from 'react-redux'
-import Loader from '../components/Loader'
-import Message from '../components/Message'
-import FormContainer from '../components/FormContainer'
-import { getUserDetails, updateUser } from '../actions/userActions'
-import { USER_UPDATE_RESET } from '../constants/userConstants'
+import React, { useState, useEffect } from "react";
+import { Link, useNavigate, useParams } from "react-router-dom";
+import { Form, Button } from "react-bootstrap";
+import { useDispatch, useSelector } from "react-redux";
+import Loader from "../components/Loader";
+import Message from "../components/Message";
+import FormContainer from "../components/FormContainer";
+import { getUserDetails, updateUser } from "../actions/userActions";
+import { USER_UPDATE_RESET } from "../constants/userConstants";
 
 function UserEditScreen() {
-    const navigate = useNavigate()
-    const userId = useParams().id
+  const navigate = useNavigate();
+  const userId = useParams().id;
 
-    const [name, setName] = useState('')
-    const [email, setEmail] = useState('')
-    const [isAdmin, setIsAdmin] = useState(false)
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [isAdmin, setIsAdmin] = useState(false);
 
-    const dispatch = useDispatch()
+  const dispatch = useDispatch();
 
-    const userDetails = useSelector(state => state.userDetails)
-    const { error, loading, user } = userDetails
+  const userDetails = useSelector((state) => state.userDetails);
+  const { error, loading, user } = userDetails;
 
-    const userUpdate = useSelector(state => state.userUpdate)
-    const { error: errorUpdate, loading: loadingUpdate, success: successUpdate } = userUpdate
+  const userUpdate = useSelector((state) => state.userUpdate);
+  const {
+    error: errorUpdate,
+    loading: loadingUpdate,
+    success: successUpdate,
+  } = userUpdate;
 
-    useEffect(() => {
-
-        if (successUpdate) {
-            dispatch({ type: USER_UPDATE_RESET })
-            navigate('/admin/userlist')
-        } else {
-
-            if ( !user.name || user._id !== Number(userId)) {
-                dispatch(getUserDetails(userId))
-            } else {
-                setName(user.name)
-                setEmail(user.email)
-                setIsAdmin(user.isAdmin)
-            }
-        }
-
-    }, [user, userId, navigate, dispatch])
-
-    const submitHandler = (e) => {
-        e.preventDefault()
-        dispatch(updateUser({ _id: user._id, name, email, isAdmin }))
+  useEffect(() => {
+    if (successUpdate) {
+      dispatch({ type: USER_UPDATE_RESET });
+      navigate("/admin/userlist");
+    } else {
+      if (!user.name || user._id !== Number(userId)) {
+        dispatch(getUserDetails(userId));
+      } else {
+        setName(user.name);
+        setEmail(user.email);
+        setIsAdmin(user.isAdmin);
+      }
     }
+  }, [user, userId, navigate, dispatch]);
 
-    return (
-        <div>
-            <Link to='/admin/userlist'>
-                Go Back
-            </Link>
+  const submitHandler = (e) => {
+    e.preventDefault();
+    dispatch(updateUser({ _id: user._id, name, email, isAdmin }));
+  };
 
-            <FormContainer>
-                <h1>Edit User</h1>
-                {loadingUpdate && <Loader />}
-                {errorUpdate && <Message variant='danger'>{errorUpdate}</Message>}
+  return (
+    <div>
+      <Link to="/admin/userlist">Go Back</Link>
 
-                {loading ? <Loader /> : error ? <Message variant='danger'>{error}</Message>
-                    : (
-                        <Form onSubmit={submitHandler}>
+      <FormContainer>
+        <h1>Edit User</h1>
+        {loadingUpdate && <Loader />}
+        {errorUpdate && <Message variant="danger">{errorUpdate}</Message>}
 
-                            <Form.Group controlId='name'>
-                                <Form.Label>Name</Form.Label>
-                                <Form.Control
+        {loading ? (
+          <Loader />
+        ) : error ? (
+          <Message variant="danger">{error}</Message>
+        ) : (
+          <Form onSubmit={submitHandler}>
+            <Form.Group controlId="name">
+              <Form.Label>Name</Form.Label>
+              <Form.Control
+                type="name"
+                placeholder="Enter name"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+              ></Form.Control>
+            </Form.Group>
 
-                                    type='name'
-                                    placeholder='Enter name'
-                                    value={name}
-                                    onChange={(e) => setName(e.target.value)}
-                                >
-                                </Form.Control>
-                            </Form.Group>
+            <Form.Group controlId="email">
+              <Form.Label>Email Address</Form.Label>
+              <Form.Control
+                type="email"
+                placeholder="Enter Email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+              ></Form.Control>
+            </Form.Group>
 
-                            <Form.Group controlId='email'>
-                                <Form.Label>Email Address</Form.Label>
-                                <Form.Control
-                                    type='email'
-                                    placeholder='Enter Email'
-                                    value={email}
-                                    onChange={(e) => setEmail(e.target.value)}
-                                >
-                                </Form.Control>
-                            </Form.Group>
+            <Form.Group controlId="isadmin">
+              <Form.Check
+                type="checkbox"
+                label="Is Admin"
+                checked={isAdmin}
+                onChange={(e) => setIsAdmin(e.target.checked)}
+              ></Form.Check>
+            </Form.Group>
 
-                            <Form.Group controlId='isadmin'>
-                                <Form.Check
-                                    type='checkbox'
-                                    label='Is Admin'
-                                    checked={isAdmin}
-                                    onChange={(e) => setIsAdmin(e.target.checked)}
-                                >
-                                </Form.Check>
-                            </Form.Group>
-
-                            <Button type='submit' variant='primary'>
-                                Update
-                        </Button>
-
-                        </Form>
-                    )}
-
-            </FormContainer >
-        </div>
-
-    )
+            <Button type="submit" variant="primary">
+              Update
+            </Button>
+          </Form>
+        )}
+      </FormContainer>
+    </div>
+  );
 }
 
-export default UserEditScreen
+export default UserEditScreen;
 ```
 
 ## step 39 admin update product list
+
 1. create ProductListScreen.jsx, copy from userlistscreen.jsx
+
 ```jsx
-import React, { useState, useEffect } from 'react'
-import { LinkContainer } from 'react-router-bootstrap'
-import { Table, Button, Row, Col } from 'react-bootstrap'
-import { useDispatch, useSelector } from 'react-redux'
-import Loader from '../components/Loader'
-import Message from '../components/Message'
-import { useNavigate, useParams } from 'react-router-dom'
-import { listProducts} from '../actions/productActions'
-import { PRODUCT_CREATE_RESET } from '../constants/productConstants'
+import React, { useState, useEffect } from "react";
+import { LinkContainer } from "react-router-bootstrap";
+import { Table, Button, Row, Col } from "react-bootstrap";
+import { useDispatch, useSelector } from "react-redux";
+import Loader from "../components/Loader";
+import Message from "../components/Message";
+import { useNavigate, useParams } from "react-router-dom";
+import { listProducts } from "../actions/productActions";
+import { PRODUCT_CREATE_RESET } from "../constants/productConstants";
 
 function ProductListScreen() {
-    const navigate = useNavigate()
-    const productId = useParams().id
-    const dispatch = useDispatch()
+  const navigate = useNavigate();
+  const productId = useParams().id;
+  const dispatch = useDispatch();
 
-    const productList = useSelector(state => state.productList)
-    const { loading, error, products } = productList
+  const productList = useSelector((state) => state.productList);
+  const { loading, error, products } = productList;
 
+  const userLogin = useSelector((state) => state.userLogin);
+  const { userInfo } = userLogin;
 
-    const userLogin = useSelector(state => state.userLogin)
-    const { userInfo } = userLogin
-
-    useEffect(() => {
-
-        if (userInfo && userInfo.isAdmin) {
-            dispatch(listProducts())}
-        else {
-            navigate('/login')
-        }
-
-    }, [dispatch, navigate, userInfo])
-
-    const deleteHandler = (id) => {
-
-        if (window.confirm('Are you sure you want to delete this product?')) {
-            // dispatch(deleteProduct(id))
-        }
+  useEffect(() => {
+    if (userInfo && userInfo.isAdmin) {
+      dispatch(listProducts());
+    } else {
+      navigate("/login");
     }
+  }, [dispatch, navigate, userInfo]);
 
-    const createProductHandler = () => {
-        // dispatch({ type: PRODUCT_CREATE_RESET })
-        // navigate('/admin/product/create')
+  const deleteHandler = (id) => {
+    if (window.confirm("Are you sure you want to delete this product?")) {
+      // dispatch(deleteProduct(id))
     }
+  };
 
-    return (
+  const createProductHandler = () => {
+    // dispatch({ type: PRODUCT_CREATE_RESET })
+    // navigate('/admin/product/create')
+  };
+
+  return (
+    <div>
+      <Row className="align-items-center">
+        <Col>
+          <h1>Products</h1>
+        </Col>
+
+        <Col className="text-right">
+          <Button className="my-3" onClick={createProductHandler}>
+            <i className="fas fa-plus"></i> Create Product
+          </Button>
+        </Col>
+      </Row>
+
+      {loading ? (
+        <Loader />
+      ) : error ? (
+        <Message variant="danger">{error}</Message>
+      ) : (
         <div>
-            <Row className='align-items-center'>
-                <Col>
-                    <h1>Products</h1>
-                </Col>
+          <Table striped bordered hover responsive className="table-sm">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>NAME</th>
+                <th>PRICE</th>
+                <th>CATEGORY</th>
+                <th>BRAND</th>
+                <th></th>
+              </tr>
+            </thead>
 
-                <Col className='text-right'>
-                    <Button className='my-3' onClick={createProductHandler}>
-                        <i className='fas fa-plus'></i> Create Product
+            <tbody>
+              {products.map((product) => (
+                <tr key={product._id}>
+                  <td>{product._id}</td>
+                  <td>{product.name}</td>
+                  <td>${product.price}</td>
+                  <td>{product.category}</td>
+                  <td>{product.brand}</td>
+
+                  <td>
+                    <LinkContainer to={`/admin/product/${product._id}/edit`}>
+                      <Button variant="light" className="btn-sm">
+                        <i className="fas fa-edit"></i>
+                      </Button>
+                    </LinkContainer>
+
+                    <Button
+                      variant="danger"
+                      className="btn-sm"
+                      onClick={() => deleteHandler(product._id)}
+                    >
+                      <i className="fas fa-trash"></i>
                     </Button>
-                </Col>
-            </Row>
-
-            {loading
-                ? (<Loader />)
-                : error
-                    ? (<Message variant='danger'>{error}</Message>)
-                    : (
-                        <div>
-                            <Table striped bordered hover responsive className='table-sm'>
-                                <thead>
-                                    <tr>
-                                        <th>ID</th>
-                                        <th>NAME</th>
-                                        <th>PRICE</th>
-                                        <th>CATEGORY</th>
-                                        <th>BRAND</th>
-                                        <th></th>
-                                    </tr>
-                                </thead>
-
-                                <tbody>
-                                    {products.map(product => (
-                                        <tr key={product._id}>
-                                            <td>{product._id}</td>
-                                            <td>{product.name}</td>
-                                            <td>${product.price}</td>
-                                            <td>{product.category}</td>
-                                            <td>{product.brand}</td>
-
-                                            <td>
-                                                <LinkContainer to={`/admin/product/${product._id}/edit`}>
-                                                    <Button variant='light' className='btn-sm'>
-                                                        <i className='fas fa-edit'></i>
-                                                    </Button>
-                                                </LinkContainer>
-
-                                                <Button variant='danger' className='btn-sm' onClick={() => deleteHandler(product._id)}>
-                                                    <i className='fas fa-trash'></i>
-                                                </Button>
-                                            </td>
-                                        </tr>
-                                    ))}
-                                </tbody>
-                            </Table>
-                          
-                        </div>
-                    )}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </Table>
         </div>
-    )
+      )}
+    </div>
+  );
 }
 
-export default ProductListScreen
+export default ProductListScreen;
 ```
+
 2. create delete product and create product function, back to backend, product_views.py
+
 ```py
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
@@ -14459,7 +14973,9 @@ def deleteProduct(request, pk):
 
 
 ```
+
 3. update product_urls.py
+
 ```py
 from django.urls import path
 from base.views import product_views as views
@@ -14469,10 +14985,12 @@ urlpatterns = [
     path('', views.getProducts, name="products"),
     path('<str:pk>/', views.getProduct, name="product"),
     path('delete/<str:pk>/', views.deleteProduct, name="product-delete"),
-   
+
 ]
 ```
+
 4. back to frontend, update the productConstants.js
+
 ```js
 export const PRODUCT_LIST_REQUEST = "PRODUCT_LIST_REQUEST";
 export const PRODUCT_LIST_SUCCESS = "PRODUCT_LIST_SUCCESS";
@@ -14482,73 +15000,105 @@ export const PRODUCT_DETAILS_REQUEST = "PRODUCT_DETAILS_REQUEST";
 export const PRODUCT_DETAILS_SUCCESS = "PRODUCT_DETAILS_SUCCESS";
 export const PRODUCT_DETAILS_FAIL = "PRODUCT_DETAILS_FAIL";
 
-export const PRODUCT_DELETE_REQUEST = 'PRODUCT_DELETE_REQUEST'
-export const PRODUCT_DELETE_SUCCESS = 'PRODUCT_DELETE_SUCCESS'
-export const PRODUCT_DELETE_FAIL = 'PRODUCT_DELETE_FAIL'
+export const PRODUCT_DELETE_REQUEST = "PRODUCT_DELETE_REQUEST";
+export const PRODUCT_DELETE_SUCCESS = "PRODUCT_DELETE_SUCCESS";
+export const PRODUCT_DELETE_FAIL = "PRODUCT_DELETE_FAIL";
 ```
+
 5. update productreducers.js
+
 ```js
-import {PRODUCT_LIST_REQUEST, PRODUCT_LIST_SUCCESS, PRODUCT_LIST_FAIL, PRODUCT_DETAILS_REQUEST, PRODUCT_DETAILS_SUCCESS, PRODUCT_DETAILS_FAIL , PRODUCT_DELETE_REQUEST,
-    PRODUCT_DELETE_SUCCESS,
-    PRODUCT_DELETE_FAIL,} from "../constants/productConstants";
-export const productReducer = (state ={ products:[]}, action) => {
-    switch (action.type) {
-        case PRODUCT_LIST_REQUEST:
-            return {loading: true, products: []};
-        case PRODUCT_LIST_SUCCESS:
-            return {loading: false, products: action.payload};
-        case PRODUCT_LIST_FAIL:
-            return {loading: false, error: action.payload};
-        default:
-            return state;
-    }
+import {
+  PRODUCT_LIST_REQUEST,
+  PRODUCT_LIST_SUCCESS,
+  PRODUCT_LIST_FAIL,
+  PRODUCT_DETAILS_REQUEST,
+  PRODUCT_DETAILS_SUCCESS,
+  PRODUCT_DETAILS_FAIL,
+  PRODUCT_DELETE_REQUEST,
+  PRODUCT_DELETE_SUCCESS,
+  PRODUCT_DELETE_FAIL,
+} from "../constants/productConstants";
+export const productReducer = (state = { products: [] }, action) => {
+  switch (action.type) {
+    case PRODUCT_LIST_REQUEST:
+      return { loading: true, products: [] };
+    case PRODUCT_LIST_SUCCESS:
+      return { loading: false, products: action.payload };
+    case PRODUCT_LIST_FAIL:
+      return { loading: false, error: action.payload };
+    default:
+      return state;
+  }
 };
 
-export const productDetailsReducer = (state ={ product: {reviews: []}}, action) => {
-    switch (action.type) {
-        case PRODUCT_DETAILS_REQUEST:
-            return {loading: true, ...state};
-        case PRODUCT_DETAILS_SUCCESS:
-            return {loading: false, product: action.payload};
-        case PRODUCT_DETAILS_FAIL:
-            return {loading: false, error: action.payload};
-        default:
-            return state;
-    }
+export const productDetailsReducer = (
+  state = { product: { reviews: [] } },
+  action,
+) => {
+  switch (action.type) {
+    case PRODUCT_DETAILS_REQUEST:
+      return { loading: true, ...state };
+    case PRODUCT_DETAILS_SUCCESS:
+      return { loading: false, product: action.payload };
+    case PRODUCT_DETAILS_FAIL:
+      return { loading: false, error: action.payload };
+    default:
+      return state;
+  }
 };
 export const productDeleteReducer = (state = {}, action) => {
-    switch (action.type) {
-        case PRODUCT_DELETE_REQUEST:
-            return { loading: true }
+  switch (action.type) {
+    case PRODUCT_DELETE_REQUEST:
+      return { loading: true };
 
-        case PRODUCT_DELETE_SUCCESS:
-            return { loading: false, success: true }
+    case PRODUCT_DELETE_SUCCESS:
+      return { loading: false, success: true };
 
-        case PRODUCT_DELETE_FAIL:
-            return { loading: false, error: action.payload }
+    case PRODUCT_DELETE_FAIL:
+      return { loading: false, error: action.payload };
 
-        default:
-            return state
-    }
-}
+    default:
+      return state;
+  }
+};
 ```
+
 6. update the store.js
+
 ```js
-import { configureStore } from '@reduxjs/toolkit';
-import { productReducer, productDetailsReducer, productDeleteReducer} from "./reducers/productReducers"; // import
-import {cartReducer} from "./reducers/cartReducers";
-import { userLoginReducer, userRegisterReducer, userDetailsReducer, userUpdateProfileReducer, userListReducer, userDeleteReducer, userUpdateReducer } from './reducers/userReducers';
-import { orderCreateReducer, orderDetailsReducer, orderPayReducer, orderListMyReducer } from './reducers/orderReducers';
-const cartItemsFromStorage = localStorage.getItem('cartItems')
-  ? JSON.parse(localStorage.getItem('cartItems'))
+import { configureStore } from "@reduxjs/toolkit";
+import {
+  productReducer,
+  productDetailsReducer,
+  productDeleteReducer,
+} from "./reducers/productReducers"; // import
+import { cartReducer } from "./reducers/cartReducers";
+import {
+  userLoginReducer,
+  userRegisterReducer,
+  userDetailsReducer,
+  userUpdateProfileReducer,
+  userListReducer,
+  userDeleteReducer,
+  userUpdateReducer,
+} from "./reducers/userReducers";
+import {
+  orderCreateReducer,
+  orderDetailsReducer,
+  orderPayReducer,
+  orderListMyReducer,
+} from "./reducers/orderReducers";
+const cartItemsFromStorage = localStorage.getItem("cartItems")
+  ? JSON.parse(localStorage.getItem("cartItems"))
   : [];
-const userInfoFromStorage = localStorage.getItem('userInfo')
-  ? JSON.parse(localStorage.getItem('userInfo'))
+const userInfoFromStorage = localStorage.getItem("userInfo")
+  ? JSON.parse(localStorage.getItem("userInfo"))
   : null;
- 
-const shippingAddressFromStorage = localStorage.getItem('shippingAddress')
-  ? JSON.parse(localStorage.getItem('shippingAddress'))
-  : {};  
+
+const shippingAddressFromStorage = localStorage.getItem("shippingAddress")
+  ? JSON.parse(localStorage.getItem("shippingAddress"))
+  : {};
 // 👇 初始化 Redux 状态
 const preloadedState = {
   cart: {
@@ -14558,222 +15108,245 @@ const preloadedState = {
   userLogin: {
     userInfo: userInfoFromStorage, // 给 userLogin reducer 赋值
   },
-  
 };
 
 export const store = configureStore({
   reducer: {
-      productList: productReducer,
-      productDetails: productDetailsReducer,
-      cart: cartReducer,
-      userLogin: userLoginReducer,
-      userRegister: userRegisterReducer,
-      userDetails: userDetailsReducer,
-      userUpdateProfile: userUpdateProfileReducer,
-     userList: userListReducer, 
-      orderCreate: orderCreateReducer,
-      orderDetails: orderDetailsReducer,
-      orderPay: orderPayReducer,
-      orderListMy: orderListMyReducer,
-      userDelete: userDeleteReducer,
-      userUpdate: userUpdateReducer,
-      productDelete: productDeleteReducer
+    productList: productReducer,
+    productDetails: productDetailsReducer,
+    cart: cartReducer,
+    userLogin: userLoginReducer,
+    userRegister: userRegisterReducer,
+    userDetails: userDetailsReducer,
+    userUpdateProfile: userUpdateProfileReducer,
+    userList: userListReducer,
+    orderCreate: orderCreateReducer,
+    orderDetails: orderDetailsReducer,
+    orderPay: orderPayReducer,
+    orderListMy: orderListMyReducer,
+    userDelete: userDeleteReducer,
+    userUpdate: userUpdateReducer,
+    productDelete: productDeleteReducer,
   },
   // ✅ Thunk + DevTools ARE AUTO INCLUDED — NO SETUP NEEDED!
-  preloadedState : preloadedState,
-  middleware: (getDefaultMiddleware) => getDefaultMiddleware({ serializableCheck: false, immutableCheck: false, })
+  preloadedState: preloadedState,
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware({ serializableCheck: false, immutableCheck: false }),
 });
 
 export default store;
-
 ```
+
 7. update productactions.js
+
 ```js
-import {PRODUCT_LIST_REQUEST, PRODUCT_LIST_SUCCESS, PRODUCT_LIST_FAIL, PRODUCT_DETAILS_REQUEST, PRODUCT_DETAILS_SUCCESS, PRODUCT_DETAILS_FAIL, PRODUCT_DELETE_REQUEST, PRODUCT_DELETE_SUCCESS, PRODUCT_DELETE_FAIL} from "../constants/productConstants";
+import {
+  PRODUCT_LIST_REQUEST,
+  PRODUCT_LIST_SUCCESS,
+  PRODUCT_LIST_FAIL,
+  PRODUCT_DETAILS_REQUEST,
+  PRODUCT_DETAILS_SUCCESS,
+  PRODUCT_DETAILS_FAIL,
+  PRODUCT_DELETE_REQUEST,
+  PRODUCT_DELETE_SUCCESS,
+  PRODUCT_DELETE_FAIL,
+} from "../constants/productConstants";
 import axios from "axios";
 export const listProducts = () => async (dispatch) => {
-    try {
-            dispatch({ type: PRODUCT_LIST_REQUEST }); 
-            const { data } = await axios.get("/api/products");
-            dispatch({ type: PRODUCT_LIST_SUCCESS, payload: data });
-    } catch (error) {
-            dispatch({ type: PRODUCT_LIST_FAIL, 
-            payload: error.response && error.response.data.detail ? error.response.data.detail : error.message });
-    }
-}
+  try {
+    dispatch({ type: PRODUCT_LIST_REQUEST });
+    const { data } = await axios.get("/api/products");
+    dispatch({ type: PRODUCT_LIST_SUCCESS, payload: data });
+  } catch (error) {
+    dispatch({
+      type: PRODUCT_LIST_FAIL,
+      payload:
+        error.response && error.response.data.detail
+          ? error.response.data.detail
+          : error.message,
+    });
+  }
+};
 
 export const listProductDetails = (id) => async (dispatch) => {
-    try {
-            dispatch({ type: PRODUCT_DETAILS_REQUEST }); 
-            const { data } = await axios.get(`/api/products/${id}`);
-            dispatch({ type: PRODUCT_DETAILS_SUCCESS, payload: data });
-    } catch (error) {
-            dispatch({ type: PRODUCT_DETAILS_FAIL, 
-            payload: error.response && error.response.data.detail ? error.response.data.detail : error.message });
-    }
-}
+  try {
+    dispatch({ type: PRODUCT_DETAILS_REQUEST });
+    const { data } = await axios.get(`/api/products/${id}`);
+    dispatch({ type: PRODUCT_DETAILS_SUCCESS, payload: data });
+  } catch (error) {
+    dispatch({
+      type: PRODUCT_DETAILS_FAIL,
+      payload:
+        error.response && error.response.data.detail
+          ? error.response.data.detail
+          : error.message,
+    });
+  }
+};
 
 export const deleteProduct = (id) => async (dispatch, getState) => {
-    try {
-        dispatch({
-            type: PRODUCT_DELETE_REQUEST
-        })
+  try {
+    dispatch({
+      type: PRODUCT_DELETE_REQUEST,
+    });
 
-        const {
-            userLogin: { userInfo },
-        } = getState()
+    const {
+      userLogin: { userInfo },
+    } = getState();
 
-        const config = {
-            headers: {
-                'Content-type': 'application/json',
-                Authorization: `Bearer ${userInfo.token}`
-            }
-        }
+    const config = {
+      headers: {
+        "Content-type": "application/json",
+        Authorization: `Bearer ${userInfo.token}`,
+      },
+    };
 
-        const { data } = await axios.delete(
-            `/api/products/delete/${id}/`,
-            config
-        )
+    const { data } = await axios.delete(`/api/products/delete/${id}/`, config);
 
-        dispatch({
-            type: PRODUCT_DELETE_SUCCESS,
-        })
-
-
-    } catch (error) {
-        dispatch({
-            type: PRODUCT_DELETE_FAIL,
-            payload: error.response && error.response.data.detail
-                ? error.response.data.detail
-                : error.message,
-        })
-    }
-}
-
+    dispatch({
+      type: PRODUCT_DELETE_SUCCESS,
+    });
+  } catch (error) {
+    dispatch({
+      type: PRODUCT_DELETE_FAIL,
+      payload:
+        error.response && error.response.data.detail
+          ? error.response.data.detail
+          : error.message,
+    });
+  }
+};
 ```
+
 8. update productlistscreen.jsx
+
 ```jsx
-import React, { useState, useEffect } from 'react'
-import { LinkContainer } from 'react-router-bootstrap'
-import { Table, Button, Row, Col } from 'react-bootstrap'
-import { useDispatch, useSelector } from 'react-redux'
-import Loader from '../components/Loader'
-import Message from '../components/Message'
-import { useNavigate, useParams } from 'react-router-dom'
-import { listProducts, deleteProduct} from '../actions/productActions'
-import { PRODUCT_CREATE_RESET } from '../constants/productConstants'
+import React, { useState, useEffect } from "react";
+import { LinkContainer } from "react-router-bootstrap";
+import { Table, Button, Row, Col } from "react-bootstrap";
+import { useDispatch, useSelector } from "react-redux";
+import Loader from "../components/Loader";
+import Message from "../components/Message";
+import { useNavigate, useParams } from "react-router-dom";
+import { listProducts, deleteProduct } from "../actions/productActions";
+import { PRODUCT_CREATE_RESET } from "../constants/productConstants";
 
 function ProductListScreen() {
-    const navigate = useNavigate()
-    const productId = useParams().id
-    const dispatch = useDispatch()
+  const navigate = useNavigate();
+  const productId = useParams().id;
+  const dispatch = useDispatch();
 
-    const productList = useSelector(state => state.productList)
-    const { loading, error, products } = productList
+  const productList = useSelector((state) => state.productList);
+  const { loading, error, products } = productList;
 
-    const productDelete = useSelector(state => state.productDelete)
-    const { loading: loadingDelete, error: errorDelete, success: successDelete } = productDelete
+  const productDelete = useSelector((state) => state.productDelete);
+  const {
+    loading: loadingDelete,
+    error: errorDelete,
+    success: successDelete,
+  } = productDelete;
 
-    const userLogin = useSelector(state => state.userLogin)
-    const { userInfo } = userLogin
+  const userLogin = useSelector((state) => state.userLogin);
+  const { userInfo } = userLogin;
 
-    useEffect(() => {
-
-        if (userInfo && userInfo.isAdmin) {
-            dispatch(listProducts())}
-        else {
-            navigate('/login')
-        }
-
-    }, [dispatch, navigate, userInfo, successDelete])
-
-    const deleteHandler = (id) => {
-
-        if (window.confirm('Are you sure you want to delete this product?')) {
-            dispatch(deleteProduct(id))
-        }
+  useEffect(() => {
+    if (userInfo && userInfo.isAdmin) {
+      dispatch(listProducts());
+    } else {
+      navigate("/login");
     }
+  }, [dispatch, navigate, userInfo, successDelete]);
 
-    const createProductHandler = () => {
-        // dispatch({ type: PRODUCT_CREATE_RESET })
-        // navigate('/admin/product/create')
+  const deleteHandler = (id) => {
+    if (window.confirm("Are you sure you want to delete this product?")) {
+      dispatch(deleteProduct(id));
     }
+  };
 
-    return (
-        <div>
-            <Row className='align-items-center'>
-                <Col>
-                    <h1>Products</h1>
-                </Col>
+  const createProductHandler = () => {
+    // dispatch({ type: PRODUCT_CREATE_RESET })
+    // navigate('/admin/product/create')
+  };
 
-                <Col className='text-right'>
-                    <Button className='my-3' onClick={createProductHandler}>
-                        <i className='fas fa-plus'></i> Create Product
-                    </Button>
-                </Col>
-            </Row>
+  return (
+    <div>
+      <Row className="align-items-center">
+        <Col>
+          <h1>Products</h1>
+        </Col>
 
-             {loadingDelete && <Loader />}
-            {errorDelete && <Message variant='danger'>{errorDelete}</Message>}
+        <Col className="text-right">
+          <Button className="my-3" onClick={createProductHandler}>
+            <i className="fas fa-plus"></i> Create Product
+          </Button>
+        </Col>
+      </Row>
 
+      {loadingDelete && <Loader />}
+      {errorDelete && <Message variant="danger">{errorDelete}</Message>}
 
-            {/* {loadingCreate && <Loader />}
+      {/* {loadingCreate && <Loader />}
             {errorCreate && <Message variant='danger'>{errorCreate}</Message>}  */}
 
-            {loading
-                ? (<Loader />)
-                : error
-                    ? (<Message variant='danger'>{error}</Message>)
-                    : (
-                        <div>
-                            <Table striped bordered hover responsive className='table-sm'>
-                                <thead>
-                                    <tr>
-                                        <th>ID</th>
-                                        <th>NAME</th>
-                                        <th>PRICE</th>
-                                        <th>CATEGORY</th>
-                                        <th>BRAND</th>
-                                        <th></th>
-                                    </tr>
-                                </thead>
+      {loading ? (
+        <Loader />
+      ) : error ? (
+        <Message variant="danger">{error}</Message>
+      ) : (
+        <div>
+          <Table striped bordered hover responsive className="table-sm">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>NAME</th>
+                <th>PRICE</th>
+                <th>CATEGORY</th>
+                <th>BRAND</th>
+                <th></th>
+              </tr>
+            </thead>
 
-                                <tbody>
-                                    {products.map(product => (
-                                        <tr key={product._id}>
-                                            <td>{product._id}</td>
-                                            <td>{product.name}</td>
-                                            <td>${product.price}</td>
-                                            <td>{product.category}</td>
-                                            <td>{product.brand}</td>
+            <tbody>
+              {products.map((product) => (
+                <tr key={product._id}>
+                  <td>{product._id}</td>
+                  <td>{product.name}</td>
+                  <td>${product.price}</td>
+                  <td>{product.category}</td>
+                  <td>{product.brand}</td>
 
-                                            <td>
-                                                <LinkContainer to={`/admin/product/${product._id}/edit`}>
-                                                    <Button variant='light' className='btn-sm'>
-                                                        <i className='fas fa-edit'></i>
-                                                    </Button>
-                                                </LinkContainer>
+                  <td>
+                    <LinkContainer to={`/admin/product/${product._id}/edit`}>
+                      <Button variant="light" className="btn-sm">
+                        <i className="fas fa-edit"></i>
+                      </Button>
+                    </LinkContainer>
 
-                                                <Button variant='danger' className='btn-sm' onClick={() => deleteHandler(product._id)}>
-                                                    <i className='fas fa-trash'></i>
-                                                </Button>
-                                            </td>
-                                        </tr>
-                                    ))}
-                                </tbody>
-                            </Table>
-                          
-                        </div>
-                    )}
+                    <Button
+                      variant="danger"
+                      className="btn-sm"
+                      onClick={() => deleteHandler(product._id)}
+                    >
+                      <i className="fas fa-trash"></i>
+                    </Button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </Table>
         </div>
-    )
+      )}
+    </div>
+  );
 }
 
-export default ProductListScreen
+export default ProductListScreen;
 ```
 
 ## step 40 create/edit product
+
 1. backend create endpoint, product_views.py
+
 ```py
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
@@ -14821,30 +15394,34 @@ def createProduct(request):
 
 
 ```
+
 2. update product_urls.py
+
 ```py
 from django.urls import path
 from base.views import product_views as views
 
 urlpatterns = [
 
-    
-     path('create/', views.createProduct, name="product-create"), 
-    
+
+     path('create/', views.createProduct, name="product-create"),
+
     path('<str:pk>/', views.getProduct, name="product"),
     path('delete/<str:pk>/', views.deleteProduct, name="product-delete"),
     path('', views.getProducts, name="products"),
 ]
 ```
+
 # 🎯 **SUPER CLEAR ANSWER: YES — URL ORDER MATTERS IN DJANGO !!!**
 
 # ✅ **FIX: PUT STATIC URLS FIRST — DYNAMIC PK LAST**
+
 This is the **correct order**:
 
 ```python
 urlpatterns = [
     # STATIC ROUTES FIRST
-    path('create/', views.createProduct, name="product-create"), 
+    path('create/', views.createProduct, name="product-create"),
     path('delete/<str:pk>/', views.deleteProduct, name="product-delete"),
 
     # DYNAMIC ROUTE LAST
@@ -14858,8 +15435,11 @@ urlpatterns = [
 ---
 
 # 🎯 **RULE YOU MUST REMEMBER**
+
 ### Django checks URLs **TOP TO BOTTOM**
+
 ### **ALWAYS PUT:**
+
 1. **Static routes** (`create/`, `delete/`) **FIRST**
 2. **Dynamic routes** (`<str:pk>/`) **LAST**
 
@@ -14868,6 +15448,7 @@ If you put `<str:pk>/` first — **it eats all other URLs.**
 ---
 
 # ✅ **YOUR FINAL 100% CORRECT URLs.PY**
+
 ```python
 from django.urls import path
 from base.views import product_views as views
@@ -14883,6 +15464,7 @@ urlpatterns = [
 ---
 
 # 🚀 **NOW ALL URLS WORK PERFECTLY**
+
 - `/api/products/` → list
 - `/api/products/123/` → single
 - `/api/products/create/` → create
@@ -14892,11 +15474,15 @@ urlpatterns = [
 Everything now works 100% 🎉🔥
 
 # 🎯 **Super clear answer: Because `''` = THE ROOT / CATCH-ALL**
+
 ## #1: What does `''` mean?
+
 ```python
 path('', views.getProducts, name="products"),
 ```
+
 In Django:
+
 - `''` = **empty string**
 - It matches the **base URL** of this group
 - For you: `/api/products/`
@@ -14904,12 +15490,16 @@ In Django:
 ---
 
 ## #2: Django checks URLs **TOP TO BOTTOM**
+
 If you put `''` **FIRST**:
+
 ```python
 path('', ...),   # ❌ FIRST
 path('create/', ...),
 ```
+
 Django will **MATCH `''` FIRST** for **every request**
+
 - `/api/products/` → matches
 - `/api/products/create/` → **ALSO MATCHES `''`**
 - `/api/products/123/` → **ALSO MATCHES `''`**
@@ -14919,13 +15509,16 @@ It **never looks at the other routes** — they are **ignored**.
 ---
 
 ## #3: So `''` MUST BE **LAST**
+
 ```python
 path('create/', ...),
 path('delete/<pk>/', ...),
 path('<pk>/', ...),
 path('', ...),   # ✅ LAST
 ```
+
 This way:
+
 1. First check for `create/`
 2. Then check for `delete/`
 3. Then check for single product `<pk>/`
@@ -14934,15 +15527,19 @@ This way:
 ---
 
 # 🚀 **THE GOLDEN RULE FOR DJANGO URLS**
+
 ## **ORDER = FROM MOST SPECIFIC → LEAST SPECIFIC**
+
 1. **Specific static paths** → `/create/`, `/delete/`
 2. **Dynamic paths** → `/123/`
 3. **Root path** → `''`
 
 # Short version:
+
 **`''` matches everything if you put it first — so it must be last.**
 
 3. we need a placeholder img for the product, add `placeholder.png` to static folder
+
 ```py models.py
 from django.db import models
 
@@ -14964,21 +15561,21 @@ class Product(models.Model):
 
     def __str__(self):
         return self.name
-    
+
 class Review(models.Model):
     product = models.ForeignKey(Product, on_delete=models.SET_NULL, null=True)
     user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
     name = models.CharField(max_length=200, null=True, blank=True)
     rating = models.IntegerField(null=True, blank=True, default=0)
     comment = models.TextField(null=True, blank=True)
-    _id = models.AutoField(primary_key=True, editable=False)    
+    _id = models.AutoField(primary_key=True, editable=False)
 
     def __str__(self):
-        return str(self.rating)    
-    
+        return str(self.rating)
+
 class Order(models.Model):
     user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
-    paymentMethod = models.CharField(max_length=200, null=True, blank=True)    
+    paymentMethod = models.CharField(max_length=200, null=True, blank=True)
     taxPrice = models.DecimalField(max_digits=7, decimal_places=2, null=True, blank=True)
     shippingPrice = models.DecimalField(max_digits=7, decimal_places=2, null=True, blank=True)
     totalPrice = models.DecimalField(max_digits=7, decimal_places=2, null=True, blank=True)
@@ -14988,37 +15585,39 @@ class Order(models.Model):
     deliveredAt = models.DateTimeField(
         auto_now_add=False, null=True, blank=True)
     createdAt = models.DateTimeField(auto_now_add=True)
-    _id = models.AutoField(primary_key=True, editable=False)                
+    _id = models.AutoField(primary_key=True, editable=False)
 
     def __str__(self):
-        return str(self.createdAt)    
-    
+        return str(self.createdAt)
+
 class OrderItem(models.Model):
     product = models.ForeignKey(Product, on_delete=models.SET_NULL, null=True)
     order = models.ForeignKey(Order, on_delete=models.SET_NULL, null=True)
     name = models.CharField(max_length=200, null=True, blank=True)
-    qty = models.IntegerField(null=True, blank=True, default=0)    
+    qty = models.IntegerField(null=True, blank=True, default=0)
     price = models.DecimalField(max_digits=7, decimal_places=2, null=True, blank=True)
     image = models.CharField(max_length=200, null=True, blank=True)
     _id = models.AutoField(primary_key=True, editable=False)
 
     def __str__(self):
-        return str(self.name)       
-    
+        return str(self.name)
+
 class ShippingAddress(models.Model):
     order = models.OneToOneField(Order, on_delete=models.CASCADE, null=True)
     address = models.CharField(max_length=200, null=True, blank=True)
     city = models.CharField(max_length=200, null=True, blank=True)
-    postalCode = models.CharField(max_length=200, null=True, blank=True)    
+    postalCode = models.CharField(max_length=200, null=True, blank=True)
     country = models.CharField(max_length=200, null=True, blank=True)
     shippingPrice = models.DecimalField(max_digits=7, decimal_places=2, null=True, blank=True)
     _id = models.AutoField(primary_key=True, editable=False)
 
-    def __str__(self):        
-        return str(self.address)        
+    def __str__(self):
+        return str(self.address)
 ```
+
 4. `make migrations and migrate`
 5. add update view inside product_views.py
+
 ```py
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
@@ -15084,250 +15683,236 @@ def updateProduct(request, pk):
     return Response(serializer.data)
 
 ```
+
 6. add url into product_urls.py
+
 ```py
 from django.urls import path
 from base.views import product_views as views
 
 urlpatterns = [
 
-    
-     path('create/', views.createProduct, name="product-create"), 
-    
+
+     path('create/', views.createProduct, name="product-create"),
+
     path('update/<str:pk>/', views.updateProduct, name="product-update"),
     path('delete/<str:pk>/', views.deleteProduct, name="product-delete"),
     path('<str:pk>/', views.getProduct, name="product"),
     path('', views.getProducts, name="products"),
 ]
 ```
-7. go to frontend, create ProductEditScreen.jsx
-```jsx
-import React, { useState, useEffect } from 'react'
-import axios from 'axios'
-import { Link } from 'react-router-dom'
-import { Form, Button } from 'react-bootstrap'
-import { useDispatch, useSelector } from 'react-redux'
-import { useParams, useNavigate } from 'react-router-dom'
-import Loader from '../components/Loader'
-import Message from '../components/Message'
-import FormContainer from '../components/FormContainer'
-import { listProductDetails, updateProduct } from '../actions/productActions'
-import { PRODUCT_UPDATE_RESET } from '../constants/productConstants'
 
+7. go to frontend, create ProductEditScreen.jsx
+
+```jsx
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+import { Link } from "react-router-dom";
+import { Form, Button } from "react-bootstrap";
+import { useDispatch, useSelector } from "react-redux";
+import { useParams, useNavigate } from "react-router-dom";
+import Loader from "../components/Loader";
+import Message from "../components/Message";
+import FormContainer from "../components/FormContainer";
+import { listProductDetails, updateProduct } from "../actions/productActions";
+import { PRODUCT_UPDATE_RESET } from "../constants/productConstants";
 
 function ProductEditScreen() {
+  const productId = useParams().id;
+  const navigate = useNavigate();
+  const [name, setName] = useState("");
+  const [price, setPrice] = useState(0);
+  const [image, setImage] = useState("");
+  const [brand, setBrand] = useState("");
+  const [category, setCategory] = useState("");
+  const [countInStock, setCountInStock] = useState(0);
+  const [description, setDescription] = useState("");
+  const [uploading, setUploading] = useState(false);
 
-    const productId = useParams().id
-    const navigate = useNavigate()
-    const [name, setName] = useState('')
-    const [price, setPrice] = useState(0)
-    const [image, setImage] = useState('')
-    const [brand, setBrand] = useState('')
-    const [category, setCategory] = useState('')
-    const [countInStock, setCountInStock] = useState(0)
-    const [description, setDescription] = useState('')
-    const [uploading, setUploading] = useState(false)
+  const dispatch = useDispatch();
 
-    const dispatch = useDispatch()
+  const productDetails = useSelector((state) => state.productDetails);
+  const { error, loading, product } = productDetails;
 
-    const productDetails = useSelector(state => state.productDetails)
-    const { error, loading, product } = productDetails
+  const productUpdate = useSelector((state) => state.productUpdate);
+  const {
+    error: errorUpdate,
+    loading: loadingUpdate,
+    success: successUpdate,
+  } = productUpdate;
 
-    const productUpdate = useSelector(state => state.productUpdate)
-    const { error: errorUpdate, loading: loadingUpdate, success: successUpdate } = productUpdate
-
-
-    useEffect(() => {
-
-        if (successUpdate) {
-            dispatch({ type: PRODUCT_UPDATE_RESET })
-            navigate('/admin/productlist')
-        } else {
-            if (!product.name || product._id !== Number(productId)) {
-                dispatch(listProductDetails(productId))
-            } else {
-                setName(product.name)
-                setPrice(product.price)
-                setImage(product.image)
-                setBrand(product.brand)
-                setCategory(product.category)
-                setCountInStock(product.countInStock)
-                setDescription(product.description)
-
-            }
-        }
-
-    }, [dispatch, product, productId, navigate, successUpdate])
-
-    const submitHandler = (e) => {
-        e.preventDefault()
-        dispatch(updateProduct({
-            _id: productId,
-            name,
-            price,
-            image,
-            brand,
-            category,
-            countInStock,
-            description
-        }))
+  useEffect(() => {
+    if (successUpdate) {
+      dispatch({ type: PRODUCT_UPDATE_RESET });
+      navigate("/admin/productlist");
+    } else {
+      if (!product.name || product._id !== Number(productId)) {
+        dispatch(listProductDetails(productId));
+      } else {
+        setName(product.name);
+        setPrice(product.price);
+        setImage(product.image);
+        setBrand(product.brand);
+        setCategory(product.category);
+        setCountInStock(product.countInStock);
+        setDescription(product.description);
+      }
     }
+  }, [dispatch, product, productId, navigate, successUpdate]);
 
-    const uploadFileHandler = async (e) => {
-        const file = e.target.files[0]
-        const formData = new FormData()
+  const submitHandler = (e) => {
+    e.preventDefault();
+    dispatch(
+      updateProduct({
+        _id: productId,
+        name,
+        price,
+        image,
+        brand,
+        category,
+        countInStock,
+        description,
+      }),
+    );
+  };
 
-        formData.append('image', file)
-        formData.append('product_id', productId)
+  const uploadFileHandler = async (e) => {
+    const file = e.target.files[0];
+    const formData = new FormData();
 
-        setUploading(true)
+    formData.append("image", file);
+    formData.append("product_id", productId);
 
-        try {
-            const config = {
-                headers: {
-                    'Content-Type': 'multipart/form-data'
-                }
-            }
+    setUploading(true);
 
-            const { data } = await axios.post('/api/products/upload/', formData, config)
+    try {
+      const config = {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      };
 
+      const { data } = await axios.post(
+        "/api/products/upload/",
+        formData,
+        config,
+      );
 
-            setImage(data)
-            setUploading(false)
-
-        } catch (error) {
-            setUploading(false)
-        }
+      setImage(data);
+      setUploading(false);
+    } catch (error) {
+      setUploading(false);
     }
+  };
 
-    return (
-        <div>
-            <Link to='/admin/productlist'>
-                Go Back
-            </Link>
+  return (
+    <div>
+      <Link to="/admin/productlist">Go Back</Link>
 
-            <FormContainer>
-                <h1>Edit Product</h1>
-                {loadingUpdate && <Loader />}
-                {errorUpdate && <Message variant='danger'>{errorUpdate}</Message>}
+      <FormContainer>
+        <h1>Edit Product</h1>
+        {loadingUpdate && <Loader />}
+        {errorUpdate && <Message variant="danger">{errorUpdate}</Message>}
 
-                {loading ? <Loader /> : error ? <Message variant='danger'>{error}</Message>
-                    : (
-                        <Form onSubmit={submitHandler}>
+        {loading ? (
+          <Loader />
+        ) : error ? (
+          <Message variant="danger">{error}</Message>
+        ) : (
+          <Form onSubmit={submitHandler}>
+            <Form.Group controlId="name">
+              <Form.Label>Name</Form.Label>
+              <Form.Control
+                type="name"
+                placeholder="Enter name"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+              ></Form.Control>
+            </Form.Group>
 
-                            <Form.Group controlId='name'>
-                                <Form.Label>Name</Form.Label>
-                                <Form.Control
+            <Form.Group controlId="price">
+              <Form.Label>Price</Form.Label>
+              <Form.Control
+                type="number"
+                placeholder="Enter price"
+                value={price}
+                onChange={(e) => setPrice(e.target.value)}
+              ></Form.Control>
+            </Form.Group>
 
-                                    type='name'
-                                    placeholder='Enter name'
-                                    value={name}
-                                    onChange={(e) => setName(e.target.value)}
-                                >
-                                </Form.Control>
-                            </Form.Group>
+            <Form.Group controlId="image">
+              <Form.Label>Image</Form.Label>
+              <Form.Control
+                type="text"
+                placeholder="Enter image URL"
+                value={image}
+                onChange={(e) => setImage(e.target.value)}
+              ></Form.Control>
 
-                            <Form.Group controlId='price'>
-                                <Form.Label>Price</Form.Label>
-                                <Form.Control
+              <Form.Control
+                type="file"
+                label="Choose File"
+                onChange={uploadFileHandler}
+                className="mt-2"
+              />
+              {uploading && <Loader />}
+            </Form.Group>
 
-                                    type='number'
-                                    placeholder='Enter price'
-                                    value={price}
-                                    onChange={(e) => setPrice(e.target.value)}
-                                >
-                                </Form.Control>
-                            </Form.Group>
+            <Form.Group controlId="brand">
+              <Form.Label>Brand</Form.Label>
+              <Form.Control
+                type="text"
+                placeholder="Enter brand"
+                value={brand}
+                onChange={(e) => setBrand(e.target.value)}
+              ></Form.Control>
+            </Form.Group>
 
+            <Form.Group controlId="countinstock">
+              <Form.Label>Stock</Form.Label>
+              <Form.Control
+                type="number"
+                placeholder="Enter stock"
+                value={countInStock}
+                onChange={(e) => setCountInStock(e.target.value)}
+              ></Form.Control>
+            </Form.Group>
 
-                            <Form.Group controlId='image'>
-                                <Form.Label>Image</Form.Label>
-                                <Form.Control
+            <Form.Group controlId="category">
+              <Form.Label>Category</Form.Label>
+              <Form.Control
+                type="text"
+                placeholder="Enter category"
+                value={category}
+                onChange={(e) => setCategory(e.target.value)}
+              ></Form.Control>
+            </Form.Group>
 
-                                    type='text'
-                                    placeholder='Enter image URL'
-                                    value={image}
-                                    onChange={(e) => setImage(e.target.value)}
-                                >
-                                </Form.Control>
+            <Form.Group controlId="description">
+              <Form.Label>Description</Form.Label>
+              <Form.Control
+                type="text"
+                placeholder="Enter description"
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+              ></Form.Control>
+            </Form.Group>
 
-                               <Form.Control
-                                    type="file"
-                                    label="Choose File"
-                                    onChange={uploadFileHandler}
-                                    className="mt-2"
-                                />
-                                {uploading && <Loader />}
-
-                            </Form.Group>
-
-
-                            <Form.Group controlId='brand'>
-                                <Form.Label>Brand</Form.Label>
-                                <Form.Control
-
-                                    type='text'
-                                    placeholder='Enter brand'
-                                    value={brand}
-                                    onChange={(e) => setBrand(e.target.value)}
-                                >
-                                </Form.Control>
-                            </Form.Group>
-
-                            <Form.Group controlId='countinstock'>
-                                <Form.Label>Stock</Form.Label>
-                                <Form.Control
-
-                                    type='number'
-                                    placeholder='Enter stock'
-                                    value={countInStock}
-                                    onChange={(e) => setCountInStock(e.target.value)}
-                                >
-                                </Form.Control>
-                            </Form.Group>
-
-                            <Form.Group controlId='category'>
-                                <Form.Label>Category</Form.Label>
-                                <Form.Control
-
-                                    type='text'
-                                    placeholder='Enter category'
-                                    value={category}
-                                    onChange={(e) => setCategory(e.target.value)}
-                                >
-                                </Form.Control>
-                            </Form.Group>
-
-                            <Form.Group controlId='description'>
-                                <Form.Label>Description</Form.Label>
-                                <Form.Control
-
-                                    type='text'
-                                    placeholder='Enter description'
-                                    value={description}
-                                    onChange={(e) => setDescription(e.target.value)}
-                                >
-                                </Form.Control>
-                            </Form.Group>
-
-
-                            <Button type='submit' variant='primary'>
-                                Update
-                        </Button>
-
-                        </Form>
-                    )}
-
-            </FormContainer >
-        </div>
-
-    )
+            <Button type="submit" variant="primary">
+              Update
+            </Button>
+          </Form>
+        )}
+      </FormContainer>
+    </div>
+  );
 }
 
-export default ProductEditScreen
-
+export default ProductEditScreen;
 ```
+
 8. update app.js
+
 ```js
 import { Container } from "react-bootstrap";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
@@ -15356,18 +15941,21 @@ function App() {
         <Container>
           <Routes>
             <Route path="/admin/userlist" element={<UserListScreen />} />
-            <Route path='/admin/user/:id/edit' element={<UserEditScreen />} />
-            <Route path='/admin/productlist' element={<ProductListScreen />} />  
-            <Route path='/admin/product/:id/edit' element={<ProductEditScreen />} />  
+            <Route path="/admin/user/:id/edit" element={<UserEditScreen />} />
+            <Route path="/admin/productlist" element={<ProductListScreen />} />
+            <Route
+              path="/admin/product/:id/edit"
+              element={<ProductEditScreen />}
+            />
             {/* PUBLIC ROUTES */}
             <Route path="/" element={<HomeScreen />} />
             <Route path="/login" element={<LoginScreen />} />
             <Route path="/register" element={<RegisterScreen />} />
-            <Route path='/profile' element={<ProfileScreen />} />
-            <Route path='/shipping' element={<ShippingScreen />} />
-            <Route path='/payment' element={<PaymentScreen />} />
-            <Route path='/placeorder' element={<PlaceOrderScreen />} />
-            <Route path='/order/:id' element={<OrderScreen />} />
+            <Route path="/profile" element={<ProfileScreen />} />
+            <Route path="/shipping" element={<ShippingScreen />} />
+            <Route path="/payment" element={<PaymentScreen />} />
+            <Route path="/placeorder" element={<PlaceOrderScreen />} />
+            <Route path="/order/:id" element={<OrderScreen />} />
             <Route path="/product/:id" element={<ProductScreen />} />
             <Route path="/cart/:id?" element={<CartScreen />} />
           </Routes>
@@ -15379,131 +15967,163 @@ function App() {
 }
 
 export default App;
-
 ```
+
 9. update product constants
+
 ```js
-
-export const PRODUCT_CREATE_REQUEST = 'PRODUCT_CREATE_REQUEST'
-export const PRODUCT_CREATE_SUCCESS = 'PRODUCT_CREATE_SUCCESS'
-export const PRODUCT_CREATE_FAIL = 'PRODUCT_CREATE_FAIL'
-export const PRODUCT_CREATE_RESET = 'PRODUCT_CREATE_RESET'
-export const PRODUCT_UPDATE_REQUEST = 'PRODUCT_UPDATE_REQUEST'
-export const PRODUCT_UPDATE_SUCCESS = 'PRODUCT_UPDATE_SUCCESS'
-export const PRODUCT_UPDATE_FAIL = 'PRODUCT_UPDATE_FAIL'
-export const PRODUCT_UPDATE_RESET = 'PRODUCT_UPDATE_RESET'
-
+export const PRODUCT_CREATE_REQUEST = "PRODUCT_CREATE_REQUEST";
+export const PRODUCT_CREATE_SUCCESS = "PRODUCT_CREATE_SUCCESS";
+export const PRODUCT_CREATE_FAIL = "PRODUCT_CREATE_FAIL";
+export const PRODUCT_CREATE_RESET = "PRODUCT_CREATE_RESET";
+export const PRODUCT_UPDATE_REQUEST = "PRODUCT_UPDATE_REQUEST";
+export const PRODUCT_UPDATE_SUCCESS = "PRODUCT_UPDATE_SUCCESS";
+export const PRODUCT_UPDATE_FAIL = "PRODUCT_UPDATE_FAIL";
+export const PRODUCT_UPDATE_RESET = "PRODUCT_UPDATE_RESET";
 ```
-10. update productReducers.js
-```js
-import {PRODUCT_LIST_REQUEST, PRODUCT_LIST_SUCCESS, PRODUCT_LIST_FAIL, PRODUCT_DETAILS_REQUEST, PRODUCT_DETAILS_SUCCESS, PRODUCT_DETAILS_FAIL , PRODUCT_DELETE_REQUEST,
-    PRODUCT_DELETE_SUCCESS,
-    PRODUCT_DELETE_FAIL, PRODUCT_CREATE_REQUEST,
-    PRODUCT_CREATE_SUCCESS,
-    PRODUCT_CREATE_FAIL,
-    PRODUCT_CREATE_RESET,
 
-    PRODUCT_UPDATE_REQUEST,
-    PRODUCT_UPDATE_SUCCESS,
-    PRODUCT_UPDATE_FAIL,
-    PRODUCT_UPDATE_RESET,} from "../constants/productConstants";
-export const productReducer = (state ={ products:[]}, action) => {
-    switch (action.type) {
-        case PRODUCT_LIST_REQUEST:
-            return {loading: true, products: []};
-        case PRODUCT_LIST_SUCCESS:
-            return {loading: false, products: action.payload};
-        case PRODUCT_LIST_FAIL:
-            return {loading: false, error: action.payload};
-        default:
-            return state;
-    }
+10. update productReducers.js
+
+```js
+import {
+  PRODUCT_LIST_REQUEST,
+  PRODUCT_LIST_SUCCESS,
+  PRODUCT_LIST_FAIL,
+  PRODUCT_DETAILS_REQUEST,
+  PRODUCT_DETAILS_SUCCESS,
+  PRODUCT_DETAILS_FAIL,
+  PRODUCT_DELETE_REQUEST,
+  PRODUCT_DELETE_SUCCESS,
+  PRODUCT_DELETE_FAIL,
+  PRODUCT_CREATE_REQUEST,
+  PRODUCT_CREATE_SUCCESS,
+  PRODUCT_CREATE_FAIL,
+  PRODUCT_CREATE_RESET,
+  PRODUCT_UPDATE_REQUEST,
+  PRODUCT_UPDATE_SUCCESS,
+  PRODUCT_UPDATE_FAIL,
+  PRODUCT_UPDATE_RESET,
+} from "../constants/productConstants";
+export const productReducer = (state = { products: [] }, action) => {
+  switch (action.type) {
+    case PRODUCT_LIST_REQUEST:
+      return { loading: true, products: [] };
+    case PRODUCT_LIST_SUCCESS:
+      return { loading: false, products: action.payload };
+    case PRODUCT_LIST_FAIL:
+      return { loading: false, error: action.payload };
+    default:
+      return state;
+  }
 };
 
-export const productDetailsReducer = (state ={ product: {reviews: []}}, action) => {
-    switch (action.type) {
-        case PRODUCT_DETAILS_REQUEST:
-            return {loading: true, ...state};
-        case PRODUCT_DETAILS_SUCCESS:
-            return {loading: false, product: action.payload};
-        case PRODUCT_DETAILS_FAIL:
-            return {loading: false, error: action.payload};
-        default:
-            return state;
-    }
+export const productDetailsReducer = (
+  state = { product: { reviews: [] } },
+  action,
+) => {
+  switch (action.type) {
+    case PRODUCT_DETAILS_REQUEST:
+      return { loading: true, ...state };
+    case PRODUCT_DETAILS_SUCCESS:
+      return { loading: false, product: action.payload };
+    case PRODUCT_DETAILS_FAIL:
+      return { loading: false, error: action.payload };
+    default:
+      return state;
+  }
 };
 export const productDeleteReducer = (state = {}, action) => {
-    switch (action.type) {
-        case PRODUCT_DELETE_REQUEST:
-            return { loading: true }
+  switch (action.type) {
+    case PRODUCT_DELETE_REQUEST:
+      return { loading: true };
 
-        case PRODUCT_DELETE_SUCCESS:
-            return { loading: false, success: true }
+    case PRODUCT_DELETE_SUCCESS:
+      return { loading: false, success: true };
 
-        case PRODUCT_DELETE_FAIL:
-            return { loading: false, error: action.payload }
+    case PRODUCT_DELETE_FAIL:
+      return { loading: false, error: action.payload };
 
-        default:
-            return state
-    }
-}
+    default:
+      return state;
+  }
+};
 
 export const productCreateReducer = (state = {}, action) => {
-    switch (action.type) {
-        case PRODUCT_CREATE_REQUEST:
-            return { loading: true }
+  switch (action.type) {
+    case PRODUCT_CREATE_REQUEST:
+      return { loading: true };
 
-        case PRODUCT_CREATE_SUCCESS:
-            return { loading: false, success: true, product: action.payload }
+    case PRODUCT_CREATE_SUCCESS:
+      return { loading: false, success: true, product: action.payload };
 
-        case PRODUCT_CREATE_FAIL:
-            return { loading: false, error: action.payload }
+    case PRODUCT_CREATE_FAIL:
+      return { loading: false, error: action.payload };
 
-        case PRODUCT_CREATE_RESET:
-            return {}
+    case PRODUCT_CREATE_RESET:
+      return {};
 
-        default:
-            return state
-    }
-}
-
+    default:
+      return state;
+  }
+};
 
 export const productUpdateReducer = (state = { product: {} }, action) => {
-    switch (action.type) {
-        case PRODUCT_UPDATE_REQUEST:
-            return { loading: true }
+  switch (action.type) {
+    case PRODUCT_UPDATE_REQUEST:
+      return { loading: true };
 
-        case PRODUCT_UPDATE_SUCCESS:
-            return { loading: false, success: true, product: action.payload }
+    case PRODUCT_UPDATE_SUCCESS:
+      return { loading: false, success: true, product: action.payload };
 
-        case PRODUCT_UPDATE_FAIL:
-            return { loading: false, error: action.payload }
+    case PRODUCT_UPDATE_FAIL:
+      return { loading: false, error: action.payload };
 
-        case PRODUCT_UPDATE_RESET:
-            return { product: {} }
+    case PRODUCT_UPDATE_RESET:
+      return { product: {} };
 
-        default:
-            return state
-    }
-}
+    default:
+      return state;
+  }
+};
 ```
+
 11. update store.js
+
 ```js
-import { configureStore } from '@reduxjs/toolkit';
-import { productReducer, productDetailsReducer, productDeleteReducer, productCreateReducer, productUpdateReducer} from "./reducers/productReducers"; // import
-import {cartReducer} from "./reducers/cartReducers";
-import { userLoginReducer, userRegisterReducer, userDetailsReducer, userUpdateProfileReducer, userListReducer, userDeleteReducer, userUpdateReducer } from './reducers/userReducers';
-import { orderCreateReducer, orderDetailsReducer, orderPayReducer, orderListMyReducer } from './reducers/orderReducers';
-const cartItemsFromStorage = localStorage.getItem('cartItems')
-  ? JSON.parse(localStorage.getItem('cartItems'))
+import { configureStore } from "@reduxjs/toolkit";
+import {
+  productReducer,
+  productDetailsReducer,
+  productDeleteReducer,
+  productCreateReducer,
+  productUpdateReducer,
+} from "./reducers/productReducers"; // import
+import { cartReducer } from "./reducers/cartReducers";
+import {
+  userLoginReducer,
+  userRegisterReducer,
+  userDetailsReducer,
+  userUpdateProfileReducer,
+  userListReducer,
+  userDeleteReducer,
+  userUpdateReducer,
+} from "./reducers/userReducers";
+import {
+  orderCreateReducer,
+  orderDetailsReducer,
+  orderPayReducer,
+  orderListMyReducer,
+} from "./reducers/orderReducers";
+const cartItemsFromStorage = localStorage.getItem("cartItems")
+  ? JSON.parse(localStorage.getItem("cartItems"))
   : [];
-const userInfoFromStorage = localStorage.getItem('userInfo')
-  ? JSON.parse(localStorage.getItem('userInfo'))
+const userInfoFromStorage = localStorage.getItem("userInfo")
+  ? JSON.parse(localStorage.getItem("userInfo"))
   : null;
- 
-const shippingAddressFromStorage = localStorage.getItem('shippingAddress')
-  ? JSON.parse(localStorage.getItem('shippingAddress'))
-  : {};  
+
+const shippingAddressFromStorage = localStorage.getItem("shippingAddress")
+  ? JSON.parse(localStorage.getItem("shippingAddress"))
+  : {};
 // 👇 初始化 Redux 状态
 const preloadedState = {
   cart: {
@@ -15513,186 +16133,201 @@ const preloadedState = {
   userLogin: {
     userInfo: userInfoFromStorage, // 给 userLogin reducer 赋值
   },
-  
 };
 
 export const store = configureStore({
   reducer: {
-      productList: productReducer,
-      productDetails: productDetailsReducer,
-      cart: cartReducer,
-      userLogin: userLoginReducer,
-      userRegister: userRegisterReducer,
-      userDetails: userDetailsReducer,
-      userUpdateProfile: userUpdateProfileReducer,
-     userList: userListReducer, 
-      orderCreate: orderCreateReducer,
-      orderDetails: orderDetailsReducer,
-      orderPay: orderPayReducer,
-      orderListMy: orderListMyReducer,
-      userDelete: userDeleteReducer,
-      userUpdate: userUpdateReducer,
-      productDelete: productDeleteReducer,
-      productCreate: productCreateReducer,
-      productUpdate: productUpdateReducer
-
+    productList: productReducer,
+    productDetails: productDetailsReducer,
+    cart: cartReducer,
+    userLogin: userLoginReducer,
+    userRegister: userRegisterReducer,
+    userDetails: userDetailsReducer,
+    userUpdateProfile: userUpdateProfileReducer,
+    userList: userListReducer,
+    orderCreate: orderCreateReducer,
+    orderDetails: orderDetailsReducer,
+    orderPay: orderPayReducer,
+    orderListMy: orderListMyReducer,
+    userDelete: userDeleteReducer,
+    userUpdate: userUpdateReducer,
+    productDelete: productDeleteReducer,
+    productCreate: productCreateReducer,
+    productUpdate: productUpdateReducer,
   },
   // ✅ Thunk + DevTools ARE AUTO INCLUDED — NO SETUP NEEDED!
-  preloadedState : preloadedState,
-  middleware: (getDefaultMiddleware) => getDefaultMiddleware({ serializableCheck: false, immutableCheck: false, })
+  preloadedState: preloadedState,
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware({ serializableCheck: false, immutableCheck: false }),
 });
 
 export default store;
-
 ```
+
 12. update productactions.js
+
 ```js
-import {PRODUCT_LIST_REQUEST, PRODUCT_LIST_SUCCESS, PRODUCT_LIST_FAIL, PRODUCT_DETAILS_REQUEST, PRODUCT_DETAILS_SUCCESS, PRODUCT_DETAILS_FAIL, PRODUCT_DELETE_REQUEST, PRODUCT_DELETE_SUCCESS, PRODUCT_DELETE_FAIL, PRODUCT_CREATE_REQUEST, PRODUCT_CREATE_SUCCESS, PRODUCT_CREATE_FAIL, PRODUCT_UPDATE_REQUEST, PRODUCT_UPDATE_SUCCESS, PRODUCT_UPDATE_FAIL} from "../constants/productConstants";
+import {
+  PRODUCT_LIST_REQUEST,
+  PRODUCT_LIST_SUCCESS,
+  PRODUCT_LIST_FAIL,
+  PRODUCT_DETAILS_REQUEST,
+  PRODUCT_DETAILS_SUCCESS,
+  PRODUCT_DETAILS_FAIL,
+  PRODUCT_DELETE_REQUEST,
+  PRODUCT_DELETE_SUCCESS,
+  PRODUCT_DELETE_FAIL,
+  PRODUCT_CREATE_REQUEST,
+  PRODUCT_CREATE_SUCCESS,
+  PRODUCT_CREATE_FAIL,
+  PRODUCT_UPDATE_REQUEST,
+  PRODUCT_UPDATE_SUCCESS,
+  PRODUCT_UPDATE_FAIL,
+} from "../constants/productConstants";
 import axios from "axios";
 export const listProducts = () => async (dispatch) => {
-    try {
-            dispatch({ type: PRODUCT_LIST_REQUEST }); 
-            const { data } = await axios.get("/api/products");
-            dispatch({ type: PRODUCT_LIST_SUCCESS, payload: data });
-    } catch (error) {
-            dispatch({ type: PRODUCT_LIST_FAIL, 
-            payload: error.response && error.response.data.detail ? error.response.data.detail : error.message });
-    }
-}
+  try {
+    dispatch({ type: PRODUCT_LIST_REQUEST });
+    const { data } = await axios.get("/api/products");
+    dispatch({ type: PRODUCT_LIST_SUCCESS, payload: data });
+  } catch (error) {
+    dispatch({
+      type: PRODUCT_LIST_FAIL,
+      payload:
+        error.response && error.response.data.detail
+          ? error.response.data.detail
+          : error.message,
+    });
+  }
+};
 
 export const listProductDetails = (id) => async (dispatch) => {
-    try {
-            dispatch({ type: PRODUCT_DETAILS_REQUEST }); 
-            const { data } = await axios.get(`/api/products/${id}`);
-            dispatch({ type: PRODUCT_DETAILS_SUCCESS, payload: data });
-    } catch (error) {
-            dispatch({ type: PRODUCT_DETAILS_FAIL, 
-            payload: error.response && error.response.data.detail ? error.response.data.detail : error.message });
-    }
-}
+  try {
+    dispatch({ type: PRODUCT_DETAILS_REQUEST });
+    const { data } = await axios.get(`/api/products/${id}`);
+    dispatch({ type: PRODUCT_DETAILS_SUCCESS, payload: data });
+  } catch (error) {
+    dispatch({
+      type: PRODUCT_DETAILS_FAIL,
+      payload:
+        error.response && error.response.data.detail
+          ? error.response.data.detail
+          : error.message,
+    });
+  }
+};
 
 export const deleteProduct = (id) => async (dispatch, getState) => {
-    try {
-        dispatch({
-            type: PRODUCT_DELETE_REQUEST
-        })
+  try {
+    dispatch({
+      type: PRODUCT_DELETE_REQUEST,
+    });
 
-        const {
-            userLogin: { userInfo },
-        } = getState()
+    const {
+      userLogin: { userInfo },
+    } = getState();
 
-        const config = {
-            headers: {
-                'Content-type': 'application/json',
-                Authorization: `Bearer ${userInfo.token}`
-            }
-        }
+    const config = {
+      headers: {
+        "Content-type": "application/json",
+        Authorization: `Bearer ${userInfo.token}`,
+      },
+    };
 
-        const { data } = await axios.delete(
-            `/api/products/delete/${id}/`,
-            config
-        )
+    const { data } = await axios.delete(`/api/products/delete/${id}/`, config);
 
-        dispatch({
-            type: PRODUCT_DELETE_SUCCESS,
-        })
-
-
-    } catch (error) {
-        dispatch({
-            type: PRODUCT_DELETE_FAIL,
-            payload: error.response && error.response.data.detail
-                ? error.response.data.detail
-                : error.message,
-        })
-    }
-}
+    dispatch({
+      type: PRODUCT_DELETE_SUCCESS,
+    });
+  } catch (error) {
+    dispatch({
+      type: PRODUCT_DELETE_FAIL,
+      payload:
+        error.response && error.response.data.detail
+          ? error.response.data.detail
+          : error.message,
+    });
+  }
+};
 
 export const createProduct = () => async (dispatch, getState) => {
-    try {
-        dispatch({
-            type: PRODUCT_CREATE_REQUEST
-        })
+  try {
+    dispatch({
+      type: PRODUCT_CREATE_REQUEST,
+    });
 
-        const {
-            userLogin: { userInfo },
-        } = getState()
+    const {
+      userLogin: { userInfo },
+    } = getState();
 
-        const config = {
-            headers: {
-                'Content-type': 'application/json',
-                Authorization: `Bearer ${userInfo.token}`
-            }
-        }
+    const config = {
+      headers: {
+        "Content-type": "application/json",
+        Authorization: `Bearer ${userInfo.token}`,
+      },
+    };
 
-        const { data } = await axios.post(
-            `/api/products/create/`,
-            {},
-            config
-        )
-        dispatch({
-            type: PRODUCT_CREATE_SUCCESS,
-            payload: data,
-        })
-
-
-    } catch (error) {
-        dispatch({
-            type: PRODUCT_CREATE_FAIL,
-            payload: error.response && error.response.data.detail
-                ? error.response.data.detail
-                : error.message,
-        })
-    }
-}
-
-
+    const { data } = await axios.post(`/api/products/create/`, {}, config);
+    dispatch({
+      type: PRODUCT_CREATE_SUCCESS,
+      payload: data,
+    });
+  } catch (error) {
+    dispatch({
+      type: PRODUCT_CREATE_FAIL,
+      payload:
+        error.response && error.response.data.detail
+          ? error.response.data.detail
+          : error.message,
+    });
+  }
+};
 
 export const updateProduct = (product) => async (dispatch, getState) => {
-    try {
-        dispatch({
-            type: PRODUCT_UPDATE_REQUEST
-        })
+  try {
+    dispatch({
+      type: PRODUCT_UPDATE_REQUEST,
+    });
 
-        const {
-            userLogin: { userInfo },
-        } = getState()
+    const {
+      userLogin: { userInfo },
+    } = getState();
 
-        const config = {
-            headers: {
-                'Content-type': 'application/json',
-                Authorization: `Bearer ${userInfo.token}`
-            }
-        }
+    const config = {
+      headers: {
+        "Content-type": "application/json",
+        Authorization: `Bearer ${userInfo.token}`,
+      },
+    };
 
-        const { data } = await axios.put(
-            `/api/products/update/${product._id}/`,
-            product,
-            config
-        )
-        dispatch({
-            type: PRODUCT_UPDATE_SUCCESS,
-            payload: data,
-        })
+    const { data } = await axios.put(
+      `/api/products/update/${product._id}/`,
+      product,
+      config,
+    );
+    dispatch({
+      type: PRODUCT_UPDATE_SUCCESS,
+      payload: data,
+    });
 
-
-        dispatch({
-            type: PRODUCT_DETAILS_SUCCESS,
-            payload: data
-        })
-
-
-    } catch (error) {
-        dispatch({
-            type: PRODUCT_UPDATE_FAIL,
-            payload: error.response && error.response.data.detail
-                ? error.response.data.detail
-                : error.message,
-        })
-    }
-}
+    dispatch({
+      type: PRODUCT_DETAILS_SUCCESS,
+      payload: data,
+    });
+  } catch (error) {
+    dispatch({
+      type: PRODUCT_UPDATE_FAIL,
+      payload:
+        error.response && error.response.data.detail
+          ? error.response.data.detail
+          : error.message,
+    });
+  }
+};
 ```
+
 13. for the image upload, we need to create backend views, productviews.py
+
 ```py
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
@@ -15769,7 +16404,9 @@ def uploadImage(request):
 
     return Response('Image was uploaded')
 ```
+
 14. update urls.py
+
 ```py
 from django.urls import path
 from base.views import product_views as views
@@ -15790,7 +16427,656 @@ urlpatterns = [
 ]
 ```
 
-## step 41
+## step 41 admin order
+
+1. backend, edit order_views.py
+
+```py
+
+@api_view(['GET'])
+@permission_classes([IsAdminUser])
+def getOrders(request):
+    orders = Order.objects.all()
+    serializer = OrderSerializer(orders, many=True)
+    return Response(serializer.data)
+
+
+```
+
+2. update order_urls.py
+
+```py
+from django.urls import path
+from base.views import order_views as views
+
+urlpatterns = [
+    # 1. Static routes FIRST
+    path('add/', views.addOrderItems, name='orders-add'),
+    path("myorders/", views.getMyOrders, name="myorders"),
+
+    # 2. Longer / specific dynamic routes NEXT
+    path('<str:pk>/pay/', views.updateOrderToPaid, name='pay'),
+
+    # 3. Short dynamic route LAST (before root)
+    path('<str:pk>/', views.getOrderById, name='user-order'),
+
+    # 4. Root empty route AT THE END
+    path('', views.getOrders, name='orders'),
+]
+```
+
+3. back to frontend, edit the orderConstants.js
+
+```js
+export const ORDER_LIST_REQUEST = "ORDER_LIST_REQUEST";
+export const ORDER_LIST_SUCCESS = "ORDER_LIST_SUCCESS";
+export const ORDER_LIST_FAIL = "ORDER_LIST_FAIL";
+```
+
+4. edit orderReducer.js
+
+```js
+import {
+  ORDER_CREATE_REQUEST,
+  ORDER_CREATE_SUCCESS,
+  ORDER_CREATE_FAIL,
+  ORDER_CREATE_RESET,
+  ORDER_DETAILS_REQUEST,
+  ORDER_DETAILS_SUCCESS,
+  ORDER_DETAILS_FAIL,
+  ORDER_PAY_REQUEST,
+  ORDER_PAY_SUCCESS,
+  ORDER_PAY_FAIL,
+  ORDER_PAY_RESET,
+  ORDER_LIST_MY_REQUEST,
+  ORDER_LIST_MY_SUCCESS,
+  ORDER_LIST_MY_FAIL,
+  ORDER_LIST_MY_RESET,
+  ORDER_LIST_REQUEST,
+  ORDER_LIST_SUCCESS,
+  ORDER_LIST_FAIL,
+} from "../constants/orderConstants";
+
+export const orderCreateReducer = (state = {}, action) => {
+  switch (action.type) {
+    case ORDER_CREATE_REQUEST:
+      return {
+        loading: true,
+      };
+
+    case ORDER_CREATE_SUCCESS:
+      return {
+        loading: false,
+        success: true,
+        order: action.payload,
+      };
+
+    case ORDER_CREATE_FAIL:
+      return {
+        loading: false,
+        error: action.payload,
+      };
+
+    case ORDER_CREATE_RESET:
+      return {};
+
+    default:
+      return state;
+  }
+};
+export const orderDetailsReducer = (
+  state = { loading: true, orderItems: [], shippingAddress: {} },
+  action,
+) => {
+  switch (action.type) {
+    case ORDER_DETAILS_REQUEST:
+      return {
+        ...state,
+        loading: true,
+      };
+
+    case ORDER_DETAILS_SUCCESS:
+      return {
+        loading: false,
+        order: action.payload,
+      };
+
+    case ORDER_DETAILS_FAIL:
+      return {
+        loading: false,
+        error: action.payload,
+      };
+
+    default:
+      return state;
+  }
+};
+export const orderPayReducer = (state = {}, action) => {
+  switch (action.type) {
+    case ORDER_PAY_REQUEST:
+      return {
+        loading: true,
+      };
+
+    case ORDER_PAY_SUCCESS:
+      return {
+        loading: false,
+        success: true,
+      };
+
+    case ORDER_PAY_FAIL:
+      return {
+        loading: false,
+        error: action.payload,
+      };
+
+    case ORDER_PAY_RESET:
+      return {};
+
+    default:
+      return state;
+  }
+};
+
+export const orderListMyReducer = (state = { orders: [] }, action) => {
+  switch (action.type) {
+    case ORDER_LIST_MY_REQUEST:
+      return {
+        loading: true,
+      };
+
+    case ORDER_LIST_MY_SUCCESS:
+      return {
+        loading: false,
+        orders: action.payload,
+      };
+
+    case ORDER_LIST_MY_FAIL:
+      return {
+        loading: false,
+        error: action.payload,
+      };
+
+    case ORDER_LIST_MY_RESET:
+      return {
+        orders: [],
+      };
+
+    default:
+      return state;
+  }
+};
+export const orderListReducer = (state = { orders: [] }, action) => {
+  switch (action.type) {
+    case ORDER_LIST_REQUEST:
+      return {
+        loading: true,
+      };
+
+    case ORDER_LIST_SUCCESS:
+      return {
+        loading: false,
+        orders: action.payload,
+      };
+
+    case ORDER_LIST_FAIL:
+      return {
+        loading: false,
+        error: action.payload,
+      };
+    default:
+      return state;
+  }
+};
+```
+
+5. update store.js
+
+```js
+import { configureStore } from "@reduxjs/toolkit";
+import {
+  productReducer,
+  productDetailsReducer,
+  productDeleteReducer,
+  productCreateReducer,
+  productUpdateReducer,
+} from "./reducers/productReducers"; // import
+import { cartReducer } from "./reducers/cartReducers";
+import {
+  userLoginReducer,
+  userRegisterReducer,
+  userDetailsReducer,
+  userUpdateProfileReducer,
+  userListReducer,
+  userDeleteReducer,
+  userUpdateReducer,
+} from "./reducers/userReducers";
+import {
+  orderCreateReducer,
+  orderDetailsReducer,
+  orderPayReducer,
+  orderListMyReducer,
+  orderListReducer,
+} from "./reducers/orderReducers";
+const cartItemsFromStorage = localStorage.getItem("cartItems")
+  ? JSON.parse(localStorage.getItem("cartItems"))
+  : [];
+const userInfoFromStorage = localStorage.getItem("userInfo")
+  ? JSON.parse(localStorage.getItem("userInfo"))
+  : null;
+
+const shippingAddressFromStorage = localStorage.getItem("shippingAddress")
+  ? JSON.parse(localStorage.getItem("shippingAddress"))
+  : {};
+// 👇 初始化 Redux 状态
+const preloadedState = {
+  cart: {
+    cartItems: cartItemsFromStorage, // 给 cart reducer 赋值
+    shippingAddress: shippingAddressFromStorage, // 给 cart reducer 赋值
+  },
+  userLogin: {
+    userInfo: userInfoFromStorage, // 给 userLogin reducer 赋值
+  },
+};
+
+export const store = configureStore({
+  reducer: {
+    productList: productReducer,
+    productDetails: productDetailsReducer,
+    cart: cartReducer,
+    userLogin: userLoginReducer,
+    userRegister: userRegisterReducer,
+    userDetails: userDetailsReducer,
+    userUpdateProfile: userUpdateProfileReducer,
+    userList: userListReducer,
+    orderCreate: orderCreateReducer,
+    orderDetails: orderDetailsReducer,
+    orderPay: orderPayReducer,
+    orderListMy: orderListMyReducer,
+    userDelete: userDeleteReducer,
+    userUpdate: userUpdateReducer,
+    productDelete: productDeleteReducer,
+    productCreate: productCreateReducer,
+    productUpdate: productUpdateReducer,
+    orderList: orderListReducer,
+  },
+  // ✅ Thunk + DevTools ARE AUTO INCLUDED — NO SETUP NEEDED!
+  preloadedState: preloadedState,
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware({ serializableCheck: false, immutableCheck: false }),
+});
+
+export default store;
+```
+
+6. update orderactions.js
+
+```js
+import axios from "axios";
+import {
+  ORDER_CREATE_REQUEST,
+  ORDER_CREATE_SUCCESS,
+  ORDER_CREATE_FAIL,
+  ORDER_DETAILS_REQUEST,
+  ORDER_DETAILS_SUCCESS,
+  ORDER_DETAILS_FAIL,
+  ORDER_PAY_REQUEST,
+  ORDER_PAY_SUCCESS,
+  ORDER_PAY_FAIL,
+  ORDER_PAY_RESET,
+  ORDER_LIST_MY_REQUEST,
+  ORDER_LIST_MY_SUCCESS,
+  ORDER_LIST_MY_FAIL,
+  ORDER_LIST_MY_RESET,
+  ORDER_LIST_REQUEST,
+  ORDER_LIST_SUCCESS,
+  ORDER_LIST_FAIL,
+} from "../constants/orderConstants";
+
+import { CART_CLEAR_ITEMS } from "../constants/cartConstants";
+
+export const createOrder = (order) => async (dispatch, getState) => {
+  try {
+    dispatch({
+      type: ORDER_CREATE_REQUEST,
+    });
+
+    const {
+      userLogin: { userInfo },
+    } = getState();
+
+    const config = {
+      headers: {
+        "Content-type": "application/json",
+        Authorization: `Bearer ${userInfo.token}`,
+      },
+    };
+
+    const { data } = await axios.post(`/api/orders/add/`, order, config);
+
+    dispatch({
+      type: ORDER_CREATE_SUCCESS,
+      payload: data,
+    });
+
+    dispatch({
+      type: CART_CLEAR_ITEMS,
+      payload: data,
+    });
+
+    localStorage.removeItem("cartItems");
+  } catch (error) {
+    dispatch({
+      type: ORDER_CREATE_FAIL,
+      payload:
+        error.response && error.response.data.detail
+          ? error.response.data.detail
+          : error.message,
+    });
+  }
+};
+export const getOrderDetails = (id) => async (dispatch, getState) => {
+  try {
+    dispatch({
+      type: ORDER_DETAILS_REQUEST,
+    });
+
+    const {
+      userLogin: { userInfo },
+    } = getState();
+
+    const config = {
+      headers: {
+        "Content-type": "application/json",
+        Authorization: `Bearer ${userInfo.token}`,
+      },
+    };
+
+    const { data } = await axios.get(`/api/orders/${id}/`, config);
+
+    dispatch({
+      type: ORDER_DETAILS_SUCCESS,
+      payload: data,
+    });
+  } catch (error) {
+    dispatch({
+      type: ORDER_DETAILS_FAIL,
+      payload:
+        error.response && error.response.data.detail
+          ? error.response.data.detail
+          : error.message,
+    });
+  }
+};
+export const payOrder = (id, paymentResult) => async (dispatch, getState) => {
+  try {
+    dispatch({
+      type: ORDER_PAY_REQUEST,
+    });
+
+    const {
+      userLogin: { userInfo },
+    } = getState();
+
+    const config = {
+      headers: {
+        "Content-type": "application/json",
+        Authorization: `Bearer ${userInfo.token}`,
+      },
+    };
+
+    const { data } = await axios.put(
+      `/api/orders/${id}/pay/`,
+      paymentResult,
+      config,
+    );
+
+    dispatch({
+      type: ORDER_PAY_SUCCESS,
+      payload: data,
+    });
+  } catch (error) {
+    dispatch({
+      type: ORDER_PAY_FAIL,
+      payload:
+        error.response && error.response.data.detail
+          ? error.response.data.detail
+          : error.message,
+    });
+  }
+};
+
+export const listMyOrders = () => async (dispatch, getState) => {
+  try {
+    dispatch({
+      type: ORDER_LIST_MY_REQUEST,
+    });
+
+    const {
+      userLogin: { userInfo },
+    } = getState();
+
+    const config = {
+      headers: {
+        "Content-type": "application/json",
+        Authorization: `Bearer ${userInfo.token}`,
+      },
+    };
+
+    const { data } = await axios.get(`/api/orders/myorders/`, config);
+
+    dispatch({
+      type: ORDER_LIST_MY_SUCCESS,
+      payload: data,
+    });
+  } catch (error) {
+    dispatch({
+      type: ORDER_LIST_MY_FAIL,
+      payload:
+        error.response && error.response.data.detail
+          ? error.response.data.detail
+          : error.message,
+    });
+  }
+};
+
+export const listOrders = () => async (dispatch, getState) => {
+  try {
+    dispatch({
+      type: ORDER_LIST_REQUEST,
+    });
+
+    const {
+      userLogin: { userInfo },
+    } = getState();
+
+    const config = {
+      headers: {
+        "Content-type": "application/json",
+        Authorization: `Bearer ${userInfo.token}`,
+      },
+    };
+
+    const { data } = await axios.get(`/api/orders/`, config);
+
+    dispatch({
+      type: ORDER_LIST_SUCCESS,
+      payload: data,
+    });
+  } catch (error) {
+    dispatch({
+      type: ORDER_LIST_FAIL,
+      payload:
+        error.response && error.response.data.detail
+          ? error.response.data.detail
+          : error.message,
+    });
+  }
+};
+```
+
+7. create orderListScreen.jsx
+
+```jsx
+import React, { useState, useEffect } from "react";
+import { LinkContainer } from "react-router-bootstrap";
+import { Table, Button } from "react-bootstrap";
+import { useDispatch, useSelector } from "react-redux";
+import Loader from "../components/Loader";
+import Message from "../components/Message";
+import { listOrders } from "../actions/orderActions";
+import { useNavigate } from "react-router-dom";
+
+function OrderListScreen() {
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+
+  const orderList = useSelector((state) => state.orderList);
+  const { loading, error, orders } = orderList;
+
+  const userLogin = useSelector((state) => state.userLogin);
+  const { userInfo } = userLogin;
+
+  useEffect(() => {
+    if (userInfo && userInfo.isAdmin) {
+      dispatch(listOrders());
+    } else {
+      navigate("/login");
+    }
+  }, [dispatch, navigate, userInfo]);
+
+  return (
+    <div>
+      <h1>Orders</h1>
+      {loading ? (
+        <Loader />
+      ) : error ? (
+        <Message variant="danger">{error}</Message>
+      ) : (
+        <Table striped bordered hover responsive className="table-sm">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>USER</th>
+              <th>DATE</th>
+              <th>Total</th>
+              <th>PAID</th>
+              <th>DELIVERED</th>
+              <th></th>
+            </tr>
+          </thead>
+
+          <tbody>
+            {orders.map((order) => (
+              <tr key={order._id}>
+                <td>{order._id}</td>
+                <td>{order.user && order.user.name}</td>
+                <td>{order.createdAt.substring(0, 10)}</td>
+                <td>${order.totalPrice}</td>
+
+                <td>
+                  {order.isPaid ? (
+                    order.paidAt.substring(0, 10)
+                  ) : (
+                    <i className="fas fa-check" style={{ color: "red" }}></i>
+                  )}
+                </td>
+
+                <td>
+                  {order.isDelivered ? (
+                    order.deliveredAt.substring(0, 10)
+                  ) : (
+                    <i className="fas fa-check" style={{ color: "red" }}></i>
+                  )}
+                </td>
+
+                <td>
+                  <LinkContainer to={`/order/${order._id}`}>
+                    <Button variant="light" className="btn-sm">
+                      Details
+                    </Button>
+                  </LinkContainer>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </Table>
+      )}
+    </div>
+  );
+}
+
+export default OrderListScreen;
+```
+
+8. update app.js
+
+```js
+import { Container } from "react-bootstrap";
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import Footer from "./components/Footer";
+import Header from "./components/Header";
+import HomeScreen from "./screens/HomeScreen";
+import LoginScreen from "./screens/LoginScreen";
+import RegisterScreen from "./screens/RegisterScreen";
+import ProductScreen from "./screens/ProductScreen";
+import CartScreen from "./screens/CartScreen";
+import ProfileScreen from "./screens/ProfileScreen";
+import ShippingScreen from "./screens/ShippingScreen";
+import PaymentScreen from "./screens/PaymentScreen";
+import PlaceOrderScreen from "./screens/PlaceOrderScreen";
+import OrderScreen from "./screens/OrderScreen";
+import UserListScreen from "./screens/UserListScreen";
+import UserEditScreen from "./screens/UserEditScreen";
+import ProductListScreen from "./screens/ProductListScreen";
+import ProductEditScreen from "./screens/ProductEditScreen";
+import OrderListScreen from "./screens/OrderListScreen";
+
+function App() {
+  return (
+    <Router>
+      <Header />
+      <main className="py-3">
+        <Container>
+          <Routes>
+            <Route path="/admin/userlist" element={<UserListScreen />} />
+            <Route path="/admin/user/:id/edit" element={<UserEditScreen />} />
+            <Route path="/admin/productlist" element={<ProductListScreen />} />
+            <Route
+              path="/admin/product/:id/edit"
+              element={<ProductEditScreen />}
+            />
+            <Route path="/admin/orderlist" element={<OrderListScreen />} />
+            {/* PUBLIC ROUTES */}
+            <Route path="/" element={<HomeScreen />} />
+            <Route path="/login" element={<LoginScreen />} />
+            <Route path="/register" element={<RegisterScreen />} />
+            <Route path="/profile" element={<ProfileScreen />} />
+            <Route path="/shipping" element={<ShippingScreen />} />
+            <Route path="/payment" element={<PaymentScreen />} />
+            <Route path="/placeorder" element={<PlaceOrderScreen />} />
+            <Route path="/order/:id" element={<OrderScreen />} />
+            <Route path="/product/:id" element={<ProductScreen />} />
+            <Route path="/cart/:id?" element={<CartScreen />} />
+          </Routes>
+        </Container>
+      </main>
+      <Footer />
+    </Router>
+  );
+}
+
+export default App;
+```
+
+9.
+10.
+11.
+12.
+13.
+
 ## step 42
+
 ## step 43
+
 ## step 44
