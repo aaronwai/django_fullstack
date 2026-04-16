@@ -8,7 +8,7 @@ urlpatterns = [
 
     # 2. Longer / specific dynamic routes NEXT
     path('<str:pk>/pay/', views.updateOrderToPaid, name='pay'),
-
+    path('<str:pk>/deliver/', views.updateOrderToDelivered, name='order-delivered'),
     # 3. Short dynamic route LAST (before root)
     path('<str:pk>/', views.getOrderById, name='user-order'),
 
