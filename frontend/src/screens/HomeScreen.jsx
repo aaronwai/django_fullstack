@@ -2,17 +2,24 @@ import { Row, Col } from "react-bootstrap";
 import Product from "../components/Product";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { useNavigate, useLocation } from "react-router-dom";
 import { listProducts } from "../actions/productActions";
 import Loader from "../components/Loader";
 import Message from "../components/Message";
 const HomeScreen = () => {
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   const { error, loading, products } = useSelector((state) => state.productList);
+  const location = useLocation()
+  const keyword = location.search
+  
+
   useEffect(() => {
-    dispatch(listProducts());
-  }, [dispatch]);
+    dispatch(listProducts(keyword));
+  }, [dispatch, keyword]);
   return (
     <div>
+      
       <h1>Latest Products</h1>
       {loading ? <Loader /> : error ? <Message variant="danger">{error}</Message> : 
       <Row>

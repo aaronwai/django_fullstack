@@ -18899,7 +18899,463 @@ const ProductScreen = () => {
 };
 ```
 
-## step 44
+## step 44 product search
+
+1. create components SearchBox.jsx
+
+```jsx
+import { useState } from "react";
+import { Button, Form } from "react-bootstrap";
+import { useNavigate, useLocation } from "react-router-dom";
+
+function SearchBox() {
+  const [keyword, setKeyword] = useState("");
+
+  let navigate = useNavigate();
+  const location = useLocation();
+  const submitHandler = (e) => {
+    e.preventDefault();
+    if (keyword) {
+      navigate(`/?keyword=${keyword}&page=1`);
+    } else {
+      navigate(location.pathname);
+    }
+  };
+  return (
+    <Form onSubmit={submitHandler} className="d-flex align-items-center gap-2">
+      <Form.Control
+        type="text"
+        name="q"
+        onChange={(e) => setKeyword(e.target.value)}
+        className="flex-grow-1"
+      ></Form.Control>
+
+      <Button type="submit" variant="outline-success" className="p-2">
+        Submit
+      </Button>
+    </Form>
+  );
+}
+
+export default SearchBox;
+```
+
+2. insert searchBox inside header
+
+```jsx
+import { useState } from "react";
+import { Button, Form } from "react-bootstrap";
+import { useNavigate, useLocation } from "react-router-dom";
+
+function SearchBox() {
+  const [keyword, setKeyword] = useState("");
+
+  let navigate = useNavigate();
+  const location = useLocation();
+  const submitHandler = (e) => {
+    e.preventDefault();
+    if (keyword) {
+      navigate(`/?keyword=${keyword}&page=1`);
+    } else {
+      navigate(location.pathname);
+    }
+  };
+  return (
+    <Form onSubmit={submitHandler} className="d-flex align-items-center gap-2">
+      <Form.Control
+        type="text"
+        name="q"
+        onChange={(e) => setKeyword(e.target.value)}
+        className="flex-grow-1"
+      ></Form.Control>
+
+      <Button type="submit" variant="outline-success" className="p-2">
+        Submit
+      </Button>
+    </Form>
+  );
+}
+
+export default SearchBox;
+```
+
+3. update the homeScreen.jsx
+
+```jsx
+import { Row, Col } from "react-bootstrap";
+import Product from "../components/Product";
+import { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate, useLocation } from "react-router-dom";
+import { listProducts } from "../actions/productActions";
+import Loader from "../components/Loader";
+import Message from "../components/Message";
+const HomeScreen = () => {
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const { error, loading, products } = useSelector(
+    (state) => state.productList,
+  );
+  const location = useLocation();
+  const keyword = location.search;
+
+  useEffect(() => {
+    dispatch(listProducts(keyword));
+  }, [dispatch, keyword]);
+  return (
+    <div>
+      <h1>Latest Products</h1>
+      {loading ? (
+        <Loader />
+      ) : error ? (
+        <Message variant="danger">{error}</Message>
+      ) : (
+        <Row>
+          {products.map((product) => (
+            <Col key={product._id} sm={12} md={6} lg={4} xl={3}>
+              <Product product={product} />
+            </Col>
+          ))}
+        </Row>
+      )}
+    </div>
+  );
+};
+
+export default HomeScreen;
+```
+
+4. update the productactions.js
+
+```js
+import {
+  PRODUCT_LIST_REQUEST,
+  PRODUCT_LIST_SUCCESS,
+  PRODUCT_LIST_FAIL,
+  PRODUCT_DETAILS_REQUEST,
+  PRODUCT_DETAILS_SUCCESS,
+  PRODUCT_DETAILS_FAIL,
+  PRODUCT_DELETE_REQUEST,
+  PRODUCT_DELETE_SUCCESS,
+  PRODUCT_DELETE_FAIL,
+  PRODUCT_CREATE_REQUEST,
+  PRODUCT_CREATE_SUCCESS,
+  PRODUCT_CREATE_FAIL,
+  PRODUCT_UPDATE_REQUEST,
+  PRODUCT_UPDATE_SUCCESS,
+  PRODUCT_UPDATE_FAIL,
+  PRODUCT_CREATE_REVIEW_REQUEST,
+  PRODUCT_CREATE_REVIEW_SUCCESS,
+  PRODUCT_CREATE_REVIEW_FAIL,
+} from "../constants/productConstants";
+import axios from "axios";
+export const listProducts =
+  (keyword = "") =>
+  async (dispatch) => {
+    // add the keyword
+    try {
+      dispatch({ type: PRODUCT_LIST_REQUEST });
+      const { data } = await axios.get(`/api/products${keyword}`); // update the api with keyword
+      dispatch({ type: PRODUCT_LIST_SUCCESS, payload: data });
+    } catch (error) {
+      dispatch({
+        type: PRODUCT_LIST_FAIL,
+        payload:
+          error.response && error.response.data.detail
+            ? error.response.data.detail
+            : error.message,
+      });
+    }
+  };
+
+export const listProductDetails = (id) => async (dispatch) => {
+  try {
+    dispatch({ type: PRODUCT_DETAILS_REQUEST });
+    const { data } = await axios.get(`/api/products/${id}`);
+    dispatch({ type: PRODUCT_DETAILS_SUCCESS, payload: data });
+  } catch (error) {
+    dispatch({
+      type: PRODUCT_DETAILS_FAIL,
+      payload:
+        error.response && error.response.data.detail
+          ? error.response.data.detail
+          : error.message,
+    });
+  }
+};
+
+export const deleteProduct = (id) => async (dispatch, getState) => {
+  try {
+    dispatch({
+      type: PRODUCT_DELETE_REQUEST,
+    });
+
+    const {
+      userLogin: { userInfo },
+    } = getState();
+
+    const config = {
+      headers: {
+        "Content-type": "application/json",
+        Authorization: `Bearer ${userInfo.token}`,
+      },
+    };
+
+    const { data } = await axios.delete(`/api/products/delete/${id}/`, config);
+
+    dispatch({
+      type: PRODUCT_DELETE_SUCCESS,
+    });
+  } catch (error) {
+    dispatch({
+      type: PRODUCT_DELETE_FAIL,
+      payload:
+        error.response && error.response.data.detail
+          ? error.response.data.detail
+          : error.message,
+    });
+  }
+};
+
+export const createProduct = () => async (dispatch, getState) => {
+  try {
+    dispatch({
+      type: PRODUCT_CREATE_REQUEST,
+    });
+
+    const {
+      userLogin: { userInfo },
+    } = getState();
+
+    const config = {
+      headers: {
+        "Content-type": "application/json",
+        Authorization: `Bearer ${userInfo.token}`,
+      },
+    };
+
+    const { data } = await axios.post(`/api/products/create/`, {}, config);
+    dispatch({
+      type: PRODUCT_CREATE_SUCCESS,
+      payload: data,
+    });
+  } catch (error) {
+    dispatch({
+      type: PRODUCT_CREATE_FAIL,
+      payload:
+        error.response && error.response.data.detail
+          ? error.response.data.detail
+          : error.message,
+    });
+  }
+};
+
+export const updateProduct = (product) => async (dispatch, getState) => {
+  try {
+    dispatch({
+      type: PRODUCT_UPDATE_REQUEST,
+    });
+
+    const {
+      userLogin: { userInfo },
+    } = getState();
+
+    const config = {
+      headers: {
+        "Content-type": "application/json",
+        Authorization: `Bearer ${userInfo.token}`,
+      },
+    };
+
+    const { data } = await axios.put(
+      `/api/products/update/${product._id}/`,
+      product,
+      config,
+    );
+    dispatch({
+      type: PRODUCT_UPDATE_SUCCESS,
+      payload: data,
+    });
+
+    dispatch({
+      type: PRODUCT_DETAILS_SUCCESS,
+      payload: data,
+    });
+  } catch (error) {
+    dispatch({
+      type: PRODUCT_UPDATE_FAIL,
+      payload:
+        error.response && error.response.data.detail
+          ? error.response.data.detail
+          : error.message,
+    });
+  }
+};
+
+export const createProductReview =
+  (productId, review) => async (dispatch, getState) => {
+    try {
+      dispatch({
+        type: PRODUCT_CREATE_REVIEW_REQUEST,
+      });
+
+      const {
+        userLogin: { userInfo },
+      } = getState();
+
+      const config = {
+        headers: {
+          "Content-type": "application/json",
+          Authorization: `Bearer ${userInfo.token}`,
+        },
+      };
+
+      const { data } = await axios.post(
+        `/api/products/${productId}/reviews/`,
+        review,
+        config,
+      );
+      dispatch({
+        type: PRODUCT_CREATE_REVIEW_SUCCESS,
+        payload: data,
+      });
+    } catch (error) {
+      dispatch({
+        type: PRODUCT_CREATE_REVIEW_FAIL,
+        payload:
+          error.response && error.response.data.detail
+            ? error.response.data.detail
+            : error.message,
+      });
+    }
+  };
+```
+
+5. changing the api, we need to goback to backend to update the api, update product_views.py
+
+```py
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import IsAuthenticated, IsAdminUser
+from rest_framework.response import Response
+from rest_framework import status
+from base.models import Product, Review
+from base.serializer import ProductSerializer
+
+
+@api_view(['GET'])
+def getProducts(request):
+    query = request.query_params.get('keyword', '')
+    products = Product.objects.filter(name__icontains=query)
+    serializer = ProductSerializer(products, many=True)
+    return Response(serializer.data)
+
+@api_view(['GET'])
+def getProduct(request,pk):
+    product = Product.objects.get(_id=pk)
+    serializer = ProductSerializer(product, many=False)
+    return Response(serializer.data)
+
+@api_view(['DELETE'])
+@permission_classes([IsAdminUser])
+def deleteProduct(request, pk):
+    product = Product.objects.get(_id=pk)
+    product.delete()
+    return Response('Producted Deleted')
+
+@api_view(['POST'])
+@permission_classes([IsAdminUser])
+def createProduct(request):
+    user = request.user
+
+    product = Product.objects.create(
+        user=user,
+        name='Sample Name',
+        price=0,
+        brand='Sample Brand',
+        countInStock=0,
+        category='Sample Category',
+        description=''
+    )
+
+    serializer = ProductSerializer(product, many=False)
+    return Response(serializer.data)
+
+
+@api_view(['PUT'])
+@permission_classes([IsAdminUser])
+def updateProduct(request, pk):
+    data = request.data
+    product = Product.objects.get(_id=pk)
+
+    product.name = data['name']
+    product.price = data['price']
+    product.brand = data['brand']
+    product.countInStock = data['countInStock']
+    product.category = data['category']
+    product.description = data['description']
+
+    product.save()
+
+    serializer = ProductSerializer(product, many=False)
+    return Response(serializer.data)
+
+@api_view(['POST'])
+def uploadImage(request):
+    data = request.data
+
+    product_id = data['product_id']
+    product = Product.objects.get(_id=product_id)
+
+    product.image = request.FILES.get('image')
+    product.save()
+
+    return Response('Image was uploaded')
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def createProductReview(request, pk):
+    user = request.user
+    product = Product.objects.get(_id=pk)
+    data = request.data
+
+    # 1 - Review already exists
+    alreadyExists = product.review_set.filter(user=user).exists()
+    if alreadyExists:
+        content = {'detail': 'Product already reviewed'}
+        return Response(content, status=status.HTTP_400_BAD_REQUEST)
+
+    # 2 - No Rating or 0
+    elif data['rating'] == 0:
+        content = {'detail': 'Please select a rating'}
+        return Response(content, status=status.HTTP_400_BAD_REQUEST)
+
+    # 3 - Create review
+    else:
+        review = Review.objects.create(
+            user=user,
+            product=product,
+            name=user.first_name,
+            rating=data['rating'],
+            comment=data['comment'],
+        )
+
+        reviews = product.review_set.all()
+        product.numReviews = len(reviews)
+
+        total = 0
+        for i in reviews:
+            total += i.rating
+
+        product.rating = total / len(reviews)
+        product.save()
+
+        return Response('Review Added')
+```
+
+6.
+7.
+8.
+9.
 
 ## step 45
 
