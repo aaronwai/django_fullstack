@@ -40,7 +40,7 @@ function UserEditScreen() {
             }
         }
 
-    }, [user, userId, navigate, dispatch])
+    }, [user, userId, navigate, dispatch, successUpdate])
 
     const submitHandler = (e) => {
         e.preventDefault()

@@ -2,14 +2,13 @@ import { Row, Col } from "react-bootstrap";
 import Product from "../components/Product";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useNavigate, useLocation } from "react-router-dom";
+import {  useLocation } from "react-router-dom";
 import { listProducts } from "../actions/productActions";
 import Loader from "../components/Loader";
 import Message from "../components/Message";
 import Paginate from "../components/Paginate";
 import ProductCarousel from '../components/ProductCarousel'
 const HomeScreen = () => {
-  const navigate = useNavigate();
   const dispatch = useDispatch();
   const { error, loading, products, page,pages } = useSelector((state) => state.productList);
   const location = useLocation()
