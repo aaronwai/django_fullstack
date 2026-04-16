@@ -17869,6 +17869,1048 @@ function OrderScreen() {
 export default OrderScreen;
 ```
 
-## step 43
+## step 43 product review
+
+1. goto backend, update product_views.py, include review model
+
+```py
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import IsAuthenticated, IsAdminUser
+from rest_framework.response import Response
+from base.models import Product, Review
+from base.serializer import ProductSerializer
+from rest_framework import status
+
+@api_view(['GET'])
+def getProducts(request):
+    products = Product.objects.all()
+    serializer = ProductSerializer(products, many=True)
+    return Response(serializer.data)
+
+@api_view(['GET'])
+def getProduct(request,pk):
+    product = Product.objects.get(_id=pk)
+    serializer = ProductSerializer(product, many=False)
+    return Response(serializer.data)
+
+@api_view(['DELETE'])
+@permission_classes([IsAdminUser])
+def deleteProduct(request, pk):
+    product = Product.objects.get(_id=pk)
+    product.delete()
+    return Response('Producted Deleted')
+
+@api_view(['POST'])
+@permission_classes([IsAdminUser])
+def createProduct(request):
+    user = request.user
+
+    product = Product.objects.create(
+        user=user,
+        name='Sample Name',
+        price=0,
+        brand='Sample Brand',
+        countInStock=0,
+        category='Sample Category',
+        description=''
+    )
+
+    serializer = ProductSerializer(product, many=False)
+    return Response(serializer.data)
+
+
+@api_view(['PUT'])
+@permission_classes([IsAdminUser])
+def updateProduct(request, pk):
+    data = request.data
+    product = Product.objects.get(_id=pk)
+
+    product.name = data['name']
+    product.price = data['price']
+    product.brand = data['brand']
+    product.countInStock = data['countInStock']
+    product.category = data['category']
+    product.description = data['description']
+
+    product.save()
+
+    serializer = ProductSerializer(product, many=False)
+    return Response(serializer.data)
+
+@api_view(['POST'])
+def uploadImage(request):
+    data = request.data
+
+    product_id = data['product_id']
+    product = Product.objects.get(_id=product_id)
+
+    product.image = request.FILES.get('image')
+    product.save()
+
+    return Response('Image was uploaded')
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def createProductReview(request, pk):
+    user = request.user
+    product = Product.objects.get(_id=pk)
+    data = request.data
+
+    # 1 - Review already exists
+    alreadyExists = product.review_set.filter(user=user).exists()
+    if alreadyExists:
+        content = {'detail': 'Product already reviewed'}
+        return Response(content, status=status.HTTP_400_BAD_REQUEST)
+
+    # 2 - No Rating or 0
+    elif data['rating'] == 0:
+        content = {'detail': 'Please select a rating'}
+        return Response(content, status=status.HTTP_400_BAD_REQUEST)
+
+    # 3 - Create review
+    else:
+        review = Review.objects.create(
+            user=user,
+            product=product,
+            name=user.first_name,
+            rating=data['rating'],
+            comment=data['comment'],
+        )
+
+        reviews = product.review_set.all()
+        product.numReviews = len(reviews)
+
+        total = 0
+        for i in reviews:
+            total += i.rating
+
+        product.rating = total / len(reviews)
+        product.save()
+
+        return Response('Review Added')
+```
+
+2. update product_urls.py
+
+```py
+from django.urls import path
+from base.views import product_views as views
+
+urlpatterns = [
+    # 1. STATIC ROUTES FIRST
+    path('create/', views.createProduct, name="product-create"),
+    path('upload/', views.uploadImage, name="image-upload"),
+    # 2. STATIC + DYNAMIC COMBOS (update / delete)
+    path('update/<str:pk>/', views.updateProduct, name="product-update"),
+    path('delete/<str:pk>/', views.deleteProduct, name="product-delete"),
+    path('<str:pk>/reviews/', views.createProductReview, name="create-review"),
+    # 3. ONLY DYNAMIC (single product)
+    path('<str:pk>/', views.getProduct, name="product"),
+
+    # 4. ROOT '' COMES DEAD LAST
+    path('', views.getProducts, name="products"),
+]
+```
+
+3. need to link there review with product, update serializer.py
+
+```py
+from rest_framework import serializers
+from django.contrib.auth.models import User
+from rest_framework_simplejwt.tokens import RefreshToken
+from .models import Product, Order, OrderItem, ShippingAddress, Review
+
+class UserSerializer(serializers.ModelSerializer):
+    name = serializers.SerializerMethodField(read_only=True)
+    _id = serializers.SerializerMethodField(read_only=True)
+    isAdmin = serializers.SerializerMethodField(read_only=True)
+    class Meta:
+        model = User
+        fields = ['id', 'username', 'email', 'name', 'isAdmin', '_id']
+    def get__id(self, obj):
+        return obj.id
+    def get_isAdmin(self, obj):
+        return obj.is_staff
+    def get_name(self, obj):
+        name = obj.first_name
+        if name == '':
+            name = obj.email
+        return name
+
+class UserSerializerWithToken(UserSerializer):
+    token = serializers.SerializerMethodField(read_only=True)
+    class Meta:
+        model = User
+        fields = ['id', 'username', 'email', 'name', 'isAdmin', '_id', 'token']
+    def get_token(self, obj):
+        token = RefreshToken.for_user(obj)
+        return str(token.access_token)
+
+// add review
+class ReviewSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Review
+        fields = '__all__'
+
+// link review with product
+class ProductSerializer(serializers.ModelSerializer):
+    reviews = serializers.SerializerMethodField(read_only=True)
+
+    class Meta:
+        model = Product
+        fields = '__all__'
+    def get_reviews(self, obj):
+        reviews = obj.review_set.all()
+        serializer = ReviewSerializer(reviews, many=True)
+        return serializer.data
+
+class ShippingAddressSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ShippingAddress
+        fields = '__all__'
+
+
+class OrderItemSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = OrderItem
+        fields = '__all__'
+
+class OrderSerializer(serializers.ModelSerializer):
+    orderItems = serializers.SerializerMethodField(read_only=True)
+    shippingAddress = serializers.SerializerMethodField(read_only=True)
+    user = serializers.SerializerMethodField(read_only=True)
+
+    class Meta:
+        model = Order
+        fields = '__all__'
+
+    def get_orderItems(self, obj):
+        items = obj.orderitem_set.all()
+        serializer = OrderItemSerializer(items, many=True)
+        return serializer.data
+
+    def get_shippingAddress(self, obj):
+        try:
+            address = ShippingAddressSerializer(
+                obj.shippingaddress, many=False).data
+        except:
+            address = False
+        return address
+
+    def get_user(self, obj):
+        user = obj.user
+        serializer = UserSerializer(user, many=False)
+        return serializer.data
+```
+
+## 1. What is `get_reviews`?
+
+It’s a **`SerializerMethodField` callback function** — this is the _standard, official way_ to add custom/ computed fields in a DRF ModelSerializer.
+
+### The rule DRF uses:
+
+```python
+reviews = serializers.SerializerMethodField(read_only=True)
+```
+
+When you name a field `reviews`, DRF will **automatically look for a function named `get_reviews`**
+
+```python
+def get_reviews(self, obj):
+```
+
+- `get_` + field name = **required naming convention**
+- `obj` = the current `Product` object
+
+---
+
+## 2. Is this the standard way to get related reviews?
+
+**ABSOLUTELY YES.**
+
+Your code:
+
+```python
+def get_reviews(self, obj):
+    reviews = obj.review_set.all()   # get all reviews for this product
+    serializer = ReviewSerializer(reviews, many=True)
+    return serializer.data
+```
+
+# There is ONLY ONE VALID FUNCTION NAME
+
+It must follow this rule:
+
+```python
+field_name = serializers.SerializerMethodField()
+
+def get_<field_name>(self, obj):
+    return ...
+```
+
+## So you CANNOT use other function names — only get\_...
+
+4. update models.py for the review model
+
+```py
+from django.db import models
+
+from django.contrib.auth.models import User
+# Create your models here.
+class Product(models.Model):
+    user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
+    name = models.CharField(max_length=200, null=True, blank=True)
+    image = models.ImageField(null=True, blank=True, default='/placeholder.png')
+    brand = models.CharField(max_length=200, null=True, blank=True)
+    category = models.CharField(max_length=200, null=True, blank=True)
+    description = models.TextField(null=True, blank=True)
+    rating = models.DecimalField(max_digits=7, decimal_places=2, null=True, blank=True)
+    numReviews = models.IntegerField(null=True, blank=True, default=0)
+    price = models.DecimalField(max_digits=7, decimal_places=2, null=True, blank=True)
+    countInStock = models.IntegerField(null=True, blank=True, default=0)
+    createdAt = models.DateTimeField(auto_now_add=True)
+    _id = models.AutoField(primary_key=True, editable=False)
+
+    def __str__(self):
+        return self.name
+
+class Review(models.Model):
+    product = models.ForeignKey(Product, on_delete=models.SET_NULL, null=True)
+    user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
+    name = models.CharField(max_length=200, null=True, blank=True)
+    rating = models.IntegerField(null=True, blank=True, default=0)
+    comment = models.TextField(null=True, blank=True)
+    createdAt = models.DateTimeField(auto_now_add=True)  // add this line
+    _id = models.AutoField(primary_key=True, editable=False)
+
+    def __str__(self):
+        return str(self.rating)
+
+class Order(models.Model):
+    user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
+    paymentMethod = models.CharField(max_length=200, null=True, blank=True)
+    taxPrice = models.DecimalField(max_digits=7, decimal_places=2, null=True, blank=True)
+    shippingPrice = models.DecimalField(max_digits=7, decimal_places=2, null=True, blank=True)
+    totalPrice = models.DecimalField(max_digits=7, decimal_places=2, null=True, blank=True)
+    isPaid = models.BooleanField(default=False)
+    paidAt = models.DateTimeField(auto_now_add=False, null=True, blank=True)
+    isDelivered = models.BooleanField(default=False)
+    deliveredAt = models.DateTimeField(
+        auto_now_add=False, null=True, blank=True)
+    createdAt = models.DateTimeField(auto_now_add=True)
+    _id = models.AutoField(primary_key=True, editable=False)
+
+    def __str__(self):
+        return str(self.createdAt)
+
+class OrderItem(models.Model):
+    product = models.ForeignKey(Product, on_delete=models.SET_NULL, null=True)
+    order = models.ForeignKey(Order, on_delete=models.SET_NULL, null=True)
+    name = models.CharField(max_length=200, null=True, blank=True)
+    qty = models.IntegerField(null=True, blank=True, default=0)
+    price = models.DecimalField(max_digits=7, decimal_places=2, null=True, blank=True)
+    image = models.CharField(max_length=200, null=True, blank=True)
+    _id = models.AutoField(primary_key=True, editable=False)
+
+    def __str__(self):
+        return str(self.name)
+
+class ShippingAddress(models.Model):
+    order = models.OneToOneField(Order, on_delete=models.CASCADE, null=True)
+    address = models.CharField(max_length=200, null=True, blank=True)
+    city = models.CharField(max_length=200, null=True, blank=True)
+    postalCode = models.CharField(max_length=200, null=True, blank=True)
+    country = models.CharField(max_length=200, null=True, blank=True)
+    shippingPrice = models.DecimalField(max_digits=7, decimal_places=2, null=True, blank=True)
+    _id = models.AutoField(primary_key=True, editable=False)
+
+    def __str__(self):
+        return str(self.address)
+```
+
+5. make migrations and migrate
+6. backto frontend, update product_constants.js
+
+```js
+export const PRODUCT_CREATE_REVIEW_REQUEST = "PRODUCT_CREATE_REVIEW_REQUEST";
+export const PRODUCT_CREATE_REVIEW_SUCCESS = "PRODUCT_CREATE_REVIEW_SUCCESS";
+export const PRODUCT_CREATE_REVIEW_FAIL = "PRODUCT_CREATE_REVIEW_FAIL";
+export const PRODUCT_CREATE_REVIEW_RESET = "PRODUCT_CREATE_REVIEW_RESET";
+```
+
+7. update product_reducers.js
+
+```js
+import {
+  PRODUCT_LIST_REQUEST,
+  PRODUCT_LIST_SUCCESS,
+  PRODUCT_LIST_FAIL,
+  PRODUCT_DETAILS_REQUEST,
+  PRODUCT_DETAILS_SUCCESS,
+  PRODUCT_DETAILS_FAIL,
+  PRODUCT_DELETE_REQUEST,
+  PRODUCT_DELETE_SUCCESS,
+  PRODUCT_DELETE_FAIL,
+  PRODUCT_CREATE_REQUEST,
+  PRODUCT_CREATE_SUCCESS,
+  PRODUCT_CREATE_FAIL,
+  PRODUCT_CREATE_RESET,
+  PRODUCT_UPDATE_REQUEST,
+  PRODUCT_UPDATE_SUCCESS,
+  PRODUCT_UPDATE_FAIL,
+  PRODUCT_UPDATE_RESET,
+  PRODUCT_CREATE_REVIEW_REQUEST,
+  PRODUCT_CREATE_REVIEW_SUCCESS,
+  PRODUCT_CREATE_REVIEW_FAIL,
+  PRODUCT_CREATE_REVIEW_RESET,
+} from "../constants/productConstants";
+export const productReducer = (state = { products: [] }, action) => {
+  switch (action.type) {
+    case PRODUCT_LIST_REQUEST:
+      return { loading: true, products: [] };
+    case PRODUCT_LIST_SUCCESS:
+      return { loading: false, products: action.payload };
+    case PRODUCT_LIST_FAIL:
+      return { loading: false, error: action.payload };
+    default:
+      return state;
+  }
+};
+
+export const productDetailsReducer = (
+  state = { product: { reviews: [] } },
+  action,
+) => {
+  switch (action.type) {
+    case PRODUCT_DETAILS_REQUEST:
+      return { loading: true, ...state };
+    case PRODUCT_DETAILS_SUCCESS:
+      return { loading: false, product: action.payload };
+    case PRODUCT_DETAILS_FAIL:
+      return { loading: false, error: action.payload };
+    default:
+      return state;
+  }
+};
+export const productDeleteReducer = (state = {}, action) => {
+  switch (action.type) {
+    case PRODUCT_DELETE_REQUEST:
+      return { loading: true };
+
+    case PRODUCT_DELETE_SUCCESS:
+      return { loading: false, success: true };
+
+    case PRODUCT_DELETE_FAIL:
+      return { loading: false, error: action.payload };
+
+    default:
+      return state;
+  }
+};
+
+export const productCreateReducer = (state = {}, action) => {
+  switch (action.type) {
+    case PRODUCT_CREATE_REQUEST:
+      return { loading: true };
+
+    case PRODUCT_CREATE_SUCCESS:
+      return { loading: false, success: true, product: action.payload };
+
+    case PRODUCT_CREATE_FAIL:
+      return { loading: false, error: action.payload };
+
+    case PRODUCT_CREATE_RESET:
+      return {};
+
+    default:
+      return state;
+  }
+};
+
+export const productUpdateReducer = (state = { product: {} }, action) => {
+  switch (action.type) {
+    case PRODUCT_UPDATE_REQUEST:
+      return { loading: true };
+
+    case PRODUCT_UPDATE_SUCCESS:
+      return { loading: false, success: true, product: action.payload };
+
+    case PRODUCT_UPDATE_FAIL:
+      return { loading: false, error: action.payload };
+
+    case PRODUCT_UPDATE_RESET:
+      return { product: {} };
+
+    default:
+      return state;
+  }
+};
+
+export const productReviewCreateReducer = (state = {}, action) => {
+  switch (action.type) {
+    case PRODUCT_CREATE_REVIEW_REQUEST:
+      return { loading: true };
+
+    case PRODUCT_CREATE_REVIEW_SUCCESS:
+      return { loading: false, success: true };
+
+    case PRODUCT_CREATE_REVIEW_FAIL:
+      return { loading: false, error: action.payload };
+
+    case PRODUCT_CREATE_REVIEW_RESET:
+      return {};
+
+    default:
+      return state;
+  }
+};
+```
+
+8. update store.js
+
+```js
+import { configureStore } from "@reduxjs/toolkit";
+import {
+  productReducer,
+  productDetailsReducer,
+  productDeleteReducer,
+  productCreateReducer,
+  productUpdateReducer,
+  productReviewCreateReducer,
+} from "./reducers/productReducers"; // import
+import { cartReducer } from "./reducers/cartReducers";
+import {
+  userLoginReducer,
+  userRegisterReducer,
+  userDetailsReducer,
+  userUpdateProfileReducer,
+  userListReducer,
+  userDeleteReducer,
+  userUpdateReducer,
+} from "./reducers/userReducers";
+import {
+  orderCreateReducer,
+  orderDetailsReducer,
+  orderPayReducer,
+  orderListMyReducer,
+  orderListReducer,
+  orderDeliverReducer,
+} from "./reducers/orderReducers";
+const cartItemsFromStorage = localStorage.getItem("cartItems")
+  ? JSON.parse(localStorage.getItem("cartItems"))
+  : [];
+const userInfoFromStorage = localStorage.getItem("userInfo")
+  ? JSON.parse(localStorage.getItem("userInfo"))
+  : null;
+
+const shippingAddressFromStorage = localStorage.getItem("shippingAddress")
+  ? JSON.parse(localStorage.getItem("shippingAddress"))
+  : {};
+// 👇 初始化 Redux 状态
+const preloadedState = {
+  cart: {
+    cartItems: cartItemsFromStorage, // 给 cart reducer 赋值
+    shippingAddress: shippingAddressFromStorage, // 给 cart reducer 赋值
+  },
+  userLogin: {
+    userInfo: userInfoFromStorage, // 给 userLogin reducer 赋值
+  },
+};
+
+export const store = configureStore({
+  reducer: {
+    productList: productReducer,
+    productDetails: productDetailsReducer,
+    cart: cartReducer,
+    userLogin: userLoginReducer,
+    userRegister: userRegisterReducer,
+    userDetails: userDetailsReducer,
+    userUpdateProfile: userUpdateProfileReducer,
+    userList: userListReducer,
+    orderCreate: orderCreateReducer,
+    orderDetails: orderDetailsReducer,
+    orderPay: orderPayReducer,
+    orderListMy: orderListMyReducer,
+    userDelete: userDeleteReducer,
+    userUpdate: userUpdateReducer,
+    productDelete: productDeleteReducer,
+    productCreate: productCreateReducer,
+    productUpdate: productUpdateReducer,
+    orderList: orderListReducer,
+    orderDeliver: orderDeliverReducer,
+    productReviewCreate: productReviewCreateReducer,
+  },
+  // ✅ Thunk + DevTools ARE AUTO INCLUDED — NO SETUP NEEDED!
+  preloadedState: preloadedState,
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware({ serializableCheck: false, immutableCheck: false }),
+});
+
+export default store;
+```
+
+9. update product_actions.js
+
+```js
+import {
+  PRODUCT_LIST_REQUEST,
+  PRODUCT_LIST_SUCCESS,
+  PRODUCT_LIST_FAIL,
+  PRODUCT_DETAILS_REQUEST,
+  PRODUCT_DETAILS_SUCCESS,
+  PRODUCT_DETAILS_FAIL,
+  PRODUCT_DELETE_REQUEST,
+  PRODUCT_DELETE_SUCCESS,
+  PRODUCT_DELETE_FAIL,
+  PRODUCT_CREATE_REQUEST,
+  PRODUCT_CREATE_SUCCESS,
+  PRODUCT_CREATE_FAIL,
+  PRODUCT_UPDATE_REQUEST,
+  PRODUCT_UPDATE_SUCCESS,
+  PRODUCT_UPDATE_FAIL,
+  PRODUCT_CREATE_REVIEW_REQUEST,
+  PRODUCT_CREATE_REVIEW_SUCCESS,
+  PRODUCT_CREATE_REVIEW_FAIL,
+} from "../constants/productConstants";
+import axios from "axios";
+export const listProducts = () => async (dispatch) => {
+  try {
+    dispatch({ type: PRODUCT_LIST_REQUEST });
+    const { data } = await axios.get("/api/products");
+    dispatch({ type: PRODUCT_LIST_SUCCESS, payload: data });
+  } catch (error) {
+    dispatch({
+      type: PRODUCT_LIST_FAIL,
+      payload:
+        error.response && error.response.data.detail
+          ? error.response.data.detail
+          : error.message,
+    });
+  }
+};
+
+export const listProductDetails = (id) => async (dispatch) => {
+  try {
+    dispatch({ type: PRODUCT_DETAILS_REQUEST });
+    const { data } = await axios.get(`/api/products/${id}`);
+    dispatch({ type: PRODUCT_DETAILS_SUCCESS, payload: data });
+  } catch (error) {
+    dispatch({
+      type: PRODUCT_DETAILS_FAIL,
+      payload:
+        error.response && error.response.data.detail
+          ? error.response.data.detail
+          : error.message,
+    });
+  }
+};
+
+export const deleteProduct = (id) => async (dispatch, getState) => {
+  try {
+    dispatch({
+      type: PRODUCT_DELETE_REQUEST,
+    });
+
+    const {
+      userLogin: { userInfo },
+    } = getState();
+
+    const config = {
+      headers: {
+        "Content-type": "application/json",
+        Authorization: `Bearer ${userInfo.token}`,
+      },
+    };
+
+    const { data } = await axios.delete(`/api/products/delete/${id}/`, config);
+
+    dispatch({
+      type: PRODUCT_DELETE_SUCCESS,
+    });
+  } catch (error) {
+    dispatch({
+      type: PRODUCT_DELETE_FAIL,
+      payload:
+        error.response && error.response.data.detail
+          ? error.response.data.detail
+          : error.message,
+    });
+  }
+};
+
+export const createProduct = () => async (dispatch, getState) => {
+  try {
+    dispatch({
+      type: PRODUCT_CREATE_REQUEST,
+    });
+
+    const {
+      userLogin: { userInfo },
+    } = getState();
+
+    const config = {
+      headers: {
+        "Content-type": "application/json",
+        Authorization: `Bearer ${userInfo.token}`,
+      },
+    };
+
+    const { data } = await axios.post(`/api/products/create/`, {}, config);
+    dispatch({
+      type: PRODUCT_CREATE_SUCCESS,
+      payload: data,
+    });
+  } catch (error) {
+    dispatch({
+      type: PRODUCT_CREATE_FAIL,
+      payload:
+        error.response && error.response.data.detail
+          ? error.response.data.detail
+          : error.message,
+    });
+  }
+};
+
+export const updateProduct = (product) => async (dispatch, getState) => {
+  try {
+    dispatch({
+      type: PRODUCT_UPDATE_REQUEST,
+    });
+
+    const {
+      userLogin: { userInfo },
+    } = getState();
+
+    const config = {
+      headers: {
+        "Content-type": "application/json",
+        Authorization: `Bearer ${userInfo.token}`,
+      },
+    };
+
+    const { data } = await axios.put(
+      `/api/products/update/${product._id}/`,
+      product,
+      config,
+    );
+    dispatch({
+      type: PRODUCT_UPDATE_SUCCESS,
+      payload: data,
+    });
+
+    dispatch({
+      type: PRODUCT_DETAILS_SUCCESS,
+      payload: data,
+    });
+  } catch (error) {
+    dispatch({
+      type: PRODUCT_UPDATE_FAIL,
+      payload:
+        error.response && error.response.data.detail
+          ? error.response.data.detail
+          : error.message,
+    });
+  }
+};
+
+export const createProductReview =
+  (productId, review) => async (dispatch, getState) => {
+    try {
+      dispatch({
+        type: PRODUCT_CREATE_REVIEW_REQUEST,
+      });
+
+      const {
+        userLogin: { userInfo },
+      } = getState();
+
+      const config = {
+        headers: {
+          "Content-type": "application/json",
+          Authorization: `Bearer ${userInfo.token}`,
+        },
+      };
+
+      const { data } = await axios.post(
+        `/api/products/${productId}/reviews/`,
+        review,
+        config,
+      );
+      dispatch({
+        type: PRODUCT_CREATE_REVIEW_SUCCESS,
+        payload: data,
+      });
+    } catch (error) {
+      dispatch({
+        type: PRODUCT_CREATE_REVIEW_FAIL,
+        payload:
+          error.response && error.response.data.detail
+            ? error.response.data.detail
+            : error.message,
+      });
+    }
+  };
+```
+
+10. update productScreen.jsx
+
+```jsx
+import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { Link, useParams, useNavigate } from "react-router-dom";
+import {
+  Row,
+  Col,
+  Image,
+  ListGroup,
+  Card,
+  Button,
+  Form,
+} from "react-bootstrap";
+import Rating from "../components/Rating";
+import {
+  listProductDetails,
+  createProductReview,
+} from "../actions/productActions";
+import Loader from "../components/Loader";
+import Message from "../components/Message";
+import { PRODUCT_CREATE_REVIEW_RESET } from "../constants/productConstants";
+// import products from "../products";
+const ProductScreen = () => {
+  const { id } = useParams();
+  const navigate = useNavigate();
+
+  const [qty, setQty] = useState(1);
+  const [rating, setRating] = useState(0);
+  const [comment, setComment] = useState("");
+
+  const dispatch = useDispatch();
+
+  const productDetails = useSelector((state) => state.productDetails);
+  const { loading, error, product } = productDetails;
+
+  const userLogin = useSelector((state) => state.userLogin);
+  const { userInfo } = userLogin;
+
+  const productReviewCreate = useSelector((state) => state.productReviewCreate);
+  const {
+    loading: loadingProductReview,
+    error: errorProductReview,
+    success: successProductReview,
+  } = productReviewCreate;
+
+  useEffect(() => {
+    if (successProductReview) {
+      setRating(0);
+      setComment("");
+      dispatch({ type: PRODUCT_CREATE_REVIEW_RESET });
+    }
+
+    dispatch(listProductDetails(id));
+  }, [dispatch, id, successProductReview]);
+
+  const addToCartHandler = () => {
+    // console.log("Add to cart", id, qty);
+    navigate(`/cart/${id}?qty=${qty}`);
+  };
+
+  const submitHandler = (e) => {
+    e.preventDefault();
+    dispatch(
+      createProductReview(id, {
+        rating,
+        comment,
+      }),
+    );
+  };
+
+  return (
+    <div>
+      <Link to="/" className="btn btn-light my-3">
+        {" "}
+        Go Back
+      </Link>
+      {loading ? (
+        <Loader />
+      ) : error ? (
+        <Message variant="danger">{error}</Message>
+      ) : (
+        <div>
+          <Row>
+            <Col md={6}>
+              <Image src={product.image} alt={product.name} fluid />
+            </Col>
+
+            <Col md={3}>
+              <ListGroup variant="flush">
+                <ListGroup.Item>
+                  <h3>{product.name}</h3>
+                </ListGroup.Item>
+
+                <ListGroup.Item>
+                  <Rating
+                    value={product.rating}
+                    text={`${product.numReviews} reviews`}
+                    color={"#f8e825"}
+                  />
+                </ListGroup.Item>
+
+                <ListGroup.Item>Price: ${product.price}</ListGroup.Item>
+
+                <ListGroup.Item>
+                  Description: {product.description}{" "}
+                </ListGroup.Item>
+              </ListGroup>
+            </Col>
+
+            <Col md={3}>
+              <Card>
+                <ListGroup variant="flush">
+                  <ListGroup.Item>
+                    <Row>
+                      <Col>Price:</Col>
+                      <Col>
+                        <strong>${product.price}</strong>
+                      </Col>
+                    </Row>
+                  </ListGroup.Item>
+                  <ListGroup.Item>
+                    <Row>
+                      <Col>Status:</Col>
+                      <Col>
+                        $
+                        {product.countInStock > 0 ? "In Stock" : "Out of Stock"}
+                      </Col>
+                    </Row>
+                  </ListGroup.Item>
+                  {product.countInStock > 0 && (
+                    <ListGroup.Item>
+                      <Row className="align-items-center">
+                        <Col>Qty</Col>
+                        <Col xs="auto" className="my-1">
+                          <Form.Control
+                            as="select"
+                            value={qty}
+                            onChange={(e) => setQty(e.target.value)}
+                          >
+                            {[...Array(product.countInStock).keys()].map(
+                              (x) => (
+                                <option key={x + 1} value={x + 1}>
+                                  {x + 1}
+                                </option>
+                              ),
+                            )}
+                          </Form.Control>
+                        </Col>
+                      </Row>
+                    </ListGroup.Item>
+                  )}
+                  <ListGroup.Item>
+                    <Button
+                      onClick={addToCartHandler}
+                      className="w-100 py-2"
+                      type="button"
+                      disabled={product.countInStock === 0}
+                    >
+                      Add to Cart
+                    </Button>
+                  </ListGroup.Item>
+                </ListGroup>
+              </Card>
+            </Col>
+          </Row>
+        </div>
+      )}
+      <Row>
+        <Col md={6}>
+          <h4>Reviews</h4>
+          {product.reviews.length === 0 && (
+            <Message variant="info">No Reviews</Message>
+          )}
+
+          <ListGroup variant="flush">
+            {product.reviews.map((review) => (
+              <ListGroup.Item key={review._id}>
+                <strong>{review.name}</strong>
+                <Rating value={review.rating} color="#f8e825" />
+                <p>{review.createdAt.substring(0, 10)}</p>
+                <p>{review.comment}</p>
+              </ListGroup.Item>
+            ))}
+
+            <ListGroup.Item>
+              <h4>Write a review</h4>
+
+              {loadingProductReview && <Loader />}
+              {successProductReview && (
+                <Message variant="success">Review Submitted</Message>
+              )}
+              {errorProductReview && (
+                <Message variant="danger">{errorProductReview}</Message>
+              )}
+
+              {userInfo ? (
+                <Form onSubmit={submitHandler}>
+                  <Form.Group controlId="rating">
+                    <Form.Label>Rating</Form.Label>
+                    <Form.Control
+                      as="select"
+                      value={rating}
+                      onChange={(e) => setRating(e.target.value)}
+                    >
+                      <option value="">Select...</option>
+                      <option value="1">1 - Poor</option>
+                      <option value="2">2 - Fair</option>
+                      <option value="3">3 - Good</option>
+                      <option value="4">4 - Very Good</option>
+                      <option value="5">5 - Excellent</option>
+                    </Form.Control>
+                  </Form.Group>
+
+                  <Form.Group controlId="comment">
+                    <Form.Label>Review</Form.Label>
+                    <Form.Control
+                      as="textarea"
+                      row="5"
+                      value={comment}
+                      onChange={(e) => setComment(e.target.value)}
+                    ></Form.Control>
+                  </Form.Group>
+
+                  <Button
+                    disabled={loadingProductReview}
+                    type="submit"
+                    variant="primary"
+                  >
+                    Submit
+                  </Button>
+                </Form>
+              ) : (
+                <Message variant="info">
+                  Please <Link to="/login">login</Link> to write a review
+                </Message>
+              )}
+            </ListGroup.Item>
+          </ListGroup>
+        </Col>
+      </Row>
+    </div>
+  );
+};
+```
 
 ## step 44
+
+## step 45
+
+## step 46
+
+## step 47
+
+## step 48
+
+## step 49
+
+## step 50
+
+## step 51

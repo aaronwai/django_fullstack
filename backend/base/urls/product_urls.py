@@ -8,10 +8,10 @@ urlpatterns = [
     # 2. STATIC + DYNAMIC COMBOS (update / delete)
     path('update/<str:pk>/', views.updateProduct, name="product-update"),
     path('delete/<str:pk>/', views.deleteProduct, name="product-delete"),
-
+    path('<str:pk>/reviews/', views.createProductReview, name="create-review"),
     # 3. ONLY DYNAMIC (single product)
     path('<str:pk>/', views.getProduct, name="product"),
-
+    
     # 4. ROOT '' COMES DEAD LAST
     path('', views.getProducts, name="products"),
 ]
