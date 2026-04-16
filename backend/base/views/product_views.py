@@ -4,14 +4,27 @@ from rest_framework.response import Response
 from rest_framework import status
 from base.models import Product, Review
 from base.serializer import ProductSerializer
-
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 @api_view(['GET'])
 def getProducts(request):
     query = request.query_params.get('keyword', '')
-    products = Product.objects.filter(name__icontains=query)
+    products = Product.objects.filter(name__icontains=query).order_by('-createdAt')
+    page = request.query_params.get('page', 1) # default page 1
+    paginator = Paginator(products, 5)
+    # Handle invalid page numbers
+    try:
+        products_paginated = paginator.page(page)
+    except PageNotAnInteger:
+        products_paginated = paginator.page(1)
+    except EmptyPage:
+        products_paginated = paginator.page(paginator.num_pages)
     serializer = ProductSerializer(products, many=True)
-    return Response(serializer.data)
+    return Response({
+        'products': serializer.data,
+        'page': products_paginated.number,
+        'pages': paginator.num_pages
+    })
 
 @api_view(['GET'])
 def getProduct(request,pk):

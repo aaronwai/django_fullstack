@@ -6,10 +6,11 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { listProducts } from "../actions/productActions";
 import Loader from "../components/Loader";
 import Message from "../components/Message";
+import Paginate from "../components/Paginate";
 const HomeScreen = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { error, loading, products } = useSelector((state) => state.productList);
+  const { error, loading, products, page,pages } = useSelector((state) => state.productList);
   const location = useLocation()
   const keyword = location.search
   
@@ -22,13 +23,16 @@ const HomeScreen = () => {
       
       <h1>Latest Products</h1>
       {loading ? <Loader /> : error ? <Message variant="danger">{error}</Message> : 
-      <Row>
-        {products.map((product) => (
-          <Col key={product._id} sm={12} md={6} lg={4} xl={3}>
-            <Product product={product} />
-          </Col>
-        ))}
-      </Row>}
+       <div>
+          <Row>
+              {products.map(product => (
+                  <Col key={product._id} sm={12} md={6} lg={4} xl={3}>
+                      <Product product={product} />
+                  </Col>
+              ))}
+          </Row>
+          <Paginate page={page} pages={pages} keyword={keyword} />
+        </div>}
     </div>
   );
 };
